@@ -1,0 +1,1570 @@
+{
+  "menuItems": [
+    {
+      "id": "risol001",
+      "name": "Risol Mayo",
+      "category": "risol",
+      "categoryTitle": "Risol",
+      "price": 7000,
+      "displayPrice": "Rp 7.000",
+      "description": "Perpaduan mayones creamy, potongan smoked beef, dan telur rebus dalam balutan kulit risol renyah.",
+      "image": "/images/item-risol-mayo.webp"
+    },
+    {
+      "id": "risol004",
+      "name": "Risol Mozza",
+      "category": "risol",
+      "categoryTitle": "Risol",
+      "price": 10000,
+      "displayPrice": "Rp 10.000",
+      "description": "Lelehan keju mozzarella premium yang melimpah di setiap gigitan risol hangat.",
+      "image": "/images/item-risol-mozza.webp"
+    },
+    {
+      "id": "risol003",
+      "name": "Risol Beef Curry",
+      "category": "risol",
+      "categoryTitle": "Risol",
+      "price": 7000,
+      "displayPrice": "Rp 7.000",
+      "description": "Sensasi eksotis daging sapi cincang berpadu bumbu kari kaya rempah, dibungkus kulit risol istimewa.",
+      "image": "/images/item-risol-curry.webp"
+    },
+    {
+      "id": "risol005",
+      "name": "Risol Tuna",
+      "category": "risol",
+      "categoryTitle": "Risol",
+      "price": 7000,
+      "displayPrice": "Rp 7.000",
+      "description": "Isian daging tuna pilihan yang lembut dan gurih, pilihan sehat dan nikmat.",
+      "image": "/images/item-risol-tuna.webp"
+    },
+    {
+      "id": "risol006",
+      "name": "Risol Ragout",
+      "category": "risol",
+      "categoryTitle": "Risol",
+      "price": 5000,
+      "displayPrice": "Rp 5.000",
+      "description": "Isian ragout ayam dan sayuran klasik yang creamy dan memanjakan lidah.",
+      "image": "/images/item-risol-ragout.webp"
+    },
+    {
+      "id": "risol002",
+      "name": "Risol Nugget",
+      "category": "risol",
+      "categoryTitle": "Risol",
+      "price": 6000,
+      "displayPrice": "Rp 6.000",
+      "description": "Kejutan lezat nugget ayam pilihan di dalam risol, cocok untuk segala suasana.",
+      "image": "/images/item-risol-nugget.webp"
+    },
+    {
+      "id": "snack001",
+      "name": "Sosis Solo",
+      "category": "snack",
+      "categoryTitle": "Snack",
+      "price": 5000,
+      "displayPrice": "Rp 5.000",
+      "description": "Lumpia basah khas Solo dengan isian daging ayam cincang yang lembut dan gurih.",
+      "image": "/images/item-sosis-solo.webp"
+    },
+    {
+      "id": "snack002",
+      "name": "Tahu HOT!",
+      "category": "snack",
+      "categoryTitle": "Snack",
+      "price": 4000,
+      "displayPrice": "Rp 4.000",
+      "description": "Tahu goreng renyah dengan isian sayuran pedas yang membara, tantang selera Anda!",
+      "image": "/images/item-tahu-hot.webp"
+    },
+    {
+      "id": "snack003",
+      "name": "Kue Soes",
+      "category": "snack",
+      "categoryTitle": "Snack",
+      "price": 6000,
+      "displayPrice": "Rp 6.000",
+      "description": "Kue soes lembut dengan isian vla vanila atau vla coklat yang manis dan lumer di mulut.",
+      "image": "/images/item-kue-soes.webp"
+    },
+    {
+      "id": "snack004",
+      "name": "Bolen Pisang",
+      "category": "snack",
+      "categoryTitle": "Snack",
+      "price": 6000,
+      "displayPrice": "Rp 6.000",
+      "description": "Manisnya pisang raja berpadu dengan lapisan pastry renyah, pilihan favorit sepanjang masa.",
+      "image": "/images/item-bolen-pisang.webp"
+    },
+    {
+      "id": "snack005",
+      "name": "Soft Cookies",
+      "category": "snack",
+      "categoryTitle": "Snack",
+      "price": 15000,
+      "displayPrice": "Rp 15.000",
+      "description": "Teksturnya yang lembut dan rasa manis yang pas, sempurna sebagai teman minum teh atau kopi Anda.",
+      "image": "/images/item-soft-cookies.webp"
+    },
+    {
+      "id": "snack006",
+      "name": "Pastel",
+      "category": "snack",
+      "categoryTitle": "Snack",
+      "price": 6000,
+      "displayPrice": "Rp 6.000",
+      "description": "Siap-siap untuk ledakan rasa! Pastel dengan saus kacang akan ceriakan harimu.",
+      "image": "/images/item-pastel.webp"
+    },
+    {
+      "id": "snack007",
+      "name": "Banana Muffin",
+      "category": "snack",
+      "categoryTitle": "Snack",
+      "price": 6000,
+      "displayPrice": "Rp 6.000",
+      "description": "Super lembut dan nikmat, rasakan kelezatannya di setiap gigitan.",
+      "image": "/images/banana-muffin.webp"
+    },
+    {
+      "id": "kuliner001",
+      "name": "Nasi Liwet Ayam Goreng Serundeng",
+      "category": "kuliner",
+      "categoryTitle": "Kuliner",
+      "price": 32000,
+      "displayPrice": "Rp 32.000",
+      "description": "Nasi liwet gurih disajikan dengan ayam goreng empuk bertabur serundeng renyah.",
+      "image": "/images/item-nasi-liwet-ayam-goreng-serundeng.webp"
+    },
+    {
+      "id": "kuliner002",
+      "name": "Nasi Putih Ayam Goreng Serundeng",
+      "category": "kuliner",
+      "categoryTitle": "Kuliner",
+      "price": 26000,
+      "displayPrice": "Rp 26.000",
+      "description": "Pilihan klasik nasi putih hangat dengan lauk ayam goreng serundeng yang tak pernah salah.",
+      "image": "/images/item-serundeng.webp"
+    },
+    {
+      "id": "kuliner003",
+      "name": "Nasi Liwet Ayam Bakar",
+      "category": "kuliner",
+      "categoryTitle": "Kuliner",
+      "price": 32000,
+      "displayPrice": "Rp 32.000",
+      "description": "Aroma semerbak ayam bakar bumbu meresap, berpadu sempurna dengan nasi liwet pulen.",
+      "image": "/images/item-liwet-ayam-bakar2.webp"
+    },
+    {
+      "id": "kuliner004",
+      "name": "Nasi Putih Ayam Bakar",
+      "category": "kuliner",
+      "categoryTitle": "Kuliner",
+      "price": 26000,
+      "displayPrice": "Rp 26.000",
+      "description": "Nasi putih ditemani ayam bakar lezat dengan bumbu khas Falya yang menggoda.",
+      "image": "/images/item-nasi-putih-ayam-bakar.webp"
+    },
+    {
+      "id": "kuliner011",
+      "name": "Nasi Liwet Ayam Kremes",
+      "category": "kuliner",
+      "categoryTitle": "Kuliner",
+      "price": 34000,
+      "displayPrice": "Rp 34.000",
+      "description": "Nasi liwet pulen berpadu dengan ayam goreng berbalut kremesan renyah yang gurihnya tiada tara.",
+      "image": "/images/item-liwet-kremes.webp"
+    },
+    {
+      "id": "kuliner012",
+      "name": "Nasi Putih Ayam Kremes",
+      "category": "kuliner",
+      "categoryTitle": "Kuliner",
+      "price": 28000,
+      "displayPrice": "Rp 28.000",
+      "description": "Ayam goreng dengan kremesan super renyah disajikan bersama nasi putih hangat, kombinasi sempurna.",
+      "image": "/images/item-nasi-putih-kremes.webp"
+    },
+    {
+      "id": "kuliner005",
+      "name": "Nasi Liwet Nila Goreng",
+      "category": "kuliner",
+      "categoryTitle": "Kuliner",
+      "price": 37000,
+      "displayPrice": "Rp 37.000",
+      "description": "Ikan nila segar digoreng garing, disajikan hangat dengan nasi liwet yang kaya rasa.",
+      "image": "/images/item-nasi-liwet-nila-goreng.webp"
+    },
+    {
+      "id": "kuliner006",
+      "name": "Nasi Putih Nila Goreng",
+      "category": "kuliner",
+      "categoryTitle": "Kuliner",
+      "price": 33000,
+      "displayPrice": "Rp 33.000",
+      "description": "Kenikmatan ikan nila goreng renyah bersama sepiring nasi putih hangat.",
+      "image": "/images/item-nasi-putih-nila-goreng.webp"
+    },
+    {
+      "id": "kuliner007",
+      "name": "Nasi Liwet Nila Bakar",
+      "category": "kuliner",
+      "categoryTitle": "Kuliner",
+      "price": 37000,
+      "displayPrice": "Rp 37.000",
+      "description": "Ikan nila bakar dengan bumbu meresap sempurna, disajikan dengan nasi liwet spesial.",
+      "image": "/images/item-nasi-liwet-nila-bakar.webp"
+    },
+    {
+      "id": "kuliner008",
+      "name": "Nasi Putih Nila Bakar",
+      "category": "kuliner",
+      "categoryTitle": "Kuliner",
+      "price": 33000,
+      "displayPrice": "Rp 33.000",
+      "description": "Lezatnya ikan nila bakar disandingkan dengan nasi putih pulen, pilihan yang memuaskan.",
+      "image": "/images/item-nila-nasi-putih.webp"
+    },
+    {
+      "id": "kuliner009",
+      "name": "Soto Daging Nasi Putih",
+      "category": "kuliner",
+      "categoryTitle": "Kuliner",
+      "price": 28000,
+      "displayPrice": "Rp 28.000",
+      "description": "Soto daging sapi kaya rempah dengan kuah bening segar, disajikan lengkap dengan nasi putih.",
+      "image": "/images/item-soto.webp"
+    },
+    {
+      "id": "kuliner010",
+      "name": "Soto Daging",
+      "category": "kuliner",
+      "categoryTitle": "Kuliner",
+      "price": 26000,
+      "displayPrice": "Rp 26.000",
+      "description": "Semangkuk soto daging sapi hangat dengan kuah kaldu yang gurih dan menyegarkan.",
+      "image": "/images/item-soto-daging-aja.webp"
+    },
+    {
+      "id": "coffee001",
+      "name": "Black Coffee Hot",
+      "category": "coffee",
+      "categoryTitle": "Coffee",
+      "price": 15000,
+      "displayPrice": "Rp 15.000",
+      "description": "Kopi hitam murni panas, diseduh dengan metode French Press atau V-60 untuk cita rasa maksimal.",
+      "image": "/images/item-black-coffee-hot.webp"
+    },
+    {
+      "id": "coffee002",
+      "name": "Black Coffee Iced",
+      "category": "coffee",
+      "categoryTitle": "Coffee",
+      "price": 16000,
+      "displayPrice": "Rp 16.000",
+      "description": "Kesegaran es kopi hitam murni, diseduh dengan metode French Press atau V-60.",
+      "image": "/images/item-iced-black-coffee.webp"
+    },
+    {
+      "id": "coffee003",
+      "name": "Vietnam Drip",
+      "category": "coffee",
+      "categoryTitle": "Coffee",
+      "price": 16000,
+      "displayPrice": "Rp 16.000",
+      "description": "Kopi susu khas Vietnam dengan perpaduan rasa pahit kopi dan manisnya susu kental.",
+      "image": "/images/item-vietnam-drip.webp"
+    },
+    {
+      "id": "coffee004",
+      "name": "Falya Hot Coffee Milk",
+      "category": "coffee",
+      "categoryTitle": "Coffee",
+      "price": 16000,
+      "displayPrice": "Rp 16.000",
+      "description": "Kopi susu panas spesial ala Falya, hangat dan membangkitkan semangat.",
+      "image": "/images/item-falya-hot-coffee-milk.webp"
+    },
+    {
+      "id": "coffee005",
+      "name": "Americano Hot",
+      "category": "coffee",
+      "categoryTitle": "Coffee",
+      "price": 15000,
+      "displayPrice": "Rp 15.000",
+      "description": "Espresso klasik yang diperpanjang dengan air panas, simpel dan kuat.",
+      "image": "/images/item-hot-americano.webp"
+    },
+    {
+      "id": "coffee006",
+      "name": "Americano Iced",
+      "category": "coffee",
+      "categoryTitle": "Coffee",
+      "price": 16000,
+      "displayPrice": "Rp 16.000",
+      "description": "Kesegaran espresso dan air dingin, pilihan tepat untuk hari yang panas.",
+      "image": "/images/item-iced-americano.webp"
+    },
+    {
+      "id": "coffee007",
+      "name": "Falya Iced Coffee",
+      "category": "coffee",
+      "categoryTitle": "Coffee",
+      "price": 18000,
+      "displayPrice": "Rp 18.000",
+      "description": "Es kopi susu signature Falya dengan rasa yang unik dan menyegarkan.",
+      "image": "/images/item-falya-iced-coffee.webp"
+    },
+    {
+      "id": "juice001",
+      "name": "Jus Mangga",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 17000,
+      "displayPrice": "Rp 17.000",
+      "description": "Kesegaran buah mangga matang pilihan, diblender halus menjadi jus nikmat.",
+      "image": "/images/item-mango-juice.webp"
+    },
+    {
+      "id": "juice002",
+      "name": "Jus Sirsak",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 17000,
+      "displayPrice": "Rp 17.000",
+      "description": "Rasa manis asam buah sirsak yang menyegarkan, kaya akan vitamin.",
+      "image": "/images/item-jus-sirsak.webp"
+    },
+    {
+      "id": "juice003",
+      "name": "Jus Alpukat",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 20000,
+      "displayPrice": "Rp 20.000",
+      "description": "Jus alpukat creamy dan legit, sumber energi dan nutrisi.",
+      "image": "/images/item-avocado-juice.webp"
+    },
+    {
+      "id": "juice004",
+      "name": "Jus Durian",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 18000,
+      "displayPrice": "Rp 18.000",
+      "description": "Kenikmatan buah durian asli dalam segelas jus yang memanjakan.",
+      "image": "/images/item-jus-durian.webp"
+    },
+    {
+      "id": "juice005",
+      "name": "Jus Nanas",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 16000,
+      "displayPrice": "Rp 16.000",
+      "description": "Segarnya jus nanas tropis, kaya serat dan vitamin C.",
+      "image": "/images/item-jus-nanas.webp"
+    },
+    {
+      "id": "juice006",
+      "name": "Jus Buah Naga",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 16000,
+      "displayPrice": "Rp 16.000",
+      "description": "Warna menawan dan rasa manis alami dari jus buah naga segar.",
+      "image": "/images/item-jus-buahnaga.webp"
+    },
+    {
+      "id": "juice007",
+      "name": "Jus Strawberry",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 18000,
+      "displayPrice": "Rp 18.000",
+      "description": "Manis asam menyegarkan dari buah strawberry pilihan, penuh antioksidan.",
+      "image": "/images/item-strawberry-juice.webp"
+    },
+    {
+      "id": "juice008",
+      "name": "Mix Juice Mangga & Sirsak",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 20000,
+      "displayPrice": "Rp 20.000",
+      "description": "Kombinasi sempurna manisnya mangga dan segarnya sirsak dalam satu gelas.",
+      "image": "/images/item-jus-mangga-sirsak.webp"
+    },
+    {
+      "id": "juice009",
+      "name": "Mix Juice Buah Naga & Sirsak",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 20000,
+      "displayPrice": "Rp 20.000",
+      "description": "Perpaduan unik buah naga dan sirsak, kaya nutrisi dan menyegarkan.",
+      "image": "/images/item-jus-buahnaga-sirsak.webp"
+    },
+    {
+      "id": "drink001",
+      "name": "Hot/Iced Chocolate",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 16000,
+      "displayPrice": "Rp 16.000",
+      "description": "Minuman cokelat klasik, bisa dinikmati panas atau dingin sesuai selera.",
+      "image": "/images/item-iced-chocolate.webp"
+    },
+    {
+      "id": "drink002",
+      "name": "Choco Hazelnut",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 18000,
+      "displayPrice": "Rp 18.000",
+      "description": "Kelezatan cokelat berpadu dengan aroma dan rasa hazelnut yang khas.",
+      "image": "/images/item-choco.webp"
+    },
+    {
+      "id": "drink003",
+      "name": "Vanilla Oreo",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 16000,
+      "displayPrice": "Rp 16.000",
+      "description": "Minuman vanilla creamy dengan taburan dan potongan biskuit Oreo renyah.",
+      "image": "/images/item-vanilla-oreo.webp"
+    },
+    {
+      "id": "drink004",
+      "name": "Sweet Strawberry",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 16000,
+      "displayPrice": "Rp 16.000",
+      "description": "Minuman rasa strawberry yang manis dan menyegarkan, pilihan ceria.",
+      "image": "/images/item-sweet-strawberry.webp"
+    },
+    {
+      "id": "drink005",
+      "name": "Bubble Gum",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 16000,
+      "displayPrice": "Rp 16.000",
+      "description": "Sensasi rasa permen karet yang unik dan menyenangkan dalam segelas minuman.",
+      "image": "/images/item-bubble-gum.webp"
+    },
+    {
+      "id": "drink006",
+      "name": "Thai Tea",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 17000,
+      "displayPrice": "Rp 17.000",
+      "description": "Teh susu khas Thailand dengan rasa manis dan aroma teh yang kuat.",
+      "image": "/images/item-thai-tea.webp"
+    },
+    {
+      "id": "drink007",
+      "name": "Green Thai Tea",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 18000,
+      "displayPrice": "Rp 18.000",
+      "description": "Varian teh susu Thailand dengan teh hijau, menawarkan rasa yang unik dan menyegarkan.",
+      "image": "/images/item-green-thai-tea.webp"
+    },
+    {
+      "id": "drink008",
+      "name": "Hot/Iced Lemon Tea",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 10000,
+      "displayPrice": "Rp 10.000",
+      "description": "Perpaduan klasik teh dengan perasan lemon segar, bisa dinikmati panas atau dingin.",
+      "image": "/images/item-iced-lemon-tea.webp"
+    },
+    {
+      "id": "drink009",
+      "name": "Es Jeruk",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 10000,
+      "displayPrice": "Rp 10.000",
+      "description": "Kesegaran es jeruk peras murni, pelepas dahaga yang sempurna.",
+      "image": "/images/item-es-jeruk.webp"
+    },
+    {
+      "id": "drink010",
+      "name": "Es Teh",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 5000,
+      "displayPrice": "Rp 5.000",
+      "description": "Pilihan es teh klasik, bisa manis atau tawar sesuai keinginan Anda.",
+      "image": "/images/item-iced-tea.webp"
+    },
+    {
+      "id": "drink011",
+      "name": "Teh Panas",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 5000,
+      "displayPrice": "Rp 5.000",
+      "description": "Kehangatan teh tubruk atau celup, pilihan menenangkan kapan saja.",
+      "image": "/images/item-hot-tea.webp"
+    }
+  ],
+  "liwetItems": [
+    {
+      "id": "liwetayam001",
+      "name": "Paket Ayam A",
+      "category": "liwet-ayam",
+      "categoryTitle": "Paket Nasi Liwet Ayam (Kotak)",
+      "price": 32000,
+      "displayPrice": "Rp 32.000",
+      "description": "Isi: Nasi liwet bakar, Ayam goreng / ayam bakar, Tempe goreng, Sambal, Lalapan.",
+      "image": "/images/liwet/ayama.webp"
+    },
+    {
+      "id": "liwetayam002",
+      "name": "Paket Ayam B",
+      "category": "liwet-ayam",
+      "categoryTitle": "Paket Nasi Liwet Ayam (Kotak)",
+      "price": 37000,
+      "displayPrice": "Rp 37.000",
+      "description": "Isi: Nasi liwet bakar, Ayam goreng / ayam bakar, Tempe & tahu goreng, Sambal, Lalapan, Buah.",
+      "image": "/images/liwet/ayamb.webp"
+    },
+    {
+      "id": "liwetayam003",
+      "name": "Paket Ayam C",
+      "category": "liwet-ayam",
+      "categoryTitle": "Paket Nasi Liwet Ayam (Kotak)",
+      "price": 42000,
+      "displayPrice": "Rp 42.000",
+      "description": "Isi: Nasi liwet bakar, Ayam goreng / ayam bakar, Tempe & tahu goreng, Sambal, Lalapan, Buah, Air mineral botol 330 ml.",
+      "image": "/images/liwet/ayamc.webp"
+    },
+    {
+      "id": "liwetayam004",
+      "name": "Paket Ayam D",
+      "category": "liwet-ayam",
+      "categoryTitle": "Paket Nasi Liwet Ayam (Kotak)",
+      "price": 47000,
+      "displayPrice": "Rp 47.000",
+      "description": "Isi: Nasi liwet bakar, Ayam goreng / ayam bakar, Tempe & tahu goreng, Sambal, Lalapan, Buah, Urap.",
+      "image": "/images/liwet/ayamd.webp"
+    },
+    {
+      "id": "liwetnila001",
+      "name": "Paket Nila E",
+      "category": "liwet-nila",
+      "categoryTitle": "Paket Nasi Liwet Nila (Kotak)",
+      "price": 37000,
+      "displayPrice": "Rp 37.000",
+      "description": "Isi: Nasi liwet bakar, Ikan nila goreng / bakar, Tempe goreng, Sambal, Lalapan.",
+      "image": "/images/liwet/nila.webp"
+    },
+    {
+      "id": "liwetnila002",
+      "name": "Paket Nila F",
+      "category": "liwet-nila",
+      "categoryTitle": "Paket Nasi Liwet Nila (Kotak)",
+      "price": 42000,
+      "displayPrice": "Rp 42.000",
+      "description": "Isi: Nasi liwet bakar, Ikan nila goreng / bakar, Tempe & tahu goreng, Sambal, Lalapan, Buah.",
+      "image": "/images/item-nasi-liwet-nila-bakar.webp"
+    },
+    {
+      "id": "liwetnila003",
+      "name": "Paket Nila G",
+      "category": "liwet-nila",
+      "categoryTitle": "Paket Nasi Liwet Nila (Kotak)",
+      "price": 47000,
+      "displayPrice": "Rp 47.000",
+      "description": "Isi: Nasi liwet bakar, Ikan nila goreng / bakar, Tempe & tahu goreng, Sambal, Lalapan, Buah, Air mineral botol 330 ml.",
+      "image": "/images/liwet/nilag.webp"
+    },
+    {
+      "id": "liwetnila004",
+      "name": "Paket Nila H",
+      "category": "liwet-nila",
+      "categoryTitle": "Paket Nasi Liwet Nila (Kotak)",
+      "price": 52000,
+      "displayPrice": "Rp 52.000",
+      "description": "Isi: Nasi liwet bakar, Ikan nila goreng / bakar, Tempe & tahu goreng, Sambal, Lalapan, Buah, Urap.",
+      "image": "/images/liwet/nila.webp"
+    },
+    {
+      "id": "tampah001",
+      "name": "Paket Tampah 10 Porsi",
+      "category": "liwet-tampah",
+      "categoryTitle": "Paket Nasi Liwet Tampah",
+      "price": 620000,
+      "displayPrice": "Rp 620.000",
+      "description": "Ideal untuk acara keluarga atau pertemuan kecil, menyajikan kelezatan untuk 10 orang.",
+      "image": "/images/liwet/tampah.webp"
+    },
+    {
+      "id": "tampah002",
+      "name": "Paket Tampah 15 Porsi",
+      "category": "liwet-tampah",
+      "categoryTitle": "Paket Nasi Liwet Tampah",
+      "price": 920000,
+      "displayPrice": "Rp 920.000",
+      "description": "Pilihan tepat untuk perayaan yang lebih besar, memuaskan hingga 15 tamu.",
+      "image": "/images/liwet/tampah.webp"
+    }
+  ],
+  "snackboxItems": [
+    {
+      "id": "sbmini001",
+      "name": "Snackbox Mini 01",
+      "category": "snackbox-mini",
+      "categoryTitle": "Snack Box Mini",
+      "price": 13000,
+      "displayPrice": "Rp 13.000",
+      "description": "Isi: Risol Ragout, Bolen Pisang.",
+      "image": "/images/snackbox/min01.webp"
+    },
+    {
+      "id": "sbmini002",
+      "name": "Snackbox Mini 02",
+      "category": "snackbox-mini",
+      "categoryTitle": "Snack Box Mini",
+      "price": 13000,
+      "displayPrice": "Rp 13.000",
+      "description": "Isi: Risol Ragout, Kue Soes.",
+      "image": "/images/snackbox/mini02.webp"
+    },
+    {
+      "id": "sbmini003",
+      "name": "Snackbox Mini 03",
+      "category": "snackbox-mini",
+      "categoryTitle": "Snack Box Mini",
+      "price": 13000,
+      "displayPrice": "Rp 13.000",
+      "description": "Isi: Risol Ragout, Pudding Coklat.",
+      "image": "/images/item-snackbox-3.webp"
+    },
+    {
+      "id": "sbreg001",
+      "name": "Snackbox Reguler 01",
+      "category": "snackbox-reguler",
+      "categoryTitle": "Snack Box Reguler",
+      "price": 18000,
+      "displayPrice": "Rp 18.000",
+      "description": "Isi: Risol Mayo, Kue Soes, Tahu HOT!",
+      "image": "/images/snackbox/reguler01.webp"
+    },
+    {
+      "id": "sbreg002",
+      "name": "Snackbox Reguler 02",
+      "category": "snackbox-reguler",
+      "categoryTitle": "Snack Box Reguler",
+      "price": 18000,
+      "displayPrice": "Rp 19.000",
+      "description": "Isi: Pastel, Risol Ragout, Bolen Pisang.",
+      "image": "/images/snackbox/reguler02.webp"
+    },
+    {
+      "id": "sbreg003",
+      "name": "Snackbox Reguler 03",
+      "category": "snackbox-reguler",
+      "categoryTitle": "Snack Box Reguler",
+      "price": 23000,
+      "displayPrice": "Rp 23.000",
+      "description": "Isi: Kue Soes, Risol Ragout, Bolen Pisang, Teh Kotak.",
+      "image": "/images/snackbox/reguler03.webp"
+    },
+    {
+      "id": "sbreg004",
+      "name": "Snackbox Reguler 04",
+      "category": "snackbox-reguler",
+      "categoryTitle": "Snack Box Reguler",
+      "price": 24000,
+      "displayPrice": "Rp 24.000",
+      "description": "Isi: Risol Mayo, Risol Ragout, Bolen Pisang, Teh Kotak.",
+      "image": "/images/snackbox/reguler04.webp"
+    },
+    {
+      "id": "sbreg005",
+      "name": "Snackbox Reguler 05",
+      "category": "snackbox-reguler",
+      "categoryTitle": "Snack Box Reguler",
+      "price": 21000,
+      "displayPrice": "Rp 21.000",
+      "description": "Isi: Risol Mayo, Sosis Solo, Kue Soes, Air Mineral Gelas.",
+      "image": "/images/snackbox/reguler05.webp"
+    },
+    {
+      "id": "sbreg006",
+      "name": "Snackbox Reguler 06",
+      "category": "snackbox-reguler",
+      "categoryTitle": "Snack Box Reguler",
+      "price": 23000,
+      "displayPrice": "Rp 23.000",
+      "description": "Isi: Risol Mayo, Risol Ragout, Pudding Coklat, Air Mineral 330 ml.",
+      "image": "/images/snackbox/reguler06.webp"
+    },
+    {
+      "id": "sbreg007",
+      "name": "Snackbox Reguler 07",
+      "category": "snackbox-reguler",
+      "categoryTitle": "Snack Box Reguler",
+      "price": 23000,
+      "displayPrice": "Rp 23.000",
+      "description": "Isi: Risol Mayo, Tahu HOT!, Kue Soes, Teh Kotak.",
+      "image": "/images/snackbox/reguler07.webp"
+    },
+    {
+      "id": "sbreg008",
+      "name": "Snackbox Reguler 08",
+      "category": "snackbox-reguler",
+      "categoryTitle": "Snack Box Reguler",
+      "price": 29000,
+      "displayPrice": "Rp 29.000",
+      "description": "Isi: Risol Mayo, Kue Soes, Bolen Pisang, Tahu HOT!, Teh Kotak.",
+      "image": "/images/snackbox/reguler 08.webp"
+    },
+    {
+      "id": "sbkomplit001",
+      "name": "Snackbox Komplit 01",
+      "category": "snackbox-komplit",
+      "categoryTitle": "Snack Box Komplit",
+      "price": 35000,
+      "displayPrice": "Rp 35.000",
+      "description": "Isi: Risol Mayo, Kue Soes, Bolen Pisang, Tahu HOT!, Risol Ragout, Pudding Coklat",
+      "image": "/images/snackbox/komplit01.webp"
+    },
+    {
+      "id": "sbkomplit002",
+      "name": "Snackbox Komplit 02",
+      "category": "snackbox-komplit",
+      "categoryTitle": "Snack Box Komplit",
+      "price": 40000,
+      "displayPrice": "Rp 40.000",
+      "description": "Isi: Risol Mayo, Bolen Pisang, Tahu HOT!, Yakult, Iced Coffee.",
+      "image": "/images/snackbox/komplit02.webp"
+    },
+    {
+      "id": "sbkomplit003",
+      "name": "Snackbox Komplit 03",
+      "category": "snackbox-komplit",
+      "categoryTitle": "Snack Box Komplit",
+      "price": 46000,
+      "displayPrice": "Rp 46.000",
+      "description": "Isi: Risol Mayo, Tahu HOT!, Bolen Pisang, Pudding Regal Coklat, Thai Tea.",
+      "image": "/images/snackbox/komplit03.webp"
+    },
+    {
+      "id": "nampan001",
+      "name": "Kue Nampan 1",
+      "category": "kue-nampan",
+      "categoryTitle": "Paket Kue Nampan",
+      "price": 118000,
+      "displayPrice": "Rp 118.000",
+      "description": "Isi: 4 Risol Mayo, 3 Risol Tuna, 3 Kue Soes, 3 Risol Ragout, 2 Bolen Pisang, 3 Tahu HOT.",
+      "image": "/images/snackbox/kue-nampan-01.webp"
+    },
+    {
+      "id": "nampan002",
+      "name": "Kue Nampan 2",
+      "category": "kue-nampan",
+      "categoryTitle": "Paket Kue Nampan",
+      "price": 129000,
+      "displayPrice": "Rp 129.000",
+      "description": "Isi: 4 Risol Mayo, 4 Kue Soes, 4 Risol Ragout, 4 Bolen Pisang, 4 Tahu HOT.",
+      "image": "/images/snackbox/kue-nampan-02.webp"
+    }
+  ],
+  "all": [
+    {
+      "id": "risol001",
+      "name": "Risol Mayo",
+      "category": "risol",
+      "categoryTitle": "Risol",
+      "price": 7000,
+      "displayPrice": "Rp 7.000",
+      "description": "Perpaduan mayones creamy, potongan smoked beef, dan telur rebus dalam balutan kulit risol renyah.",
+      "image": "/images/item-risol-mayo.webp"
+    },
+    {
+      "id": "risol004",
+      "name": "Risol Mozza",
+      "category": "risol",
+      "categoryTitle": "Risol",
+      "price": 10000,
+      "displayPrice": "Rp 10.000",
+      "description": "Lelehan keju mozzarella premium yang melimpah di setiap gigitan risol hangat.",
+      "image": "/images/item-risol-mozza.webp"
+    },
+    {
+      "id": "risol003",
+      "name": "Risol Beef Curry",
+      "category": "risol",
+      "categoryTitle": "Risol",
+      "price": 7000,
+      "displayPrice": "Rp 7.000",
+      "description": "Sensasi eksotis daging sapi cincang berpadu bumbu kari kaya rempah, dibungkus kulit risol istimewa.",
+      "image": "/images/item-risol-curry.webp"
+    },
+    {
+      "id": "risol005",
+      "name": "Risol Tuna",
+      "category": "risol",
+      "categoryTitle": "Risol",
+      "price": 7000,
+      "displayPrice": "Rp 7.000",
+      "description": "Isian daging tuna pilihan yang lembut dan gurih, pilihan sehat dan nikmat.",
+      "image": "/images/item-risol-tuna.webp"
+    },
+    {
+      "id": "risol006",
+      "name": "Risol Ragout",
+      "category": "risol",
+      "categoryTitle": "Risol",
+      "price": 5000,
+      "displayPrice": "Rp 5.000",
+      "description": "Isian ragout ayam dan sayuran klasik yang creamy dan memanjakan lidah.",
+      "image": "/images/item-risol-ragout.webp"
+    },
+    {
+      "id": "risol002",
+      "name": "Risol Nugget",
+      "category": "risol",
+      "categoryTitle": "Risol",
+      "price": 6000,
+      "displayPrice": "Rp 6.000",
+      "description": "Kejutan lezat nugget ayam pilihan di dalam risol, cocok untuk segala suasana.",
+      "image": "/images/item-risol-nugget.webp"
+    },
+    {
+      "id": "snack001",
+      "name": "Sosis Solo",
+      "category": "snack",
+      "categoryTitle": "Snack",
+      "price": 5000,
+      "displayPrice": "Rp 5.000",
+      "description": "Lumpia basah khas Solo dengan isian daging ayam cincang yang lembut dan gurih.",
+      "image": "/images/item-sosis-solo.webp"
+    },
+    {
+      "id": "snack002",
+      "name": "Tahu HOT!",
+      "category": "snack",
+      "categoryTitle": "Snack",
+      "price": 4000,
+      "displayPrice": "Rp 4.000",
+      "description": "Tahu goreng renyah dengan isian sayuran pedas yang membara, tantang selera Anda!",
+      "image": "/images/item-tahu-hot.webp"
+    },
+    {
+      "id": "snack003",
+      "name": "Kue Soes",
+      "category": "snack",
+      "categoryTitle": "Snack",
+      "price": 6000,
+      "displayPrice": "Rp 6.000",
+      "description": "Kue soes lembut dengan isian vla vanila atau vla coklat yang manis dan lumer di mulut.",
+      "image": "/images/item-kue-soes.webp"
+    },
+    {
+      "id": "snack004",
+      "name": "Bolen Pisang",
+      "category": "snack",
+      "categoryTitle": "Snack",
+      "price": 6000,
+      "displayPrice": "Rp 6.000",
+      "description": "Manisnya pisang raja berpadu dengan lapisan pastry renyah, pilihan favorit sepanjang masa.",
+      "image": "/images/item-bolen-pisang.webp"
+    },
+    {
+      "id": "snack005",
+      "name": "Soft Cookies",
+      "category": "snack",
+      "categoryTitle": "Snack",
+      "price": 15000,
+      "displayPrice": "Rp 15.000",
+      "description": "Teksturnya yang lembut dan rasa manis yang pas, sempurna sebagai teman minum teh atau kopi Anda.",
+      "image": "/images/item-soft-cookies.webp"
+    },
+    {
+      "id": "snack006",
+      "name": "Pastel",
+      "category": "snack",
+      "categoryTitle": "Snack",
+      "price": 6000,
+      "displayPrice": "Rp 6.000",
+      "description": "Siap-siap untuk ledakan rasa! Pastel dengan saus kacang akan ceriakan harimu.",
+      "image": "/images/item-pastel.webp"
+    },
+    {
+      "id": "snack007",
+      "name": "Banana Muffin",
+      "category": "snack",
+      "categoryTitle": "Snack",
+      "price": 6000,
+      "displayPrice": "Rp 6.000",
+      "description": "Super lembut dan nikmat, rasakan kelezatannya di setiap gigitan.",
+      "image": "/images/banana-muffin.webp"
+    },
+    {
+      "id": "kuliner001",
+      "name": "Nasi Liwet Ayam Goreng Serundeng",
+      "category": "kuliner",
+      "categoryTitle": "Kuliner",
+      "price": 32000,
+      "displayPrice": "Rp 32.000",
+      "description": "Nasi liwet gurih disajikan dengan ayam goreng empuk bertabur serundeng renyah.",
+      "image": "/images/item-nasi-liwet-ayam-goreng-serundeng.webp"
+    },
+    {
+      "id": "kuliner002",
+      "name": "Nasi Putih Ayam Goreng Serundeng",
+      "category": "kuliner",
+      "categoryTitle": "Kuliner",
+      "price": 26000,
+      "displayPrice": "Rp 26.000",
+      "description": "Pilihan klasik nasi putih hangat dengan lauk ayam goreng serundeng yang tak pernah salah.",
+      "image": "/images/item-serundeng.webp"
+    },
+    {
+      "id": "kuliner003",
+      "name": "Nasi Liwet Ayam Bakar",
+      "category": "kuliner",
+      "categoryTitle": "Kuliner",
+      "price": 32000,
+      "displayPrice": "Rp 32.000",
+      "description": "Aroma semerbak ayam bakar bumbu meresap, berpadu sempurna dengan nasi liwet pulen.",
+      "image": "/images/item-liwet-ayam-bakar2.webp"
+    },
+    {
+      "id": "kuliner004",
+      "name": "Nasi Putih Ayam Bakar",
+      "category": "kuliner",
+      "categoryTitle": "Kuliner",
+      "price": 26000,
+      "displayPrice": "Rp 26.000",
+      "description": "Nasi putih ditemani ayam bakar lezat dengan bumbu khas Falya yang menggoda.",
+      "image": "/images/item-nasi-putih-ayam-bakar.webp"
+    },
+    {
+      "id": "kuliner011",
+      "name": "Nasi Liwet Ayam Kremes",
+      "category": "kuliner",
+      "categoryTitle": "Kuliner",
+      "price": 34000,
+      "displayPrice": "Rp 34.000",
+      "description": "Nasi liwet pulen berpadu dengan ayam goreng berbalut kremesan renyah yang gurihnya tiada tara.",
+      "image": "/images/item-liwet-kremes.webp"
+    },
+    {
+      "id": "kuliner012",
+      "name": "Nasi Putih Ayam Kremes",
+      "category": "kuliner",
+      "categoryTitle": "Kuliner",
+      "price": 28000,
+      "displayPrice": "Rp 28.000",
+      "description": "Ayam goreng dengan kremesan super renyah disajikan bersama nasi putih hangat, kombinasi sempurna.",
+      "image": "/images/item-nasi-putih-kremes.webp"
+    },
+    {
+      "id": "kuliner005",
+      "name": "Nasi Liwet Nila Goreng",
+      "category": "kuliner",
+      "categoryTitle": "Kuliner",
+      "price": 37000,
+      "displayPrice": "Rp 37.000",
+      "description": "Ikan nila segar digoreng garing, disajikan hangat dengan nasi liwet yang kaya rasa.",
+      "image": "/images/item-nasi-liwet-nila-goreng.webp"
+    },
+    {
+      "id": "kuliner006",
+      "name": "Nasi Putih Nila Goreng",
+      "category": "kuliner",
+      "categoryTitle": "Kuliner",
+      "price": 33000,
+      "displayPrice": "Rp 33.000",
+      "description": "Kenikmatan ikan nila goreng renyah bersama sepiring nasi putih hangat.",
+      "image": "/images/item-nasi-putih-nila-goreng.webp"
+    },
+    {
+      "id": "kuliner007",
+      "name": "Nasi Liwet Nila Bakar",
+      "category": "kuliner",
+      "categoryTitle": "Kuliner",
+      "price": 37000,
+      "displayPrice": "Rp 37.000",
+      "description": "Ikan nila bakar dengan bumbu meresap sempurna, disajikan dengan nasi liwet spesial.",
+      "image": "/images/item-nasi-liwet-nila-bakar.webp"
+    },
+    {
+      "id": "kuliner008",
+      "name": "Nasi Putih Nila Bakar",
+      "category": "kuliner",
+      "categoryTitle": "Kuliner",
+      "price": 33000,
+      "displayPrice": "Rp 33.000",
+      "description": "Lezatnya ikan nila bakar disandingkan dengan nasi putih pulen, pilihan yang memuaskan.",
+      "image": "/images/item-nila-nasi-putih.webp"
+    },
+    {
+      "id": "kuliner009",
+      "name": "Soto Daging Nasi Putih",
+      "category": "kuliner",
+      "categoryTitle": "Kuliner",
+      "price": 28000,
+      "displayPrice": "Rp 28.000",
+      "description": "Soto daging sapi kaya rempah dengan kuah bening segar, disajikan lengkap dengan nasi putih.",
+      "image": "/images/item-soto.webp"
+    },
+    {
+      "id": "kuliner010",
+      "name": "Soto Daging",
+      "category": "kuliner",
+      "categoryTitle": "Kuliner",
+      "price": 26000,
+      "displayPrice": "Rp 26.000",
+      "description": "Semangkuk soto daging sapi hangat dengan kuah kaldu yang gurih dan menyegarkan.",
+      "image": "/images/item-soto-daging-aja.webp"
+    },
+    {
+      "id": "coffee001",
+      "name": "Black Coffee Hot",
+      "category": "coffee",
+      "categoryTitle": "Coffee",
+      "price": 15000,
+      "displayPrice": "Rp 15.000",
+      "description": "Kopi hitam murni panas, diseduh dengan metode French Press atau V-60 untuk cita rasa maksimal.",
+      "image": "/images/item-black-coffee-hot.webp"
+    },
+    {
+      "id": "coffee002",
+      "name": "Black Coffee Iced",
+      "category": "coffee",
+      "categoryTitle": "Coffee",
+      "price": 16000,
+      "displayPrice": "Rp 16.000",
+      "description": "Kesegaran es kopi hitam murni, diseduh dengan metode French Press atau V-60.",
+      "image": "/images/item-iced-black-coffee.webp"
+    },
+    {
+      "id": "coffee003",
+      "name": "Vietnam Drip",
+      "category": "coffee",
+      "categoryTitle": "Coffee",
+      "price": 16000,
+      "displayPrice": "Rp 16.000",
+      "description": "Kopi susu khas Vietnam dengan perpaduan rasa pahit kopi dan manisnya susu kental.",
+      "image": "/images/item-vietnam-drip.webp"
+    },
+    {
+      "id": "coffee004",
+      "name": "Falya Hot Coffee Milk",
+      "category": "coffee",
+      "categoryTitle": "Coffee",
+      "price": 16000,
+      "displayPrice": "Rp 16.000",
+      "description": "Kopi susu panas spesial ala Falya, hangat dan membangkitkan semangat.",
+      "image": "/images/item-falya-hot-coffee-milk.webp"
+    },
+    {
+      "id": "coffee005",
+      "name": "Americano Hot",
+      "category": "coffee",
+      "categoryTitle": "Coffee",
+      "price": 15000,
+      "displayPrice": "Rp 15.000",
+      "description": "Espresso klasik yang diperpanjang dengan air panas, simpel dan kuat.",
+      "image": "/images/item-hot-americano.webp"
+    },
+    {
+      "id": "coffee006",
+      "name": "Americano Iced",
+      "category": "coffee",
+      "categoryTitle": "Coffee",
+      "price": 16000,
+      "displayPrice": "Rp 16.000",
+      "description": "Kesegaran espresso dan air dingin, pilihan tepat untuk hari yang panas.",
+      "image": "/images/item-iced-americano.webp"
+    },
+    {
+      "id": "coffee007",
+      "name": "Falya Iced Coffee",
+      "category": "coffee",
+      "categoryTitle": "Coffee",
+      "price": 18000,
+      "displayPrice": "Rp 18.000",
+      "description": "Es kopi susu signature Falya dengan rasa yang unik dan menyegarkan.",
+      "image": "/images/item-falya-iced-coffee.webp"
+    },
+    {
+      "id": "juice001",
+      "name": "Jus Mangga",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 17000,
+      "displayPrice": "Rp 17.000",
+      "description": "Kesegaran buah mangga matang pilihan, diblender halus menjadi jus nikmat.",
+      "image": "/images/item-mango-juice.webp"
+    },
+    {
+      "id": "juice002",
+      "name": "Jus Sirsak",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 17000,
+      "displayPrice": "Rp 17.000",
+      "description": "Rasa manis asam buah sirsak yang menyegarkan, kaya akan vitamin.",
+      "image": "/images/item-jus-sirsak.webp"
+    },
+    {
+      "id": "juice003",
+      "name": "Jus Alpukat",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 20000,
+      "displayPrice": "Rp 20.000",
+      "description": "Jus alpukat creamy dan legit, sumber energi dan nutrisi.",
+      "image": "/images/item-avocado-juice.webp"
+    },
+    {
+      "id": "juice004",
+      "name": "Jus Durian",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 18000,
+      "displayPrice": "Rp 18.000",
+      "description": "Kenikmatan buah durian asli dalam segelas jus yang memanjakan.",
+      "image": "/images/item-jus-durian.webp"
+    },
+    {
+      "id": "juice005",
+      "name": "Jus Nanas",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 16000,
+      "displayPrice": "Rp 16.000",
+      "description": "Segarnya jus nanas tropis, kaya serat dan vitamin C.",
+      "image": "/images/item-jus-nanas.webp"
+    },
+    {
+      "id": "juice006",
+      "name": "Jus Buah Naga",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 16000,
+      "displayPrice": "Rp 16.000",
+      "description": "Warna menawan dan rasa manis alami dari jus buah naga segar.",
+      "image": "/images/item-jus-buahnaga.webp"
+    },
+    {
+      "id": "juice007",
+      "name": "Jus Strawberry",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 18000,
+      "displayPrice": "Rp 18.000",
+      "description": "Manis asam menyegarkan dari buah strawberry pilihan, penuh antioksidan.",
+      "image": "/images/item-strawberry-juice.webp"
+    },
+    {
+      "id": "juice008",
+      "name": "Mix Juice Mangga & Sirsak",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 20000,
+      "displayPrice": "Rp 20.000",
+      "description": "Kombinasi sempurna manisnya mangga dan segarnya sirsak dalam satu gelas.",
+      "image": "/images/item-jus-mangga-sirsak.webp"
+    },
+    {
+      "id": "juice009",
+      "name": "Mix Juice Buah Naga & Sirsak",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 20000,
+      "displayPrice": "Rp 20.000",
+      "description": "Perpaduan unik buah naga dan sirsak, kaya nutrisi dan menyegarkan.",
+      "image": "/images/item-jus-buahnaga-sirsak.webp"
+    },
+    {
+      "id": "drink001",
+      "name": "Hot/Iced Chocolate",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 16000,
+      "displayPrice": "Rp 16.000",
+      "description": "Minuman cokelat klasik, bisa dinikmati panas atau dingin sesuai selera.",
+      "image": "/images/item-iced-chocolate.webp"
+    },
+    {
+      "id": "drink002",
+      "name": "Choco Hazelnut",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 18000,
+      "displayPrice": "Rp 18.000",
+      "description": "Kelezatan cokelat berpadu dengan aroma dan rasa hazelnut yang khas.",
+      "image": "/images/item-choco.webp"
+    },
+    {
+      "id": "drink003",
+      "name": "Vanilla Oreo",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 16000,
+      "displayPrice": "Rp 16.000",
+      "description": "Minuman vanilla creamy dengan taburan dan potongan biskuit Oreo renyah.",
+      "image": "/images/item-vanilla-oreo.webp"
+    },
+    {
+      "id": "drink004",
+      "name": "Sweet Strawberry",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 16000,
+      "displayPrice": "Rp 16.000",
+      "description": "Minuman rasa strawberry yang manis dan menyegarkan, pilihan ceria.",
+      "image": "/images/item-sweet-strawberry.webp"
+    },
+    {
+      "id": "drink005",
+      "name": "Bubble Gum",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 16000,
+      "displayPrice": "Rp 16.000",
+      "description": "Sensasi rasa permen karet yang unik dan menyenangkan dalam segelas minuman.",
+      "image": "/images/item-bubble-gum.webp"
+    },
+    {
+      "id": "drink006",
+      "name": "Thai Tea",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 17000,
+      "displayPrice": "Rp 17.000",
+      "description": "Teh susu khas Thailand dengan rasa manis dan aroma teh yang kuat.",
+      "image": "/images/item-thai-tea.webp"
+    },
+    {
+      "id": "drink007",
+      "name": "Green Thai Tea",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 18000,
+      "displayPrice": "Rp 18.000",
+      "description": "Varian teh susu Thailand dengan teh hijau, menawarkan rasa yang unik dan menyegarkan.",
+      "image": "/images/item-green-thai-tea.webp"
+    },
+    {
+      "id": "drink008",
+      "name": "Hot/Iced Lemon Tea",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 10000,
+      "displayPrice": "Rp 10.000",
+      "description": "Perpaduan klasik teh dengan perasan lemon segar, bisa dinikmati panas atau dingin.",
+      "image": "/images/item-iced-lemon-tea.webp"
+    },
+    {
+      "id": "drink009",
+      "name": "Es Jeruk",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 10000,
+      "displayPrice": "Rp 10.000",
+      "description": "Kesegaran es jeruk peras murni, pelepas dahaga yang sempurna.",
+      "image": "/images/item-es-jeruk.webp"
+    },
+    {
+      "id": "drink010",
+      "name": "Es Teh",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 5000,
+      "displayPrice": "Rp 5.000",
+      "description": "Pilihan es teh klasik, bisa manis atau tawar sesuai keinginan Anda.",
+      "image": "/images/item-iced-tea.webp"
+    },
+    {
+      "id": "drink011",
+      "name": "Teh Panas",
+      "category": "juices-drinks",
+      "categoryTitle": "Juices and Drinks",
+      "price": 5000,
+      "displayPrice": "Rp 5.000",
+      "description": "Kehangatan teh tubruk atau celup, pilihan menenangkan kapan saja.",
+      "image": "/images/item-hot-tea.webp"
+    },
+    {
+      "id": "liwetayam001",
+      "name": "Paket Ayam A",
+      "category": "liwet-ayam",
+      "categoryTitle": "Paket Nasi Liwet Ayam (Kotak)",
+      "price": 32000,
+      "displayPrice": "Rp 32.000",
+      "description": "Isi: Nasi liwet bakar, Ayam goreng / ayam bakar, Tempe goreng, Sambal, Lalapan.",
+      "image": "/images/liwet/ayama.webp"
+    },
+    {
+      "id": "liwetayam002",
+      "name": "Paket Ayam B",
+      "category": "liwet-ayam",
+      "categoryTitle": "Paket Nasi Liwet Ayam (Kotak)",
+      "price": 37000,
+      "displayPrice": "Rp 37.000",
+      "description": "Isi: Nasi liwet bakar, Ayam goreng / ayam bakar, Tempe & tahu goreng, Sambal, Lalapan, Buah.",
+      "image": "/images/liwet/ayamb.webp"
+    },
+    {
+      "id": "liwetayam003",
+      "name": "Paket Ayam C",
+      "category": "liwet-ayam",
+      "categoryTitle": "Paket Nasi Liwet Ayam (Kotak)",
+      "price": 42000,
+      "displayPrice": "Rp 42.000",
+      "description": "Isi: Nasi liwet bakar, Ayam goreng / ayam bakar, Tempe & tahu goreng, Sambal, Lalapan, Buah, Air mineral botol 330 ml.",
+      "image": "/images/liwet/ayamc.webp"
+    },
+    {
+      "id": "liwetayam004",
+      "name": "Paket Ayam D",
+      "category": "liwet-ayam",
+      "categoryTitle": "Paket Nasi Liwet Ayam (Kotak)",
+      "price": 47000,
+      "displayPrice": "Rp 47.000",
+      "description": "Isi: Nasi liwet bakar, Ayam goreng / ayam bakar, Tempe & tahu goreng, Sambal, Lalapan, Buah, Urap.",
+      "image": "/images/liwet/ayamd.webp"
+    },
+    {
+      "id": "liwetnila001",
+      "name": "Paket Nila E",
+      "category": "liwet-nila",
+      "categoryTitle": "Paket Nasi Liwet Nila (Kotak)",
+      "price": 37000,
+      "displayPrice": "Rp 37.000",
+      "description": "Isi: Nasi liwet bakar, Ikan nila goreng / bakar, Tempe goreng, Sambal, Lalapan.",
+      "image": "/images/liwet/nila.webp"
+    },
+    {
+      "id": "liwetnila002",
+      "name": "Paket Nila F",
+      "category": "liwet-nila",
+      "categoryTitle": "Paket Nasi Liwet Nila (Kotak)",
+      "price": 42000,
+      "displayPrice": "Rp 42.000",
+      "description": "Isi: Nasi liwet bakar, Ikan nila goreng / bakar, Tempe & tahu goreng, Sambal, Lalapan, Buah.",
+      "image": "/images/item-nasi-liwet-nila-bakar.webp"
+    },
+    {
+      "id": "liwetnila003",
+      "name": "Paket Nila G",
+      "category": "liwet-nila",
+      "categoryTitle": "Paket Nasi Liwet Nila (Kotak)",
+      "price": 47000,
+      "displayPrice": "Rp 47.000",
+      "description": "Isi: Nasi liwet bakar, Ikan nila goreng / bakar, Tempe & tahu goreng, Sambal, Lalapan, Buah, Air mineral botol 330 ml.",
+      "image": "/images/liwet/nilag.webp"
+    },
+    {
+      "id": "liwetnila004",
+      "name": "Paket Nila H",
+      "category": "liwet-nila",
+      "categoryTitle": "Paket Nasi Liwet Nila (Kotak)",
+      "price": 52000,
+      "displayPrice": "Rp 52.000",
+      "description": "Isi: Nasi liwet bakar, Ikan nila goreng / bakar, Tempe & tahu goreng, Sambal, Lalapan, Buah, Urap.",
+      "image": "/images/liwet/nila.webp"
+    },
+    {
+      "id": "tampah001",
+      "name": "Paket Tampah 10 Porsi",
+      "category": "liwet-tampah",
+      "categoryTitle": "Paket Nasi Liwet Tampah",
+      "price": 620000,
+      "displayPrice": "Rp 620.000",
+      "description": "Ideal untuk acara keluarga atau pertemuan kecil, menyajikan kelezatan untuk 10 orang.",
+      "image": "/images/liwet/tampah.webp"
+    },
+    {
+      "id": "tampah002",
+      "name": "Paket Tampah 15 Porsi",
+      "category": "liwet-tampah",
+      "categoryTitle": "Paket Nasi Liwet Tampah",
+      "price": 920000,
+      "displayPrice": "Rp 920.000",
+      "description": "Pilihan tepat untuk perayaan yang lebih besar, memuaskan hingga 15 tamu.",
+      "image": "/images/liwet/tampah.webp"
+    },
+    {
+      "id": "sbmini001",
+      "name": "Snackbox Mini 01",
+      "category": "snackbox-mini",
+      "categoryTitle": "Snack Box Mini",
+      "price": 13000,
+      "displayPrice": "Rp 13.000",
+      "description": "Isi: Risol Ragout, Bolen Pisang.",
+      "image": "/images/snackbox/min01.webp"
+    },
+    {
+      "id": "sbmini002",
+      "name": "Snackbox Mini 02",
+      "category": "snackbox-mini",
+      "categoryTitle": "Snack Box Mini",
+      "price": 13000,
+      "displayPrice": "Rp 13.000",
+      "description": "Isi: Risol Ragout, Kue Soes.",
+      "image": "/images/snackbox/mini02.webp"
+    },
+    {
+      "id": "sbmini003",
+      "name": "Snackbox Mini 03",
+      "category": "snackbox-mini",
+      "categoryTitle": "Snack Box Mini",
+      "price": 13000,
+      "displayPrice": "Rp 13.000",
+      "description": "Isi: Risol Ragout, Pudding Coklat.",
+      "image": "/images/item-snackbox-3.webp"
+    },
+    {
+      "id": "sbreg001",
+      "name": "Snackbox Reguler 01",
+      "category": "snackbox-reguler",
+      "categoryTitle": "Snack Box Reguler",
+      "price": 18000,
+      "displayPrice": "Rp 18.000",
+      "description": "Isi: Risol Mayo, Kue Soes, Tahu HOT!",
+      "image": "/images/snackbox/reguler01.webp"
+    },
+    {
+      "id": "sbreg002",
+      "name": "Snackbox Reguler 02",
+      "category": "snackbox-reguler",
+      "categoryTitle": "Snack Box Reguler",
+      "price": 18000,
+      "displayPrice": "Rp 19.000",
+      "description": "Isi: Pastel, Risol Ragout, Bolen Pisang.",
+      "image": "/images/snackbox/reguler02.webp"
+    },
+    {
+      "id": "sbreg003",
+      "name": "Snackbox Reguler 03",
+      "category": "snackbox-reguler",
+      "categoryTitle": "Snack Box Reguler",
+      "price": 23000,
+      "displayPrice": "Rp 23.000",
+      "description": "Isi: Kue Soes, Risol Ragout, Bolen Pisang, Teh Kotak.",
+      "image": "/images/snackbox/reguler03.webp"
+    },
+    {
+      "id": "sbreg004",
+      "name": "Snackbox Reguler 04",
+      "category": "snackbox-reguler",
+      "categoryTitle": "Snack Box Reguler",
+      "price": 24000,
+      "displayPrice": "Rp 24.000",
+      "description": "Isi: Risol Mayo, Risol Ragout, Bolen Pisang, Teh Kotak.",
+      "image": "/images/snackbox/reguler04.webp"
+    },
+    {
+      "id": "sbreg005",
+      "name": "Snackbox Reguler 05",
+      "category": "snackbox-reguler",
+      "categoryTitle": "Snack Box Reguler",
+      "price": 21000,
+      "displayPrice": "Rp 21.000",
+      "description": "Isi: Risol Mayo, Sosis Solo, Kue Soes, Air Mineral Gelas.",
+      "image": "/images/snackbox/reguler05.webp"
+    },
+    {
+      "id": "sbreg006",
+      "name": "Snackbox Reguler 06",
+      "category": "snackbox-reguler",
+      "categoryTitle": "Snack Box Reguler",
+      "price": 23000,
+      "displayPrice": "Rp 23.000",
+      "description": "Isi: Risol Mayo, Risol Ragout, Pudding Coklat, Air Mineral 330 ml.",
+      "image": "/images/snackbox/reguler06.webp"
+    },
+    {
+      "id": "sbreg007",
+      "name": "Snackbox Reguler 07",
+      "category": "snackbox-reguler",
+      "categoryTitle": "Snack Box Reguler",
+      "price": 23000,
+      "displayPrice": "Rp 23.000",
+      "description": "Isi: Risol Mayo, Tahu HOT!, Kue Soes, Teh Kotak.",
+      "image": "/images/snackbox/reguler07.webp"
+    },
+    {
+      "id": "sbreg008",
+      "name": "Snackbox Reguler 08",
+      "category": "snackbox-reguler",
+      "categoryTitle": "Snack Box Reguler",
+      "price": 29000,
+      "displayPrice": "Rp 29.000",
+      "description": "Isi: Risol Mayo, Kue Soes, Bolen Pisang, Tahu HOT!, Teh Kotak.",
+      "image": "/images/snackbox/reguler 08.webp"
+    },
+    {
+      "id": "sbkomplit001",
+      "name": "Snackbox Komplit 01",
+      "category": "snackbox-komplit",
+      "categoryTitle": "Snack Box Komplit",
+      "price": 35000,
+      "displayPrice": "Rp 35.000",
+      "description": "Isi: Risol Mayo, Kue Soes, Bolen Pisang, Tahu HOT!, Risol Ragout, Pudding Coklat",
+      "image": "/images/snackbox/komplit01.webp"
+    },
+    {
+      "id": "sbkomplit002",
+      "name": "Snackbox Komplit 02",
+      "category": "snackbox-komplit",
+      "categoryTitle": "Snack Box Komplit",
+      "price": 40000,
+      "displayPrice": "Rp 40.000",
+      "description": "Isi: Risol Mayo, Bolen Pisang, Tahu HOT!, Yakult, Iced Coffee.",
+      "image": "/images/snackbox/komplit02.webp"
+    },
+    {
+      "id": "sbkomplit003",
+      "name": "Snackbox Komplit 03",
+      "category": "snackbox-komplit",
+      "categoryTitle": "Snack Box Komplit",
+      "price": 46000,
+      "displayPrice": "Rp 46.000",
+      "description": "Isi: Risol Mayo, Tahu HOT!, Bolen Pisang, Pudding Regal Coklat, Thai Tea.",
+      "image": "/images/snackbox/komplit03.webp"
+    },
+    {
+      "id": "nampan001",
+      "name": "Kue Nampan 1",
+      "category": "kue-nampan",
+      "categoryTitle": "Paket Kue Nampan",
+      "price": 118000,
+      "displayPrice": "Rp 118.000",
+      "description": "Isi: 4 Risol Mayo, 3 Risol Tuna, 3 Kue Soes, 3 Risol Ragout, 2 Bolen Pisang, 3 Tahu HOT.",
+      "image": "/images/snackbox/kue-nampan-01.webp"
+    },
+    {
+      "id": "nampan002",
+      "name": "Kue Nampan 2",
+      "category": "kue-nampan",
+      "categoryTitle": "Paket Kue Nampan",
+      "price": 129000,
+      "displayPrice": "Rp 129.000",
+      "description": "Isi: 4 Risol Mayo, 4 Kue Soes, 4 Risol Ragout, 4 Bolen Pisang, 4 Tahu HOT.",
+      "image": "/images/snackbox/kue-nampan-02.webp"
+    }
+  ]
+}
