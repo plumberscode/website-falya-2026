@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import CanvasSequenceScroller from "@/components/scrollytelling/CanvasSequenceScroller";
 import MenuCard from "@/components/menu/MenuCard";
+import TestimonialSlider from "@/components/testimonials/TestimonialSlider";
 import { useCartStore } from "@/lib/store/cartStore";
 import { Button } from "@/components/ui/button";
 import { FALYA_CONTACT } from "@/lib/data/menuData";
@@ -271,7 +272,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 5. BRAND VALUES */}
+      {/* 5. TESTIMONI GOOGLE MAPS SLIDER */}
+      <TestimonialSlider />
+
+      {/* 6. BRAND VALUES */}
       <section className="py-20 sm:py-24 bg-[#ffffff]">
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6">
           <div className="text-center max-w-xl mx-auto mb-14 space-y-1.5">
