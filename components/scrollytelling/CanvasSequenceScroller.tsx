@@ -502,6 +502,16 @@ export default function CanvasSequenceScroller({
               )}
           </div>
         </div>
+
+        {/* Scroll Indicator */}
+        {activeScene === 1 && (
+          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center animate-in fade-in duration-1000">
+            <span className="text-white/80 text-[10px] tracking-[0.2em] uppercase mb-2 drop-shadow-md">Scroll ke bawah</span>
+            <div className="w-5 h-8 border border-white/60 rounded-full flex justify-center p-1 shadow-sm">
+              <div className="w-1 h-2 bg-white rounded-full animate-bounce"></div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

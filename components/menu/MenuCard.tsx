@@ -21,8 +21,11 @@ export default function MenuCard({ item }: MenuCardProps) {
   const handleAddToCart = () => {
     if (!item.isAvailable) return;
     addItem(item, 1);
+    const toastId = `toast-${item.id}`;
     toast.success(`${item.name} ditambahkan!`, {
+      id: toastId,
       description: `Total di keranjang: ${existingCartItem ? existingCartItem.quantity + 1 : 1} ${item.unit || "pcs"}`,
+      onClick: () => toast.dismiss(toastId),
     });
   };
 

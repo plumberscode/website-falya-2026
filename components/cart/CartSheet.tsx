@@ -124,9 +124,9 @@ export default function CartSheet() {
                       Rp {item.menuItem.price.toLocaleString("id-ID")}
                     </p>
 
-                    <div className="flex items-center gap-2 mt-2">
+                    <div className="flex items-center justify-between mt-2 gap-2">
                       {/* Qty stepper — desain awal */}
-                      <div className="flex items-center bg-[#faf0f4] rounded-full overflow-hidden shadow-[0_1px_6px_rgba(168,40,104,0.06)]">
+                      <div className="flex items-center bg-[#faf0f4] rounded-full overflow-hidden shadow-[0_1px_6px_rgba(168,40,104,0.06)] shrink-0">
                         <button
                           onClick={() =>
                             updateQuantity(item.menuItem.id, item.quantity - 1)
@@ -148,7 +148,7 @@ export default function CartSheet() {
                         </button>
                       </div>
 
-                      <span className="text-xs font-bold text-[#241b18] ml-auto">
+                      <span className="text-xs font-bold text-[#241b18] shrink-0 text-right">
                         Rp{" "}
                         {(item.menuItem.price * item.quantity).toLocaleString(
                           "id-ID",
@@ -159,7 +159,7 @@ export default function CartSheet() {
 
                   <button
                     onClick={() => removeItem(item.menuItem.id)}
-                    className="p-1.5 text-[#968b85] hover:text-[#c74343] transition-colors self-start"
+                    className="p-1.5 text-[#968b85] hover:text-[#c74343] transition-colors self-start shrink-0"
                     title="Hapus"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -182,7 +182,7 @@ export default function CartSheet() {
                 <label className="text-xs font-semibold text-[#241b18] mb-1.5 block">
                   Tipe Layanan
                 </label>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                   {(["delivery", "pickup", "dine-in"] as const).map((type) => (
                     <button
                       key={type}
@@ -190,8 +190,8 @@ export default function CartSheet() {
                       onClick={() => setOrderType(type)}
                       className={`py-2 px-2.5 rounded-full text-xs font-semibold transition-all ${
                         orderType === type
-                          ? "bg-[#a82868] text-white shadow-sm"
-                          : "bg-[#faf0f4] text-[#665b56] hover:bg-[#f3e2ec] hover:text-[#241b18]"
+                          ? "bg-[#f3e2ec] text-[#a82868] border border-[#a82868]/30 shadow-sm"
+                          : "bg-[#faf0f4] text-[#665b56] border border-transparent hover:bg-[#f3e2ec] hover:text-[#241b18]"
                       }`}
                     >
                       {type === "delivery"
@@ -221,7 +221,7 @@ export default function CartSheet() {
 
             <Button
               onClick={handleCheckoutSubmit}
-              className="w-full bg-[#3e7c59] hover:bg-[#2e5e43] text-white font-semibold py-5 rounded-full shadow-sm text-sm flex items-center justify-center gap-2"
+              className="w-full bg-[#a82868] hover:bg-[#861f53] text-white font-semibold py-5 rounded-full shadow-sm text-sm flex items-center justify-center gap-2"
             >
               <MessageCircle className="w-4 h-4" />
               Pesan via WhatsApp
