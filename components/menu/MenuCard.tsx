@@ -25,7 +25,6 @@ export default function MenuCard({ item }: MenuCardProps) {
     toast.success(`${item.name} ditambahkan!`, {
       id: toastId,
       description: `Total di keranjang: ${existingCartItem ? existingCartItem.quantity + 1 : 1} ${item.unit || "pcs"}`,
-      onClick: () => toast.dismiss(toastId),
     });
   };
 
