@@ -32,6 +32,16 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      {
+        // Redirect URL lama berakhiran .html ke URL bersih yang baru
+        source: "/:slug.html",
+        destination: "/:slug",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
