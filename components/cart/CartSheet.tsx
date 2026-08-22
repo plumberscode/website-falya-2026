@@ -30,6 +30,8 @@ export default function CartSheet() {
     clearCart,
     getSubtotal,
     generateWhatsAppLink,
+    orderNotes,
+    setOrderNotes,
   } = useCartStore();
 
   const router = useRouter();
@@ -177,8 +179,23 @@ export default function CartSheet() {
                 </button>
               </div>
 
-              {/* Order Type — langsung di keranjang */}
+              {/* Order Notes */}
               <div className="pt-2">
+                <label htmlFor="orderNotes" className="text-xs font-semibold text-[#241b18] mb-1.5 block">
+                  Catatan Tambahan
+                </label>
+                <textarea
+                  id="orderNotes"
+                  value={orderNotes}
+                  onChange={(e) => setOrderNotes(e.target.value)}
+                  placeholder="Contoh: Tolong bungkusnya dipisah, ya..."
+                  rows={2}
+                  className="w-full bg-[#faf0f4] border border-[#f3e2ec] rounded-[12px] p-3 text-xs text-[#241b18] placeholder:text-[#968b85] focus:outline-none focus:ring-1 focus:ring-[#a82868] focus:border-[#a82868] transition-all"
+                />
+              </div>
+
+              {/* Order Type — langsung di keranjang */}
+              <div className="pt-1">
                 <label className="text-xs font-semibold text-[#241b18] mb-1.5 block">
                   Tipe Layanan
                 </label>

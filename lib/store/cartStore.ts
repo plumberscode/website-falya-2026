@@ -28,6 +28,10 @@ interface CartStoreState {
   getTotalItems: () => number;
   getSubtotal: () => number;
 
+  // Order Notes
+  orderNotes: string;
+  setOrderNotes: (notes: string) => void;
+
   // WhatsApp Order Link Generator
   generateWhatsAppLink: (orderType: OrderType) => string;
 
@@ -45,6 +49,9 @@ export const useCartStore = create<CartStoreState>()(
       items: [],
       menuItems: INITIAL_MENU,
       isOpen: false,
+      orderNotes: '',
+
+      setOrderNotes: (notes) => set({ orderNotes: notes }),
 
       addItem: (menuItem, quantity = 1, notes = '') => {
         set((state) => {
@@ -113,7 +120,7 @@ export const useCartStore = create<CartStoreState>()(
       },
 
       generateWhatsAppLink: (orderType: OrderType) => {
-        const { items, getSubtotal } = get();
+        const { items, getSubtotal, orderNotes } = get();
         const subtotal = getSubtotal();
 
         const formattedDate = new Date().toLocaleDateString('id-ID', {
@@ -146,6 +153,10 @@ export const useCartStore = create<CartStoreState>()(
         });
 
         text += `───────────────────────\n`;
+        if (orderNotes.trim()) {
+          text += `📝 *Catatan Tambahan:*\n_${orderNotes.trim()}_\n`;
+          text += `───────────────────────\n`;
+        }
         text += `💰 *TOTAL PESANAN: Rp ${subtotal.toLocaleString('id-ID')}*\n`;
         text += `\nMohon konfirmasi ketersediaan, alamat & ongkirnya ya. Terima kasih! 🙏✨`;
 
