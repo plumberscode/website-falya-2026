@@ -34,8 +34,8 @@ export default function HomePage() {
       <link
         rel="preload"
         as="image"
-        href="/videos/frames-mobile/frame_0001.webp"
-        type="image/webp"
+        href="/videos/frames-mobile/frame_0001.avif"
+        type="image/avif"
         media="(max-width: 767px)"
         fetchPriority="high"
       />

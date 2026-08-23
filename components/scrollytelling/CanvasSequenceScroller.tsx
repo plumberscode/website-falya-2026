@@ -186,7 +186,7 @@ export default function CanvasSequenceScroller({
       ? "/videos/frames-desktop"
       : "/videos/frames-mobile";
     folderRef.current = folder;
-    frameExtRef.current = isDesktop ? "avif" : "webp";
+    frameExtRef.current = "avif";
 
     // Muat HANYA frame 0 & 1 di awal agar First Contentful Paint & LCP instan
     requestFrame(0, folder, true);
@@ -311,10 +311,35 @@ export default function CanvasSequenceScroller({
     <div ref={containerRef} className="relative w-full h-[450vh] bg-[#241b18]">
       {/* Sticky Fullscreen Canvas Viewport */}
       <div className="sticky top-0 left-0 w-full h-screen overflow-hidden flex items-center justify-center">
+        {/* First Frame Poster Image — Terdaftar instan oleh Chromium sebagai LCP */}
+        <picture className="absolute inset-0 w-full h-full select-none pointer-events-none">
+          <source
+            media="(min-width: 768px)"
+            srcSet="/videos/frames-desktop/frame_0001.avif"
+            type="image/avif"
+          />
+          <source
+            media="(max-width: 767px)"
+            srcSet="/videos/frames-mobile/frame_0001.avif"
+            type="image/avif"
+          />
+          <img
+            src="/videos/frames-mobile/frame_0001.avif"
+            alt="Falya Risol Mayo dan Nasi Liwet Balikpapan"
+            fetchPriority="high"
+            loading="eager"
+            decoding="async"
+            className="w-full h-full object-cover select-none pointer-events-none"
+            style={{
+              filter: "contrast(1.05) saturate(1.05)",
+            }}
+          />
+        </picture>
+
         {/* Canvas for ultra-smooth 60fps frame scrubbing */}
         <canvas
           ref={canvasRef}
-          className="w-full h-full object-cover select-none pointer-events-none transition-opacity duration-300 will-change-transform"
+          className="w-full h-full object-cover select-none pointer-events-none transition-opacity duration-300 will-change-transform z-[1]"
           style={{
             opacity: isLoading && loadedCount < 1 ? 0.6 : 1,
             filter: "contrast(1.05) saturate(1.05)",
@@ -323,16 +348,16 @@ export default function CanvasSequenceScroller({
         />
 
         {/* Soft Vignette Overlay for video background depth */}
-        <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#241b18]/70 via-transparent to-[#241b18]/30" />
+        <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#241b18]/70 via-transparent to-[#241b18]/30 z-[2]" />
 
         {/* CLEAN STORY OVERLAYS (Only Title & Subtitle, No Dark Boxes, No Extra Elements) */}
         <div className="absolute inset-0 z-10 pointer-events-none flex items-center justify-center p-6 md:p-16 lg:p-24">
           <div className="w-full max-w-5xl mx-auto flex flex-col items-center">
-              {/* SCENE 1 (Detik 0 - 5.5): Center */}
+              {/* SCENE 1 (Detik 0 - 5.5): Center (Tanpa delay animasi opacity untuk LCP instan) */}
               {activeScene === 1 && (
                 <div
                   key="scene-1"
-                  className="flex flex-col items-center text-center animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)]"
+                  className="flex flex-col items-center text-center drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)]"
                 >
                   <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white mb-3 leading-tight font-serif">
                     Selamat datang di{" "}
