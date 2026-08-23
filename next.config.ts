@@ -21,6 +21,10 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  compress: true,
+  experimental: {
+    optimizePackageImports: ["lucide-react", "clsx", "tailwind-merge"],
+  },
   images: {
     formats: ["image/avif", "image/webp"],
   },
