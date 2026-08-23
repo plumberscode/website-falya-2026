@@ -296,8 +296,6 @@ export default function CanvasSequenceScroller({
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
-    // Inisialisasi awal
-    onScroll();
 
     return () => {
       window.removeEventListener("scroll", onScroll);

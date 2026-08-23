@@ -169,34 +169,43 @@ export default function TestimonialSlider() {
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
-    checkScroll();
+    
+    // Defer checkScroll agar tidak memicu forced reflow saat initial paint
+    const timer = setTimeout(checkScroll, 100);
     el.addEventListener("scroll", checkScroll, { passive: true });
-    window.addEventListener("resize", checkScroll);
+    window.addEventListener("resize", checkScroll, { passive: true });
     return () => {
+      clearTimeout(timer);
       el.removeEventListener("scroll", checkScroll);
       window.removeEventListener("resize", checkScroll);
     };
   }, []);
 
-  // Auto-scroll slider with pause on hover/interaction
+  // Auto-scroll slider with pause on hover/interaction (dimulai setelah halaman stabil)
   useEffect(() => {
     if (isPaused) return;
 
-    const interval = setInterval(() => {
-      if (!scrollRef.current) return;
-      const container = scrollRef.current;
-      const { scrollLeft, scrollWidth, clientWidth } = container;
-      const cardWidth = container.clientWidth > 640 ? 380 : 315;
+    let interval: NodeJS.Timeout;
+    const startDelay = setTimeout(() => {
+      interval = setInterval(() => {
+        if (!scrollRef.current) return;
+        const container = scrollRef.current;
+        const { scrollLeft, scrollWidth, clientWidth } = container;
+        const cardWidth = clientWidth > 640 ? 380 : 315;
 
-      // If reached end, loop back smoothly to start
-      if (scrollLeft + clientWidth >= scrollWidth - 25) {
-        container.scrollTo({ left: 0, behavior: "smooth" });
-      } else {
-        container.scrollBy({ left: cardWidth, behavior: "smooth" });
-      }
-    }, 3500);
+        // If reached end, loop back smoothly to start
+        if (scrollLeft + clientWidth >= scrollWidth - 25) {
+          container.scrollTo({ left: 0, behavior: "smooth" });
+        } else {
+          container.scrollBy({ left: cardWidth, behavior: "smooth" });
+        }
+      }, 4000);
+    }, 2000);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearTimeout(startDelay);
+      if (interval) clearInterval(interval);
+    };
   }, [isPaused]);
 
   const handleScroll = (direction: "left" | "right") => {
