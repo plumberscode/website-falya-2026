@@ -38,9 +38,10 @@ export default function CanvasSequenceScroller({
   // Smooth Lerp Motion State Refs
   const targetProgressRef = useRef<number>(0);
   const smoothProgressRef = useRef<number>(0);
+  const isTickingRef = useRef<boolean>(false);
+  const animationFrameIdRef = useRef<number | null>(null);
 
   // ─── Scene → frame-range mapping ───────────────────────────────────────
-  // Scenes split across totalDuration at the 5.5s / 10s / 14.5s boundaries.
   const scenes = useMemo(() => {
     const boundary = (sec: number) =>
       Math.min(
@@ -64,15 +65,6 @@ export default function CanvasSequenceScroller({
     },
     [scenes],
   );
-
-  // Frames requested during the initial mount (drives the preloader progress bar)
-  const initialRequestTarget = useMemo(() => {
-    const scene1 = scenes[0];
-    const scene2 = scenes[1];
-    const restEnd = Math.min(scene1.end + 6, totalFrames - 1);
-    const previewEnd = Math.min(scene2.start + 20, scene2.end);
-    return restEnd + 1 + (previewEnd - scene2.start + 1);
-  }, [scenes, totalFrames]);
 
   // Center-safe draw image on canvas with high quality interpolation
   const renderFrame = useCallback((frameIndex: number) => {
@@ -110,9 +102,7 @@ export default function CanvasSequenceScroller({
     ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
   }, []);
 
-  // ─── Lazy, scene-aware frame loader ────────────────────────────────────
-  // Only the frames for the active scene (+ small buffer + next-scene preview)
-  // are requested, instead of eagerly downloading all ~300 frames on page load.
+  // ─── Single Frame Loader with Fallback ──────────────────────────────────
   const requestFrame = useCallback(
     (index: number, folder: string, highPriority = false) => {
       if (index < 0 || index >= totalFrames) return;
@@ -122,116 +112,73 @@ export default function CanvasSequenceScroller({
 
       const frameNumber = (index + 1).toString().padStart(4, "0");
       const img = new Image();
-      // Hint the browser to fetch opening frames first (faster first paint).
-      if ("fetchPriority" in img)
+      if ("fetchPriority" in img) {
         img.fetchPriority = highPriority ? "high" : "auto";
+      }
       const attemptedExt = frameExtRef.current;
       img.src = `${folder}/frame_${frameNumber}.${attemptedExt}`;
 
       img.onload = () => {
         imagesRef.current[index] = img;
         setLoadedCount((c) => c + 1);
-        // Redraw if this is the frame currently being shown
-        if (index === currentFrameRef.current) renderFrame(index);
+        if (index === currentFrameRef.current || index === 0) {
+          renderFrame(index);
+          setIsLoading(false);
+        }
       };
 
       img.onerror = () => {
-        // Retry a failed frame with a fallback source.
         const loadFallback = (src: string) => {
           const fb = new Image();
           fb.src = src;
           fb.onload = () => {
             imagesRef.current[index] = fb;
             setLoadedCount((c) => c + 1);
-            if (index === currentFrameRef.current) renderFrame(index);
+            if (index === currentFrameRef.current || index === 0) {
+              renderFrame(index);
+              setIsLoading(false);
+            }
           };
         };
 
-        // 1) Format fallback: AVIF gagal dimuat (browser lama) → coba WebP
-        //    dan ingat untuk memakai WebP seterusnya agar tak gagal berulang.
         if (attemptedExt === "avif") {
           frameExtRef.current = "webp";
           loadFallback(`${folder}/frame_${frameNumber}.webp`);
           return;
         }
-        // 2) Folder fallback: frame hilang di folder adaptif → pakai desktop.
         loadFallback(`/videos/frames-desktop/frame_${frameNumber}.webp`);
       };
     },
     [totalFrames, renderFrame],
   );
 
-  // Request a frame range in small chunks so the main thread stays responsive
-  const requestRange = useCallback(
-    (start: number, end: number, folder: string, chunkSize = 12) => {
-      const clampedStart = Math.max(0, start);
-      const clampedEnd = Math.min(totalFrames - 1, end);
-      for (let i = clampedStart; i <= clampedEnd; i += chunkSize) {
-        const chunkStart = i;
-        const chunkEnd = Math.min(clampedEnd, i + chunkSize - 1);
-        // Slight stagger between chunks keeps the page responsive
-        setTimeout(
-          () => {
-            for (let j = chunkStart; j <= chunkEnd; j++)
-              requestFrame(j, folder);
-          },
-          Math.floor((chunkStart - clampedStart) / chunkSize) * 30,
-        );
+  // ─── On-Demand Frame Preload Window (Scroll-Driven Streamer) ───────────
+  const preloadAround = useCallback(
+    (centerFrame: number, folder: string, radius = 10) => {
+      const start = Math.max(0, centerFrame - 2);
+      const end = Math.min(totalFrames - 1, centerFrame + radius);
+      for (let i = start; i <= end; i++) {
+        requestFrame(i, folder, false);
       }
     },
     [totalFrames, requestFrame],
   );
 
-  // Release decoded frames far from the active scene so memory stays bounded on
-  // low-end mobile. Evicted frames are re-requestable if the user scrolls back.
+  // ─── Free distant frames from memory on low-end mobile ───────────────────
   const evictDistantFrames = useCallback(
-    (active: number) => {
+    (current: number) => {
       if (typeof document === "undefined") return;
-
-      const keep = new Set<number>();
-      const keepScene = (sc?: { start: number; end: number }) => {
-        if (!sc) return;
-        const s = Math.max(0, sc.start - 16);
-        const e = Math.min(totalFrames - 1, sc.end + 16);
-        for (let j = s; j <= e; j++) keep.add(j);
-      };
-
-      // Always keep the intro scene so returning to the top is instant.
-      keepScene(scenes[0]);
-      // Keep the active scene ± 1 for smooth back-and-forth scrubbing.
-      for (
-        let i = Math.max(1, active - 1);
-        i <= Math.min(scenes.length, active + 1);
-        i++
-      ) {
-        keepScene(scenes[i - 1]);
-      }
-      // Never evict the frame currently on screen (or its neighbours).
-      for (
-        let j = Math.max(0, currentFrameRef.current - 4);
-        j <= Math.min(totalFrames - 1, currentFrameRef.current + 4);
-        j++
-      ) {
-        keep.add(j);
-      }
-
-      let evicted = 0;
-      for (let i = 0; i < totalFrames; i++) {
-        if (!keep.has(i) && imagesRef.current[i]) {
+      for (let i = 1; i < totalFrames; i++) {
+        if (Math.abs(i - current) > 35 && imagesRef.current[i]) {
           imagesRef.current[i] = undefined;
-          requestedRef.current.delete(i); // allow re-request on scroll-back
-          evicted++;
+          requestedRef.current.delete(i);
         }
       }
-      if (evicted > 0) {
-        // eslint-disable-next-line no-console
-        console.log(`[Falya] evicted ${evicted} frames to free mobile memory`);
-      }
     },
-    [scenes, totalFrames],
+    [totalFrames],
   );
 
-  // Adaptive resolution + instant first frames so the hero appears immediately
+  // ─── Initial Fast Hero Mount (Hanya Muat Frame 0 & 1 untuk LCP Instan) ──
   useEffect(() => {
     const isDesktop =
       typeof window !== "undefined" ? window.innerWidth >= 768 : true;
@@ -239,73 +186,18 @@ export default function CanvasSequenceScroller({
       ? "/videos/frames-desktop"
       : "/videos/frames-mobile";
     folderRef.current = folder;
-    // Desktop: AVIF (lebih ringkas). Mobile: WebP agar decode/scrub mulus.
     frameExtRef.current = isDesktop ? "avif" : "webp";
 
-    const priorityBatch = () => {
-      for (let i = 0; i < Math.min(20, totalFrames); i++) {
-        requestFrame(i, folder, true);
-      }
-    };
+    // Muat HANYA frame 0 & 1 di awal agar First Contentful Paint & LCP instan
+    requestFrame(0, folder, true);
+    requestFrame(1, folder, false);
 
-    // Defer initial loading until the hero actually enters the viewport, so we
-    // don't spend data/CPU on frames the user isn't looking at yet.
-    const container = containerRef.current;
-    if (!container || typeof IntersectionObserver === "undefined") {
-      priorityBatch();
-      const safety = setTimeout(() => setIsLoading(false), 6000);
-      return () => clearTimeout(safety);
-    }
+    // Timeout pengaman agar preloader tidak pernah hang
+    const safety = setTimeout(() => setIsLoading(false), 2000);
+    return () => clearTimeout(safety);
+  }, [requestFrame]);
 
-    const io = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((e) => e.isIntersecting)) {
-          priorityBatch();
-          io.disconnect();
-        }
-      },
-      { rootMargin: "160px 0px" },
-    );
-    io.observe(container);
-
-    // Safety net: never let the preloader hang if frames fail to load
-    const safety = setTimeout(() => setIsLoading(false), 6000);
-    return () => {
-      io.disconnect();
-      clearTimeout(safety);
-    };
-  }, [totalFrames, requestFrame]);
-
-  // Hide the preloader as soon as frame pertama siap (sudah di-preload),
-  // sehingga LCP (hero) tampil secepat mungkin — food-first.
-  useEffect(() => {
-    if (loadedCount >= Math.min(1, totalFrames)) {
-      setIsLoading(false);
-    }
-  }, [loadedCount, totalFrames]);
-
-  // On scene change: request the active scene (+ buffer) and preview the next
-  useEffect(() => {
-    const folder = folderRef.current;
-    const scene = scenes[activeScene - 1];
-    if (!scene) return;
-
-    const start = Math.max(0, scene.start - 6);
-    const end = Math.min(totalFrames - 1, scene.end + 6);
-    requestRange(start, end, folder, 12);
-
-    // Preload a short preview of the following scene for a smooth transition
-    const nextScene = scenes[activeScene];
-    if (nextScene) {
-      const previewEnd = Math.min(nextScene.start + 20, nextScene.end);
-      requestRange(nextScene.start, previewEnd, folder, 12);
-    }
-
-    // Free memory from frames far from the active scene (mobile focus).
-    evictDistantFrames(activeScene);
-  }, [activeScene, scenes, requestRange, totalFrames, evictDistantFrames]);
-
-  // Canvas Resize Handler
+  // ─── Canvas Resize Handler ──────────────────────────────────────────────
   useEffect(() => {
     const handleResize = () => {
       const canvas = canvasRef.current;
@@ -319,13 +211,67 @@ export default function CanvasSequenceScroller({
     };
 
     handleResize();
-    window.addEventListener("resize", handleResize);
+    window.addEventListener("resize", handleResize, { passive: true });
     return () => window.removeEventListener("resize", handleResize);
   }, [renderFrame]);
 
-  // 60FPS Apple-style Smooth Lerp Motion Scrubber Engine
+  // ─── Idle-Aware Smooth Lerp Motion Scrubber Engine ───────────────────────
   useEffect(() => {
-    let animationFrameId: number;
+    const LERP_SPEED = 0.15;
+
+    const tick = () => {
+      const current = smoothProgressRef.current;
+      const target = targetProgressRef.current;
+      const diff = target - current;
+
+      if (Math.abs(diff) > 0.0002) {
+        smoothProgressRef.current = current + diff * LERP_SPEED;
+        const smoothProgress = smoothProgressRef.current;
+
+        const targetFrame = Math.min(
+          totalFrames - 1,
+          Math.max(0, Math.floor(smoothProgress * (totalFrames - 1))),
+        );
+
+        const newScene = sceneForFrame(targetFrame);
+        if (newScene !== activeSceneRef.current) {
+          activeSceneRef.current = newScene;
+          setActiveScene(newScene);
+        }
+
+        if (targetFrame !== currentFrameRef.current) {
+          currentFrameRef.current = targetFrame;
+          renderFrame(targetFrame);
+          preloadAround(targetFrame, folderRef.current, 12);
+          evictDistantFrames(targetFrame);
+        }
+
+        // Lanjutkan animasi selama masih bergerak
+        animationFrameIdRef.current = requestAnimationFrame(tick);
+      } else {
+        // Target tercapai, snap ke posisi akhir dan TIDURKAN rAF loop
+        smoothProgressRef.current = target;
+        const targetFrame = Math.min(
+          totalFrames - 1,
+          Math.max(0, Math.floor(target * (totalFrames - 1))),
+        );
+
+        if (targetFrame !== currentFrameRef.current) {
+          currentFrameRef.current = targetFrame;
+          renderFrame(targetFrame);
+        }
+
+        isTickingRef.current = false;
+        animationFrameIdRef.current = null;
+      }
+    };
+
+    const startAnimationLoop = () => {
+      if (!isTickingRef.current) {
+        isTickingRef.current = true;
+        animationFrameIdRef.current = requestAnimationFrame(tick);
+      }
+    };
 
     const onScroll = () => {
       const container = containerRef.current;
@@ -333,63 +279,33 @@ export default function CanvasSequenceScroller({
 
       const rect = container.getBoundingClientRect();
       const scrollHeight = container.scrollHeight - window.innerHeight;
+      if (scrollHeight <= 0) return;
 
       const progress = Math.max(0, Math.min(1, -rect.top / scrollHeight));
       targetProgressRef.current = progress;
-    };
 
-    // Smooth Lerp Rendering Loop
-    const LERP_SPEED = 0.14; // Tuned for silky-smooth buttery response without lag
-
-    const tick = () => {
-      const current = smoothProgressRef.current;
-      const target = targetProgressRef.current;
-
-      // Interpolate progress towards target
-      const diff = target - current;
-      if (Math.abs(diff) > 0.0001) {
-        smoothProgressRef.current = current + diff * LERP_SPEED;
-      } else {
-        smoothProgressRef.current = target;
-      }
-
-      const smoothProgress = smoothProgressRef.current;
-
-      // Calculate target frame
-      const targetFrame = Math.min(
+      // Prefetch frame di sekitar posisi scroll baru
+      const estimatedFrame = Math.min(
         totalFrames - 1,
-        Math.max(0, Math.floor(smoothProgress * (totalFrames - 1))),
+        Math.max(0, Math.floor(progress * (totalFrames - 1))),
       );
+      preloadAround(estimatedFrame, folderRef.current, 14);
 
-      // Update overlay scene only when it actually changes (avoids 60fps re-renders)
-      const newScene = sceneForFrame(targetFrame);
-      if (newScene !== activeSceneRef.current) {
-        activeSceneRef.current = newScene;
-        setActiveScene(newScene);
-      }
-
-      if (targetFrame !== currentFrameRef.current) {
-        currentFrameRef.current = targetFrame;
-        renderFrame(targetFrame);
-      }
-
-      animationFrameId = requestAnimationFrame(tick);
+      // Bangunkan loop rendering
+      startAnimationLoop();
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
+    // Inisialisasi awal
     onScroll();
-    animationFrameId = requestAnimationFrame(tick);
 
     return () => {
       window.removeEventListener("scroll", onScroll);
-      cancelAnimationFrame(animationFrameId);
+      if (animationFrameIdRef.current) {
+        cancelAnimationFrame(animationFrameIdRef.current);
+      }
     };
-  }, [totalFrames, totalDuration, sceneForFrame, renderFrame]);
-
-  const loadProgressPercent = Math.min(
-    100,
-    Math.round((loadedCount / Math.max(1, initialRequestTarget)) * 100),
-  );
+  }, [totalFrames, totalDuration, sceneForFrame, renderFrame, preloadAround, evictDistantFrames]);
 
   return (
     <div ref={containerRef} className="relative w-full h-[450vh] bg-[#241b18]">
@@ -398,9 +314,9 @@ export default function CanvasSequenceScroller({
         {/* Canvas for ultra-smooth 60fps frame scrubbing */}
         <canvas
           ref={canvasRef}
-          className="w-full h-full object-cover select-none pointer-events-none transition-opacity duration-700 will-change-transform"
+          className="w-full h-full object-cover select-none pointer-events-none transition-opacity duration-300 will-change-transform"
           style={{
-            opacity: isLoading && loadedCount < 1 ? 0.3 : 1,
+            opacity: isLoading && loadedCount < 1 ? 0.6 : 1,
             filter: "contrast(1.05) saturate(1.05)",
             transform: "translateZ(0)",
           }}
@@ -408,25 +324,6 @@ export default function CanvasSequenceScroller({
 
         {/* Soft Vignette Overlay for video background depth */}
         <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#241b18]/70 via-transparent to-[#241b18]/30" />
-
-        {/* Preloader */}
-        {isLoading && loadedCount < 1 && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#fdfbfc]/95 backdrop-blur-md z-40 text-[#241b18]">
-            <div className="flex items-center gap-3 mb-4">
-              <span className="w-3.5 h-3.5 rounded-full bg-[#a82868] animate-ping" />
-              <p className="font-semibold text-base">Memuat Falya...</p>
-            </div>
-            <div className="w-56 h-2 bg-[#f3d5e3] rounded-full overflow-hidden">
-              <div
-                className="h-full bg-[#a82868] transition-all duration-300 rounded-full"
-                style={{ width: `${loadProgressPercent}%` }}
-              />
-            </div>
-            <span className="text-xs text-[#665b56] mt-2 font-mono">
-              {loadProgressPercent}% siap
-            </span>
-          </div>
-        )}
 
         {/* CLEAN STORY OVERLAYS (Only Title & Subtitle, No Dark Boxes, No Extra Elements) */}
         <div className="absolute inset-0 z-10 pointer-events-none flex items-center justify-center p-6 md:p-16 lg:p-24">

@@ -1,10 +1,12 @@
 import type { MetadataRoute } from "next";
+import { prisma } from "@/lib/prisma";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://falyarisol.com";
   const now = new Date();
 
-  return [
+  // Static pages
+  const staticPages: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
       lastModified: now,
@@ -35,5 +37,37 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.7,
     },
+    {
+      url: `${baseUrl}/blog`,
+      lastModified: now,
+      changeFrequency: "daily",
+      priority: 0.8,
+    },
   ];
+
+  // Fetch all dynamic blog posts from Neon database for Google Indexing
+  try {
+    const posts = await prisma.post.findMany({
+      where: {
+        isPublished: true,
+        publishedAt: { lte: now },
+      },
+      select: {
+        slug: true,
+        updatedAt: true,
+      },
+    });
+
+    const blogPages: MetadataRoute.Sitemap = posts.map((post) => ({
+      url: `${baseUrl}/blog/${post.slug}`,
+      lastModified: post.updatedAt,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    }));
+
+    return [...staticPages, ...blogPages];
+  } catch (error) {
+    console.error("Failed to generate dynamic sitemap for blog:", error);
+    return staticPages;
+  }
 }

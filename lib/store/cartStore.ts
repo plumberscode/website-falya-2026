@@ -36,6 +36,7 @@ interface CartStoreState {
   generateWhatsAppLink: (orderType: OrderType) => string;
 
   // Menu Management (for Admin)
+  updateMenuItem: (id: string, updatedData: Partial<MenuItem>) => void;
   updateMenuItemPrice: (id: string, newPrice: number) => void;
   toggleMenuItemAvailability: (id: string) => void;
   addMenuItem: (item: MenuItem) => void;
@@ -165,6 +166,14 @@ export const useCartStore = create<CartStoreState>()(
       },
 
       // Admin actions
+      updateMenuItem: (id, updatedData) => {
+        set((state) => ({
+          menuItems: state.menuItems.map((item) =>
+            item.id === id ? { ...item, ...updatedData } : item
+          ),
+        }));
+      },
+
       updateMenuItemPrice: (id, newPrice) => {
         set((state) => ({
           menuItems: state.menuItems.map((item) =>
@@ -198,7 +207,7 @@ export const useCartStore = create<CartStoreState>()(
       },
     }),
     {
-      name: 'falya-cart-menu-storage-v11',
+      name: 'falya-cart-menu-storage-v12',
       partialize: (state) => ({
         items: state.items,
         menuItems: state.menuItems,
@@ -210,17 +219,21 @@ export const useCartStore = create<CartStoreState>()(
           if (persisted) {
             return {
               ...initialItem,
-              price: persisted.price ?? initialItem.price,
-              isAvailable: persisted.isAvailable ?? initialItem.isAvailable,
+              ...persisted,
             };
           }
           return initialItem;
         });
 
+        // Also include custom items that were added by admin
+        const customItems = persistedMenuItems.filter(
+          (p: MenuItem) => !INITIAL_MENU.some((init) => init.id === p.id)
+        );
+
         return {
           ...currentState,
           ...persistedState,
-          menuItems: mergedMenuItems.length > 0 ? mergedMenuItems : currentState.menuItems,
+          menuItems: [...mergedMenuItems, ...customItems],
         };
       },
     }
