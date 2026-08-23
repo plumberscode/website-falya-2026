@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -15,16 +13,13 @@ import {
 import CanvasSequenceScroller from "@/components/scrollytelling/CanvasSequenceScroller";
 import MenuCard from "@/components/menu/MenuCard";
 import TestimonialSlider from "@/components/testimonials/TestimonialSlider";
-import { useCartStore } from "@/lib/store/cartStore";
 import { Button } from "@/components/ui/button";
-import { FALYA_CONTACT } from "@/lib/data/menuData";
+import { FALYA_CONTACT, INITIAL_MENU } from "@/lib/data/menuData";
 
 export default function HomePage() {
-  const { menuItems } = useCartStore();
-
   // 3 Best Sellers as specified in AGENTS.md / original website
   const bestSellerIds = ["risol001", "risol004", "kuliner003"];
-  const bestSellers = menuItems.filter((item) =>
+  const bestSellers = INITIAL_MENU.filter((item) =>
     bestSellerIds.includes(item.id),
   );
 
