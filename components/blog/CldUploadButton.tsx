@@ -1,7 +1,9 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { UploadCloud, Image as ImageIcon, Link as LinkIcon, Loader2 } from "lucide-react";
+import { useState } from "react";
+import Image from "next/image";
+import { UploadCloud, Image as ImageIcon, Trash2, FolderOpen } from "lucide-react";
+import MediaLibraryModal from "./MediaLibraryModal";
 
 interface CldUploadButtonProps {
   onSuccess: (url: string) => void;
@@ -9,148 +11,71 @@ interface CldUploadButtonProps {
 }
 
 export default function CldUploadButton({ onSuccess, currentImageUrl }: CldUploadButtonProps) {
-  const [isUploading, setIsUploading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [manualUrl, setManualUrl] = useState("");
-  const [showManualInput, setShowManualInput] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "qemsyn4o";
-  const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "ckqeshcx";
-
-  // Direct REST API Upload ke Cloudinary (Sangat stabil & anti-adblocker)
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    // Validasi tipe file
-    if (!file.type.startsWith("image/")) {
-      setErrorMsg("Harap pilih file gambar (JPG, PNG, WebP).");
-      return;
-    }
-
-    try {
-      setIsUploading(true);
-      setErrorMsg(null);
-
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("upload_preset", uploadPreset);
-
-      const res = await fetch(
-        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-
-      const data = await res.json();
-
-      if (data.secure_url) {
-        onSuccess(data.secure_url);
-      } else {
-        setErrorMsg(data.error?.message || "Gagal mengunggah gambar ke Cloudinary.");
-      }
-    } catch (err) {
-      console.error("Cloudinary upload error:", err);
-      setErrorMsg("Koneksi gagal saat mengunggah gambar. Periksa koneksi internet Anda.");
-    } finally {
-      setIsUploading(false);
-      if (fileInputRef.current) fileInputRef.current.value = "";
-    }
-  };
-
-  const handleManualSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (manualUrl.trim()) {
-      onSuccess(manualUrl.trim());
-      setShowManualInput(false);
-    }
-  };
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <div className="flex flex-col gap-3">
-      {/* Hidden File Input */}
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/*"
-        onChange={handleFileChange}
-        className="hidden"
-      />
+      {/* Tombol Buka Media Library / Upload */}
+      {currentImageUrl ? (
+        <div className="relative rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 p-4 space-y-3">
+          <div className="relative aspect-video w-full max-w-md rounded-xl overflow-hidden bg-zinc-200 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700">
+            <Image
+              src={currentImageUrl}
+              alt="Thumbnail preview"
+              fill
+              className="object-cover"
+              sizes="400px"
+            />
+          </div>
 
-      {/* Upload Button */}
-      <button
-        type="button"
-        disabled={isUploading}
-        onClick={() => fileInputRef.current?.click()}
-        className="flex flex-col items-center justify-center gap-3 px-4 py-12 border-2 border-dashed border-zinc-300 dark:border-zinc-700 hover:border-emerald-500 rounded-xl text-sm font-medium transition cursor-pointer text-zinc-600 dark:text-zinc-300 bg-white dark:bg-zinc-950 disabled:opacity-50"
-      >
-        {isUploading ? (
-          <>
-            <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
-            <span>Sedang mengunggah ke Cloudinary...</span>
-          </>
-        ) : (
-          <>
-            <UploadCloud className="w-8 h-8 text-emerald-500" />
-            <span>{currentImageUrl ? "Ganti Gambar Thumbnail (Cloudinary)" : "Pilih & Upload Gambar Thumbnail (Cloudinary)"}</span>
-          </>
-        )}
-      </button>
+          <div className="flex items-center gap-2 pt-1">
+            <button
+              type="button"
+              onClick={() => setIsModalOpen(true)}
+              className="px-4 py-2 bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-800 dark:text-zinc-200 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
+            >
+              <FolderOpen className="w-3.5 h-3.5 text-emerald-600" />
+              Pilih dari Galeri / Ganti Foto
+            </button>
 
-      {errorMsg && (
-        <p className="text-xs text-red-500 font-medium">{errorMsg}</p>
-      )}
-
-      {/* Alternatif Input URL Manual */}
-      <div className="flex items-center justify-between text-xs text-zinc-500">
-        <span>Atau masukkan URL gambar langsung:</span>
+            <button
+              type="button"
+              onClick={() => onSuccess("")}
+              className="px-3 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-xl text-xs font-semibold flex items-center gap-1 transition cursor-pointer"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              Hapus
+            </button>
+          </div>
+        </div>
+      ) : (
         <button
           type="button"
-          onClick={() => setShowManualInput(!showManualInput)}
-          className="text-emerald-600 dark:text-emerald-400 hover:underline font-medium flex items-center gap-1"
+          onClick={() => setIsModalOpen(true)}
+          className="flex flex-col items-center justify-center gap-3 px-4 py-10 border-2 border-dashed border-zinc-300 dark:border-zinc-700 hover:border-emerald-500 rounded-2xl text-sm font-medium transition cursor-pointer text-zinc-600 dark:text-zinc-300 bg-white dark:bg-zinc-950 group"
         >
-          <LinkIcon className="w-3 h-3" />
-          {showManualInput ? "Tutup input URL" : "Input URL Manual"}
+          <div className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <FolderOpen className="w-6 h-6" />
+          </div>
+          <div className="text-center">
+            <p className="font-semibold text-zinc-800 dark:text-zinc-200">
+              Pilih Gambar dari Galeri atau Upload Baru
+            </p>
+            <p className="text-xs text-zinc-400 mt-0.5">
+              Klik untuk melihat foto yang sudah terupload di Cloudinary atau unggah foto baru
+            </p>
+          </div>
         </button>
-      </div>
-
-      {showManualInput && (
-        <div className="flex gap-2">
-          <input
-            type="url"
-            value={manualUrl}
-            onChange={(e) => setManualUrl(e.target.value)}
-            placeholder="https://images.unsplash.com/... atau https://res.cloudinary.com/..."
-            className="flex-1 px-3 py-2 text-xs rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-1 focus:ring-emerald-500"
-          />
-          <button
-            type="button"
-            onClick={handleManualSubmit}
-            className="px-3 py-2 text-xs font-semibold rounded-lg bg-emerald-600 text-white hover:bg-emerald-500 transition"
-          >
-            Terapkan
-          </button>
-        </div>
       )}
 
-      {currentImageUrl && (
-        <div className="relative rounded-lg overflow-hidden border border-zinc-200 dark:border-zinc-800 p-2.5 flex items-center gap-3 bg-zinc-50 dark:bg-zinc-900/50">
-          <ImageIcon className="w-4 h-4 text-emerald-500 shrink-0" />
-          <span className="text-xs truncate text-zinc-600 dark:text-zinc-400 font-mono flex-1">
-            {currentImageUrl}
-          </span>
-          <button
-            type="button"
-            onClick={() => onSuccess("")}
-            className="text-xs text-red-500 hover:text-red-600 hover:underline shrink-0"
-          >
-            Hapus
-          </button>
-        </div>
-      )}
+      {/* Modal Galeri Media Cloudinary */}
+      <MediaLibraryModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSelectImage={(url) => onSuccess(url)}
+        title="Galeri Media Cloudinary (Thumbnail Artikel)"
+      />
     </div>
   );
 }
+
