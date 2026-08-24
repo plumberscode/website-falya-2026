@@ -2,8 +2,9 @@ import type { Metadata, ResolvingMetadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getPostBySlug } from "@/app/actions/blog";
+import { getAdminSession } from "@/lib/auth";
 import BlogImage from "@/components/blog/BlogImage";
-import { Calendar, ArrowLeft, Share2, Tag } from "lucide-react";
+import { Calendar, ArrowLeft, Share2, Tag, AlertTriangle, Clock, Edit3 } from "lucide-react";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -15,7 +16,8 @@ export async function generateMetadata(
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   const { slug } = await params;
-  const post = await getPostBySlug(slug);
+  const session = await getAdminSession();
+  const post = await getPostBySlug(slug, !!session);
 
   if (!post) {
     return {
@@ -32,6 +34,7 @@ export async function generateMetadata(
   return {
     title: `${post.title} | Blog Falya`,
     description,
+    robots: !post.isPublished ? { index: false, follow: false } : undefined,
     alternates: {
       canonical: canonicalUrl,
     },
@@ -66,11 +69,15 @@ export const revalidate = 60; // Revalidate every 60s for fresh content
 
 export default async function BlogPostDetailPage({ params }: Props) {
   const { slug } = await params;
-  const post = await getPostBySlug(slug);
+  const session = await getAdminSession();
+  const post = await getPostBySlug(slug, !!session);
 
   if (!post) {
     notFound();
   }
+
+  const isDraft = !post.isPublished;
+  const isScheduled = post.publishedAt && new Date(post.publishedAt) > new Date();
 
   // Schema.org Article Structured Data for Google Rich Snippets
   const jsonLd = {
@@ -110,6 +117,37 @@ export default async function BlogPostDetailPage({ params }: Props) {
 
       <article className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto">
+          {/* Admin Draft / Scheduled Preview Banner */}
+          {(isDraft || isScheduled) && (
+            <div className="mb-8 p-4 bg-amber-500/10 border border-amber-500/30 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-amber-900 dark:text-amber-200">
+              <div className="flex items-center gap-3">
+                {isDraft ? (
+                  <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0" />
+                ) : (
+                  <Clock className="w-5 h-5 text-purple-600 shrink-0" />
+                )}
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-wider">
+                    {isDraft ? "Pratinjau Mode Draf (Draft)" : "Pratinjau Artikel Terjadwal"}
+                  </p>
+                  <p className="text-xs text-amber-800 dark:text-amber-300">
+                    {isDraft
+                      ? "Artikel ini belum dipublikasikan ke publik dan hanya bisa dilihat oleh Admin."
+                      : `Artikel ini dijadwalkan terbit pada ${new Date(post.publishedAt).toLocaleString("id-ID")}.`}
+                  </p>
+                </div>
+              </div>
+
+              <Link
+                href={`/admin/blog/edit/${post.id}`}
+                className="px-4 py-1.5 bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shrink-0"
+              >
+                <Edit3 className="w-3.5 h-3.5" />
+                Edit Artikel
+              </Link>
+            </div>
+          )}
+
           {/* Back Navigation */}
           <div className="mb-8">
             <Link
