@@ -111,6 +111,14 @@ export default function Footer() {
                   FAQ
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="/blog"
+                  className="text-white/80 hover:text-white hover:translate-x-0.5 inline-block transition-all"
+                >
+                  Blog & Artikel
+                </Link>
+              </li>
             </ul>
           </div>
 
