@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { createPost } from "@/app/actions/blog";
 import CldUploadButton from "@/components/blog/CldUploadButton";
 import RichTextEditor from "@/components/blog/RichTextEditor";
-import { Sparkles, Globe, ArrowLeft, Send, Calendar, Clock } from "lucide-react";
+import { Sparkles, Globe, ArrowLeft, Send, Calendar, Clock, FileText } from "lucide-react";
 import Link from "next/link";
 
 export default function NewBlogPostPage() {
@@ -17,8 +17,8 @@ export default function NewBlogPostPage() {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [content, setContent] = useState("");
   
-  // Penjadwalan publikasi
-  const [publishMode, setPublishMode] = useState<"now" | "schedule">("now");
+  // Penjadwalan & Status publikasi: "now" | "schedule" | "draft"
+  const [publishMode, setPublishMode] = useState<"now" | "schedule" | "draft">("now");
   const [scheduledDateTime, setScheduledDateTime] = useState<string>("");
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -37,14 +37,20 @@ export default function NewBlogPostPage() {
     setSlug(generatedSlug);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!title || !slug || !content) {
-      setMessage({ type: "error", text: "Judul, Slug, dan Konten wajib diisi." });
+  const handleSavePost = async (forceDraft = false) => {
+    const isDraft = forceDraft || publishMode === "draft";
+
+    if (!title || !slug) {
+      setMessage({ type: "error", text: "Judul dan Slug wajib diisi." });
       return;
     }
 
-    if (publishMode === "schedule" && !scheduledDateTime) {
+    if (!isDraft && !content) {
+      setMessage({ type: "error", text: "Isi konten artikel wajib diisi sebelum dipublikasikan." });
+      return;
+    }
+
+    if (!isDraft && publishMode === "schedule" && !scheduledDateTime) {
       setMessage({ type: "error", text: "Pilih tanggal dan jam untuk publikasi terjadwal." });
       return;
     }
@@ -53,19 +59,19 @@ export default function NewBlogPostPage() {
     setMessage(null);
 
     const publishedAt =
-      publishMode === "schedule" && scheduledDateTime
+      !isDraft && publishMode === "schedule" && scheduledDateTime
         ? new Date(scheduledDateTime)
         : new Date();
 
     const res = await createPost({
       title,
       slug,
-      content,
+      content: content || "<p></p>",
       metaDescription,
       category: category || undefined,
       imageUrl: imageUrl || undefined,
       publishedAt,
-      isPublished: true,
+      isPublished: !isDraft,
     });
 
     setIsSubmitting(false);
@@ -73,10 +79,11 @@ export default function NewBlogPostPage() {
     if (res.success) {
       setMessage({
         type: "success",
-        text:
-          publishMode === "schedule"
-            ? "Artikel berhasil dijadwalkan! Akan otomatis terbit pada waktu yang ditentukan."
-            : "Artikel blog berhasil dipublikasikan sekarang!",
+        text: isDraft
+          ? "Artikel berhasil disimpan sebagai Draf (Belum Terbit)!"
+          : publishMode === "schedule"
+          ? "Artikel berhasil dijadwalkan! Akan otomatis terbit pada waktu yang ditentukan."
+          : "Artikel blog berhasil dipublikasikan sekarang!",
       });
       setTimeout(() => {
         router.push("/admin/blog");
@@ -84,6 +91,11 @@ export default function NewBlogPostPage() {
     } else {
       setMessage({ type: "error", text: res.error || "Terjadi kesalahan." });
     }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await handleSavePost(false);
   };
 
   return (
@@ -191,7 +203,7 @@ export default function NewBlogPostPage() {
               <label className="text-sm font-bold">Waktu Publikasi Artikel</label>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <label
                 className={`p-4 rounded-xl border transition cursor-pointer flex items-start gap-3 ${
                   publishMode === "now"
@@ -209,7 +221,7 @@ export default function NewBlogPostPage() {
                 <div>
                   <p className="font-semibold text-sm">Publikasikan Sekarang</p>
                   <p className="text-xs text-zinc-500 mt-0.5">
-                    Artikel langsung terbit dan tampil di blog untuk pengunjung.
+                    Artikel langsung terbit dan tampil untuk publik.
                   </p>
                 </div>
               </label>
@@ -231,10 +243,35 @@ export default function NewBlogPostPage() {
                 <div className="flex-1">
                   <p className="font-semibold text-sm flex items-center gap-1.5">
                     <Clock className="w-3.5 h-3.5 text-emerald-600" />
-                    Jadwalkan untuk Nanti
+                    Jadwalkan Rilis
                   </p>
                   <p className="text-xs text-zinc-500 mt-0.5">
-                    Tentukan tanggal dan jam kapan artikel akan otomatis terbit.
+                    Tentukan tanggal dan jam tayang otomatis.
+                  </p>
+                </div>
+              </label>
+
+              <label
+                className={`p-4 rounded-xl border transition cursor-pointer flex items-start gap-3 ${
+                  publishMode === "draft"
+                    ? "border-amber-500 bg-amber-500/5 dark:bg-amber-500/10"
+                    : "border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900"
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="publishMode"
+                  checked={publishMode === "draft"}
+                  onChange={() => setPublishMode("draft")}
+                  className="accent-amber-600 mt-1"
+                />
+                <div className="flex-1">
+                  <p className="font-semibold text-sm flex items-center gap-1.5">
+                    <FileText className="w-3.5 h-3.5 text-amber-600" />
+                    Simpan Draf (Draft)
+                  </p>
+                  <p className="text-xs text-zinc-500 mt-0.5">
+                    Hanya tersimpan di admin, belum tampil di publik.
                   </p>
                 </div>
               </label>
@@ -304,16 +341,36 @@ export default function NewBlogPostPage() {
             </div>
           </div>
 
-          {/* Action Button */}
-          <div className="flex justify-end gap-3 pt-4">
+          {/* Action Buttons */}
+          <div className="flex flex-wrap items-center justify-end gap-3 pt-4">
+            <button
+              type="button"
+              disabled={isSubmitting}
+              onClick={() => handleSavePost(true)}
+              className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-200 font-semibold shadow-xs transition cursor-pointer disabled:opacity-50"
+            >
+              <FileText className="w-4 h-4 text-zinc-500" />
+              Simpan sebagai Draf
+            </button>
+
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold shadow-lg shadow-emerald-600/20 transition cursor-pointer disabled:opacity-50"
+              className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold shadow-lg transition cursor-pointer disabled:opacity-50 text-white ${
+                publishMode === "draft"
+                  ? "bg-amber-600 hover:bg-amber-500 shadow-amber-600/20"
+                  : "bg-emerald-600 hover:bg-emerald-500 shadow-emerald-600/20"
+              }`}
             >
-              <Send className="w-4 h-4" />
+              {publishMode === "draft" ? (
+                <FileText className="w-4 h-4" />
+              ) : (
+                <Send className="w-4 h-4" />
+              )}
               {isSubmitting
-                ? "Menyimpan ke Neon DB..."
+                ? "Menyimpan ke Database..."
+                : publishMode === "draft"
+                ? "Simpan Draf (Belum Terbit)"
                 : publishMode === "schedule"
                 ? "Jadwalkan Artikel"
                 : "Publikasikan Sekarang"}

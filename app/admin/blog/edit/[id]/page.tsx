@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { getPostById, updatePost } from "@/app/actions/blog";
 import CldUploadButton from "@/components/blog/CldUploadButton";
 import RichTextEditor from "@/components/blog/RichTextEditor";
-import { Sparkles, Globe, ArrowLeft, Save, Loader2, Calendar, Clock } from "lucide-react";
+import { Sparkles, Globe, ArrowLeft, Save, Loader2, Calendar, Clock, FileText } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 
@@ -21,8 +21,8 @@ export default function EditBlogPostPage() {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [content, setContent] = useState("");
   
-  // Penjadwalan
-  const [publishMode, setPublishMode] = useState<"now" | "schedule">("now");
+  // Penjadwalan & Status: "now" | "schedule" | "draft"
+  const [publishMode, setPublishMode] = useState<"now" | "schedule" | "draft">("now");
   const [scheduledDateTime, setScheduledDateTime] = useState<string>("");
 
   const [isLoading, setIsLoading] = useState(true);
@@ -43,7 +43,9 @@ export default function EditBlogPostPage() {
         const postDate = new Date(post.publishedAt || post.createdAt);
         const isFuture = postDate > new Date();
 
-        if (isFuture) {
+        if (!post.isPublished) {
+          setPublishMode("draft");
+        } else if (isFuture) {
           setPublishMode("schedule");
           // Format ke input datetime-local
           const tzOffset = postDate.getTimezoneOffset() * 60000;
@@ -74,8 +76,9 @@ export default function EditBlogPostPage() {
 
     setIsSubmitting(true);
 
+    const isDraft = publishMode === "draft";
     const publishedAt =
-      publishMode === "schedule" && scheduledDateTime
+      !isDraft && publishMode === "schedule" && scheduledDateTime
         ? new Date(scheduledDateTime)
         : new Date();
 
@@ -87,16 +90,18 @@ export default function EditBlogPostPage() {
       category: category || undefined,
       imageUrl: imageUrl || undefined,
       publishedAt,
-      isPublished: true,
+      isPublished: !isDraft,
     });
 
     setIsSubmitting(false);
 
     if (res.success) {
       toast.success(
-        publishMode === "schedule"
+        isDraft
+          ? "Artikel disimpan sebagai Draf!"
+          : publishMode === "schedule"
           ? "Jadwal publikasi artikel berhasil diperbarui!"
-          : "Artikel blog berhasil diperbarui!"
+          : "Artikel blog berhasil diperbarui & diterbitkan!"
       );
       router.push("/admin/blog");
     } else {
@@ -203,7 +208,7 @@ export default function EditBlogPostPage() {
               <label className="text-sm font-bold">Waktu Publikasi Artikel</label>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <label
                 className={`p-4 rounded-xl border transition cursor-pointer flex items-start gap-3 ${
                   publishMode === "now"
@@ -243,10 +248,35 @@ export default function EditBlogPostPage() {
                 <div className="flex-1">
                   <p className="font-semibold text-sm flex items-center gap-1.5">
                     <Clock className="w-3.5 h-3.5 text-emerald-600" />
-                    Jadwalkan untuk Nanti
+                    Jadwalkan Rilis
                   </p>
                   <p className="text-xs text-zinc-500 mt-0.5">
-                    Tentukan tanggal dan jam kapan artikel akan otomatis terbit.
+                    Tentukan tanggal dan jam tayang otomatis.
+                  </p>
+                </div>
+              </label>
+
+              <label
+                className={`p-4 rounded-xl border transition cursor-pointer flex items-start gap-3 ${
+                  publishMode === "draft"
+                    ? "border-amber-500 bg-amber-500/5 dark:bg-amber-500/10"
+                    : "border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900"
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="publishModeEdit"
+                  checked={publishMode === "draft"}
+                  onChange={() => setPublishMode("draft")}
+                  className="accent-amber-600 mt-1"
+                />
+                <div className="flex-1">
+                  <p className="font-semibold text-sm flex items-center gap-1.5">
+                    <FileText className="w-3.5 h-3.5 text-amber-600" />
+                    Simpan Draf (Draft)
+                  </p>
+                  <p className="text-xs text-zinc-500 mt-0.5">
+                    Hanya tersimpan di admin, disembunyikan dari publik.
                   </p>
                 </div>
               </label>

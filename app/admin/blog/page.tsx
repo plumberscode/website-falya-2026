@@ -19,6 +19,7 @@ import {
   Loader2,
   Clock,
   CheckCircle,
+  FileText,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -159,7 +160,8 @@ export default function AdminBlogListPage() {
             <div className="divide-y divide-[#f3d5e3]/20">
               {filteredPosts.map((post) => {
                 const publishDate = new Date(post.publishedAt || post.createdAt);
-                const isScheduled = publishDate > new Date();
+                const isDraft = !post.isPublished;
+                const isScheduled = post.isPublished && publishDate > new Date();
 
                 return (
                   <div
@@ -188,9 +190,14 @@ export default function AdminBlogListPage() {
                             {post.title}
                           </h2>
 
-                          {/* Status Badge: Terbit vs Terjadwal */}
-                          {isScheduled ? (
+                          {/* Status Badge: Draf vs Terjadwal vs Terbit */}
+                          {isDraft ? (
                             <span className="inline-flex items-center gap-1 text-[10px] font-bold bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300 px-2 py-0.5 rounded-full shrink-0">
+                              <FileText className="w-3 h-3" />
+                              Draf (Draft)
+                            </span>
+                          ) : isScheduled ? (
+                            <span className="inline-flex items-center gap-1 text-[10px] font-bold bg-purple-100 text-purple-800 dark:bg-purple-950/40 dark:text-purple-300 px-2 py-0.5 rounded-full shrink-0">
                               <Clock className="w-3 h-3" />
                               Terjadwal (
                               {publishDate.toLocaleDateString("id-ID", {
