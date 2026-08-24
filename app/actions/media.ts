@@ -51,11 +51,29 @@ export async function getAllMedia() {
       created_at?: string;
     }> = [];
 
+    const cloudName =
+      process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME ||
+      process.env.CLOUDINARY_CLOUD_NAME ||
+      "qemsyn4o";
+    const apiKey = process.env.CLOUDINARY_API_KEY;
+    const apiSecret = process.env.CLOUDINARY_API_SECRET;
+
     // Jika API Key & Secret terpasang, tarik langsung SEMUA file dari Cloudinary
-    if (
-      process.env.CLOUDINARY_URL ||
-      (process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET)
-    ) {
+    if (process.env.CLOUDINARY_URL) {
+      cloudinary.config({
+        cloudinary_url: process.env.CLOUDINARY_URL,
+        secure: true,
+      });
+    } else if (apiKey && apiSecret) {
+      cloudinary.config({
+        cloud_name: cloudName,
+        api_key: apiKey,
+        api_secret: apiSecret,
+        secure: true,
+      });
+    }
+
+    if (process.env.CLOUDINARY_URL || (apiKey && apiSecret)) {
       try {
         const res = await cloudinary.api.resources({
           type: "upload",
@@ -66,7 +84,10 @@ export async function getAllMedia() {
           cloudinaryResources = res.resources;
         }
       } catch (cldErr: any) {
-        console.error("Cloudinary Admin API fetch error:", cldErr?.error || cldErr?.message || cldErr);
+        console.error(
+          "Cloudinary Admin API fetch error:",
+          cldErr?.error || cldErr?.message || cldErr
+        );
       }
     }
 
