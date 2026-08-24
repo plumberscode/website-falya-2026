@@ -76,7 +76,7 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
     editorProps: {
       attributes: {
         class:
-          "min-h-[500px] p-5 focus:outline-none prose prose-zinc dark:prose-invert max-w-none text-zinc-900 dark:text-zinc-100 prose-img:rounded-2xl prose-img:my-6 prose-img:shadow-md prose-a:text-emerald-600 dark:prose-a:text-emerald-400 prose-a:underline hover:prose-a:text-emerald-500",
+          "tiptap min-h-[500px] p-5 focus:outline-none max-w-none text-zinc-900 dark:text-zinc-100",
       },
     },
   });

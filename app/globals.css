@@ -89,3 +89,87 @@
     display: none; /* Chrome / Safari / Edge */
   }
 }
+
+/* =========================================================================
+   Tiptap Editor & Blog Article Typography Styles
+   ========================================================================= */
+.tiptap, article.blog-article, .prose {
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+.tiptap h2, article.blog-article h2, .prose h2 {
+  display: block;
+  font-size: 1.65rem !important;
+  line-height: 1.3 !important;
+  font-weight: 800 !important;
+  color: #18181b !important;
+  margin-top: 1.75rem !important;
+  margin-bottom: 0.75rem !important;
+  letter-spacing: -0.02em !important;
+}
+
+.tiptap h3, article.blog-article h3, .prose h3 {
+  display: block;
+  font-size: 1.3rem !important;
+  line-height: 1.4 !important;
+  font-weight: 700 !important;
+  color: #27272a !important;
+  margin-top: 1.25rem !important;
+  margin-bottom: 0.5rem !important;
+  letter-spacing: -0.01em !important;
+}
+
+.tiptap p, article.blog-article p, .prose p {
+  font-size: 1rem;
+  line-height: 1.8;
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+  color: #3f3f46;
+}
+
+.tiptap ul, article.blog-article ul, .prose ul {
+  list-style-type: disc !important;
+  padding-left: 1.5rem !important;
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.tiptap ol, article.blog-article ol, .prose ol {
+  list-style-type: decimal !important;
+  padding-left: 1.5rem !important;
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.tiptap li, article.blog-article li, .prose li {
+  margin-top: 0.35rem;
+  margin-bottom: 0.35rem;
+  line-height: 1.7;
+}
+
+.tiptap blockquote, article.blog-article blockquote, .prose blockquote {
+  border-left: 4px solid #10b981 !important;
+  padding-left: 1rem !important;
+  font-style: italic !important;
+  color: #52525b !important;
+  margin-top: 1.25rem !important;
+  margin-bottom: 1.25rem !important;
+  background-color: rgba(16, 185, 129, 0.05);
+  padding: 0.75rem 1rem;
+  border-radius: 0 0.75rem 0.75rem 0;
+}
+
+.tiptap a, article.blog-article a, .prose a {
+  color: #059669 !important;
+  text-decoration: underline !important;
+  font-weight: 600 !important;
+}
+
+.tiptap img, article.blog-article img, .prose img {
+  border-radius: 1rem;
+  max-width: 100%;
+  height: auto;
+  margin: 1.5rem auto;
+  display: block;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
