@@ -5,6 +5,10 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import LinkExtension from "@tiptap/extension-link";
 import ImageExtension from "@tiptap/extension-image";
+import { Table } from "@tiptap/extension-table";
+import { TableRow } from "@tiptap/extension-table-row";
+import { TableHeader } from "@tiptap/extension-table-header";
+import { TableCell } from "@tiptap/extension-table-cell";
 import {
   Bold,
   Italic,
@@ -22,6 +26,11 @@ import {
   Loader2,
   X,
   Check,
+  Table as TableIcon,
+  Plus,
+  Trash2,
+  BetweenHorizontalEnd,
+  BetweenVerticalEnd,
 } from "lucide-react";
 
 interface RichTextEditorProps {
@@ -40,6 +49,11 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Table options modal
+  const [showTableModal, setShowTableModal] = useState(false);
+  const [tableRows, setTableRows] = useState(3);
+  const [tableCols, setTableCols] = useState(3);
 
   const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "qemsyn4o";
   const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "ckqeshcx";
@@ -67,6 +81,15 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
           class: "rounded-2xl max-w-full my-6 shadow-md border border-zinc-200 dark:border-zinc-800 mx-auto",
         },
       }),
+      Table.configure({
+        resizable: true,
+        HTMLAttributes: {
+          class: "border-collapse table-auto w-full my-6",
+        },
+      }),
+      TableRow,
+      TableHeader,
+      TableCell,
     ],
     content: content || "<p>Mulai tulis konten artikel Anda di sini...</p>",
     immediatelyRender: false,
@@ -121,6 +144,20 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
       setImageUrl("");
       setShowImageModal(false);
     }
+  };
+
+  // Handle Table Insertion
+  const handleInsertTable = () => {
+    editor
+      .chain()
+      .focus()
+      .insertTable({
+        rows: Math.max(1, tableRows),
+        cols: Math.max(1, tableCols),
+        withHeaderRow: true,
+      })
+      .run();
+    setShowTableModal(false);
   };
 
   // Handle Image Upload Direct to Cloudinary
@@ -244,6 +281,21 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
         >
           <ImageIcon className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
           <span className="text-[11px] hidden sm:inline">Gambar</span>
+        </button>
+
+        {/* Insert Table Button */}
+        <button
+          type="button"
+          onClick={() => setShowTableModal(true)}
+          className={`p-2 rounded-lg text-xs font-semibold transition cursor-pointer flex items-center gap-1 ${
+            editor.isActive("table")
+              ? "bg-emerald-100 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700"
+              : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800"
+          }`}
+          title="Buat / Sisipkan Tabel"
+        >
+          <TableIcon className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+          <span className="text-[11px] hidden sm:inline">Tabel</span>
         </button>
 
         <div className="w-[1px] h-5 bg-zinc-300 dark:bg-zinc-700 mx-1" />
@@ -477,6 +529,126 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
           {uploadError && (
             <p className="text-xs text-red-500 font-medium">{uploadError}</p>
           )}
+        </div>
+      )}
+
+      {/* Insert Table Modal */}
+      {showTableModal && (
+        <div className="p-4 bg-zinc-100 dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 space-y-3 animate-in fade-in">
+          <div className="flex items-center justify-between">
+            <h4 className="text-xs font-bold text-zinc-800 dark:text-zinc-200 flex items-center gap-1.5">
+              <TableIcon className="w-4 h-4 text-emerald-600" />
+              Buat Tabel Baru
+            </h4>
+            <button
+              type="button"
+              onClick={() => setShowTableModal(false)}
+              className="p-1 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-4 bg-white dark:bg-zinc-950 p-3 rounded-xl border border-zinc-200 dark:border-zinc-800">
+            <div className="flex items-center gap-2">
+              <label className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">
+                Jumlah Kolom:
+              </label>
+              <input
+                type="number"
+                min="1"
+                max="10"
+                value={tableCols}
+                onChange={(e) => setTableCols(parseInt(e.target.value) || 1)}
+                className="w-16 px-2.5 py-1 text-xs rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900 text-center font-bold focus:outline-none focus:ring-1 focus:ring-emerald-500"
+              />
+            </div>
+
+            <div className="flex items-center gap-2">
+              <label className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">
+                Jumlah Baris:
+              </label>
+              <input
+                type="number"
+                min="1"
+                max="20"
+                value={tableRows}
+                onChange={(e) => setTableRows(parseInt(e.target.value) || 1)}
+                className="w-16 px-2.5 py-1 text-xs rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900 text-center font-bold focus:outline-none focus:ring-1 focus:ring-emerald-500"
+              />
+            </div>
+
+            <button
+              type="button"
+              onClick={handleInsertTable}
+              className="px-4 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white flex items-center gap-1.5 transition cursor-pointer shadow-xs ml-auto"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              Sisipkan Tabel
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Contextual Table Controls (Visible when active cell is inside a table) */}
+      {editor.isActive("table") && (
+        <div className="px-3 py-1.5 bg-emerald-50 dark:bg-emerald-950/40 border-b border-emerald-200 dark:border-emerald-900/50 flex flex-wrap items-center gap-1.5 text-xs animate-in fade-in">
+          <span className="font-bold text-emerald-800 dark:text-emerald-300 text-[11px] mr-1 flex items-center gap-1">
+            <TableIcon className="w-3.5 h-3.5" />
+            Edit Tabel:
+          </span>
+
+          <button
+            type="button"
+            onClick={() => editor.chain().focus().addColumnAfter().run()}
+            className="px-2 py-1 bg-white dark:bg-zinc-900 border border-emerald-300 dark:border-emerald-800 rounded-md text-emerald-800 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 transition cursor-pointer text-[11px] font-semibold flex items-center gap-1"
+            title="Tambah Kolom di Kanan"
+          >
+            <BetweenVerticalEnd className="w-3 h-3" />
+            + Kolom
+          </button>
+
+          <button
+            type="button"
+            onClick={() => editor.chain().focus().deleteColumn().run()}
+            className="px-2 py-1 bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-md text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition cursor-pointer text-[11px] font-semibold"
+            title="Hapus Kolom Ini"
+          >
+            - Kolom
+          </button>
+
+          <div className="w-[1px] h-3.5 bg-emerald-300 dark:bg-emerald-800 mx-0.5" />
+
+          <button
+            type="button"
+            onClick={() => editor.chain().focus().addRowAfter().run()}
+            className="px-2 py-1 bg-white dark:bg-zinc-900 border border-emerald-300 dark:border-emerald-800 rounded-md text-emerald-800 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 transition cursor-pointer text-[11px] font-semibold flex items-center gap-1"
+            title="Tambah Baris di Bawah"
+          >
+            <BetweenHorizontalEnd className="w-3 h-3" />
+            + Baris
+          </button>
+
+          <button
+            type="button"
+            onClick={() => editor.chain().focus().deleteRow().run()}
+            className="px-2 py-1 bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-md text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition cursor-pointer text-[11px] font-semibold"
+            title="Hapus Baris Ini"
+          >
+            - Baris
+          </button>
+
+          <div className="w-[1px] h-3.5 bg-emerald-300 dark:bg-emerald-800 mx-0.5" />
+
+          <button
+            type="button"
+            onClick={() => editor.chain().focus().deleteTable().run()}
+            className="px-2 py-1 bg-red-100 dark:bg-red-950/60 border border-red-300 dark:border-red-900 text-red-700 dark:text-red-300 rounded-md hover:bg-red-200 dark:hover:bg-red-900 transition cursor-pointer text-[11px] font-semibold flex items-center gap-1 ml-auto"
+            title="Hapus Seluruh Tabel"
+          >
+            <Trash2 className="w-3 h-3" />
+            Hapus Tabel
+          </button>
         </div>
       )}
 
