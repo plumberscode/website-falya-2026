@@ -3,12 +3,22 @@
 import { prisma } from "@/lib/prisma";
 import { v2 as cloudinary } from "cloudinary";
 
-cloudinary.config({
-  cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || process.env.CLOUDINARY_CLOUD_NAME || "qemsyn4o",
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-  secure: true,
-});
+if (process.env.CLOUDINARY_URL) {
+  cloudinary.config({
+    cloudinary_url: process.env.CLOUDINARY_URL,
+    secure: true,
+  });
+} else {
+  cloudinary.config({
+    cloud_name:
+      process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME ||
+      process.env.CLOUDINARY_CLOUD_NAME ||
+      "qemsyn4o",
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+    secure: true,
+  });
+}
 
 export async function saveMedia(url: string, name?: string) {
   try {
@@ -42,7 +52,10 @@ export async function getAllMedia() {
     }> = [];
 
     // Jika API Key & Secret terpasang, tarik langsung SEMUA file dari Cloudinary
-    if (process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET) {
+    if (
+      process.env.CLOUDINARY_URL ||
+      (process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET)
+    ) {
       try {
         const res = await cloudinary.api.resources({
           type: "upload",
@@ -52,8 +65,8 @@ export async function getAllMedia() {
         if (res && res.resources) {
           cloudinaryResources = res.resources;
         }
-      } catch (cldErr) {
-        console.error("Cloudinary Admin API fetch error:", cldErr);
+      } catch (cldErr: any) {
+        console.error("Cloudinary Admin API fetch error:", cldErr?.error || cldErr?.message || cldErr);
       }
     }
 
