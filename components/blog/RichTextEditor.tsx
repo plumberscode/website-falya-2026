@@ -90,8 +90,7 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
     setShowLinkModal(true);
   };
 
-  const handleApplyLink = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleApplyLink = () => {
     if (!linkUrl.trim()) {
       editor.chain().focus().extendMarkRange("link").unsetLink().run();
     } else {
@@ -116,8 +115,7 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
   };
 
   // Handle Image Insertion via URL
-  const handleApplyImageUrl = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleApplyImageUrl = () => {
     if (imageUrl.trim()) {
       editor.chain().focus().setImage({ src: imageUrl.trim() }).run();
       setImageUrl("");
@@ -345,28 +343,35 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
       {showLinkModal && (
         <div className="p-3 bg-zinc-100 dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 flex items-center gap-2 animate-in fade-in">
           <LinkIcon className="w-4 h-4 text-emerald-600 shrink-0" />
-          <form onSubmit={handleApplyLink} className="flex-1 flex items-center gap-2">
+          <div className="flex-1 flex items-center gap-2">
             <input
               type="text"
               autoFocus
               value={linkUrl}
               onChange={(e) => setLinkUrl(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleApplyLink();
+                }
+              }}
               placeholder="Masukkan URL tautan (contoh: /nasi-liwet atau https://...)"
               className="flex-1 px-3 py-1.5 text-xs rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
             />
             <button
-              type="submit"
-              className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white flex items-center gap-1 transition cursor-pointer"
+              type="button"
+              onClick={handleApplyLink}
+              className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white flex items-center gap-1 transition cursor-pointer shrink-0"
             >
               <Check className="w-3.5 h-3.5" />
               Terapkan
             </button>
-          </form>
+          </div>
           {editor.isActive("link") && (
             <button
               type="button"
               onClick={handleRemoveLink}
-              className="px-2.5 py-1.5 text-xs font-semibold rounded-lg text-red-600 hover:bg-red-100 dark:hover:bg-red-950/40 transition cursor-pointer"
+              className="px-2.5 py-1.5 text-xs font-semibold rounded-lg text-red-600 hover:bg-red-100 dark:hover:bg-red-950/40 transition cursor-pointer shrink-0"
             >
               Hapus Link
             </button>
@@ -374,7 +379,7 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
           <button
             type="button"
             onClick={() => setShowLinkModal(false)}
-            className="p-1.5 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition cursor-pointer"
+            className="p-1.5 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition cursor-pointer shrink-0"
           >
             <X className="w-4 h-4" />
           </button>
@@ -444,21 +449,28 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
                 </p>
               </div>
 
-              <form onSubmit={handleApplyImageUrl} className="flex gap-1.5 mt-1">
+              <div className="flex gap-1.5 mt-1">
                 <input
                   type="url"
                   value={imageUrl}
                   onChange={(e) => setImageUrl(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleApplyImageUrl();
+                    }
+                  }}
                   placeholder="https://res.cloudinary.com/..."
                   className="flex-1 px-2.5 py-1.5 text-xs rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-1 focus:ring-emerald-500"
                 />
                 <button
-                  type="submit"
+                  type="button"
+                  onClick={handleApplyImageUrl}
                   className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-zinc-800 dark:bg-zinc-700 hover:bg-zinc-700 dark:hover:bg-zinc-600 text-white transition cursor-pointer shrink-0"
                 >
                   Sisipkan
                 </button>
-              </form>
+              </div>
             </div>
           </div>
 
