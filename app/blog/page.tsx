@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getAllPosts, getAllCategories } from "@/app/actions/blog";
-import { getAdminSession } from "@/lib/auth";
 import BlogImage from "@/components/blog/BlogImage";
-import { Calendar, ArrowRight, BookOpen, Tag, ShieldCheck } from "lucide-react";
+import { Calendar, ArrowRight, BookOpen, Tag } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Blog & Artikel | Falya Risol",
@@ -20,8 +19,8 @@ export default async function BlogIndexPage(props: { searchParams: Promise<{ cat
   const searchParams = await props.searchParams;
   const currentCategory = searchParams.category;
   
-  const session = await getAdminSession();
-  const posts = await getAllPosts(!!session, currentCategory);
+  // Halaman blog publik HANYA menampilkan artikel yang sudah terbit (isPublished: true)
+  const posts = await getAllPosts(false, currentCategory);
   const categories = await getAllCategories();
 
   return (
