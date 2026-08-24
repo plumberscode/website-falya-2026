@@ -41,18 +41,20 @@ export default function MenuCard({ item }: MenuCardProps) {
         />
 
         {/* Badges on top */}
-        <div className="absolute top-3 left-3 flex flex-wrap gap-1.5 z-10">
-          {item.isPopular && (
+        {item.isPopular && (
+          <div className="absolute top-3 left-3 z-10">
             <span className="bg-[#a82868] text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow-xs tracking-wider uppercase">
               BEST SELLER
             </span>
-          )}
-          {!item.isAvailable && (
-            <span className="bg-[#c74343] text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow-xs">
+          </div>
+        )}
+        {!item.isAvailable && (
+          <div className="absolute top-3 right-3 z-10">
+            <span className="bg-[#c2410c] text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow-xs tracking-wider uppercase">
               HABIS
             </span>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
       {/* Product Info & Action */}
