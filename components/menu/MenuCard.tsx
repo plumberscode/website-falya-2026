@@ -58,10 +58,10 @@ export default function MenuCard({ item }: MenuCardProps) {
       {/* Product Info & Action */}
       <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between space-y-4">
         <div>
-          <h3 className="text-base font-bold text-[#241b18] group-hover:text-[#a82868] transition-colors line-clamp-1">
+          <h3 className="text-base font-bold text-[#241b18] group-hover:text-[#a82868] transition-colors leading-snug">
             {item.name}
           </h3>
-          <p className="text-xs text-[#665b56] mt-1 leading-relaxed line-clamp-2">
+          <p className="text-xs text-[#665b56] mt-1.5 leading-relaxed">
             {item.description}
           </p>
         </div>
