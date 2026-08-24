@@ -1,6 +1,14 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { v2 as cloudinary } from "cloudinary";
+
+cloudinary.config({
+  cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || process.env.CLOUDINARY_CLOUD_NAME || "qemsyn4o",
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true,
+});
 
 export async function saveMedia(url: string, name?: string) {
   try {
@@ -27,6 +35,47 @@ export async function saveMedia(url: string, name?: string) {
 
 export async function getAllMedia() {
   try {
+    let cloudinaryResources: Array<{
+      secure_url: string;
+      public_id?: string;
+      created_at?: string;
+    }> = [];
+
+    // Jika API Key & Secret terpasang, tarik langsung SEMUA file dari Cloudinary
+    if (process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET) {
+      try {
+        const res = await cloudinary.api.resources({
+          type: "upload",
+          resource_type: "image",
+          max_results: 100,
+        });
+        if (res && res.resources) {
+          cloudinaryResources = res.resources;
+        }
+      } catch (cldErr) {
+        console.error("Cloudinary Admin API fetch error:", cldErr);
+      }
+    }
+
+    // Jika ada resources dari Cloudinary, sinkronkan ke database Media
+    if (cloudinaryResources.length > 0) {
+      for (const res of cloudinaryResources) {
+        try {
+          await prisma.media.upsert({
+            where: { url: res.secure_url },
+            update: {},
+            create: {
+              url: res.secure_url,
+              name: res.public_id?.split("/").pop() || "Gambar Cloudinary",
+              createdAt: res.created_at ? new Date(res.created_at) : new Date(),
+            },
+          });
+        } catch (e) {
+          // ignore
+        }
+      }
+    }
+
     // 1. Ambil semua media yang ada di tabel Media
     const mediaList = await prisma.media.findMany({
       orderBy: { createdAt: "desc" },
