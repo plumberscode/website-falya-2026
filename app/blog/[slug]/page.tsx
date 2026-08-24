@@ -119,7 +119,7 @@ export default async function BlogPostDetailPage({ params }: Props) {
         <div className="max-w-3xl mx-auto">
           {/* Admin Draft / Scheduled Preview Banner */}
           {(isDraft || isScheduled) && (
-            <div className="mb-8 p-4 bg-amber-500/10 border border-amber-500/30 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-amber-900 dark:text-amber-200">
+            <div className="mb-8 p-4 bg-amber-500/10 border border-amber-500/30 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-amber-900 dark:text-amber-200 shadow-sm">
               <div className="flex items-center gap-3">
                 {isDraft ? (
                   <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0" />
@@ -132,24 +132,44 @@ export default async function BlogPostDetailPage({ params }: Props) {
                   </p>
                   <p className="text-xs text-amber-800 dark:text-amber-300">
                     {isDraft
-                      ? "Artikel ini belum dipublikasikan ke publik dan hanya bisa dilihat oleh Admin."
+                      ? "Artikel ini belum dipublikasikan ke publik dan hanya bisa dilihat oleh Anda sebagai Admin."
                       : `Artikel ini dijadwalkan terbit pada ${new Date(post.publishedAt).toLocaleString("id-ID")}.`}
                   </p>
                 </div>
               </div>
 
-              <Link
-                href={`/admin/blog/edit/${post.id}`}
-                className="px-4 py-1.5 bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shrink-0"
-              >
-                <Edit3 className="w-3.5 h-3.5" />
-                Edit Artikel
-              </Link>
+              <div className="flex items-center gap-2 shrink-0">
+                <Link
+                  href="/admin/blog"
+                  className="px-3.5 py-1.5 bg-white dark:bg-zinc-900 border border-amber-300 dark:border-amber-700 text-amber-900 dark:text-amber-200 text-xs font-semibold rounded-xl hover:bg-amber-50 dark:hover:bg-amber-950/50 transition flex items-center gap-1.5"
+                >
+                  <ArrowLeft className="w-3.5 h-3.5" />
+                  Daftar Admin
+                </Link>
+
+                <Link
+                  href={`/admin/blog/edit/${post.id}`}
+                  className="px-4 py-1.5 bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shadow-sm"
+                >
+                  <Edit3 className="w-3.5 h-3.5" />
+                  Edit Artikel
+                </Link>
+              </div>
             </div>
           )}
 
           {/* Back Navigation */}
-          <div className="mb-8">
+          <div className="mb-8 flex items-center gap-3 flex-wrap">
+            {session && (
+              <Link
+                href="/admin/blog"
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-zinc-200/80 dark:bg-zinc-800 text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-700 transition"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                Kembali ke Manajemen Blog (Admin)
+              </Link>
+            )}
+
             <Link
               href="/blog"
               className="inline-flex items-center gap-2 text-sm font-medium text-zinc-500 hover:text-emerald-600 dark:hover:text-emerald-400 transition"
