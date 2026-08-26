@@ -1,22 +1,42 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "FAQ Risol Mayo, Nasi Liwet & Snack Box Balikpapan | Falya",
+  title: "Tanya Jawab (FAQ) & Cara Pemesanan | Falya Balikpapan",
   description:
-    "Jawaban atas pertanyaan tentang risol mayo tahan berapa lama, isi nasi liwet tampah, isi & harga snack box untuk acara, serta cara pemesanan di Falya Balikpapan.",
+    "Informasi lengkap seputar ketahanan risol mayo, isi paket nasi liwet tampah, pemesanan snack box acara, dan jam operasional Falya di Balikpapan.",
+  keywords: [
+    "faq falya",
+    "cara pesan risol mayo balikpapan",
+    "ketahanan risol mayo",
+    "lokasi falya balikpapan",
+    "kontak falya balikpapan",
+  ],
   alternates: {
-    canonical: "/faq",
+    canonical: "https://falyarisol.com/faq",
   },
   openGraph: {
-    title: "FAQ Risol Mayo, Nasi Liwet & Snack Box Balikpapan | Falya",
+    title: "Tanya Jawab (FAQ) & Cara Pemesanan | Falya Balikpapan",
     description:
-      "Risol mayo tahan berapa lama, isi nasi liwet tampah, isi & harga snack box acara, dan cara pemesanan di Falya Balikpapan.",
+      "Temukan jawaban seputar produk, pemesanan, dan layanan Falya Balikpapan.",
     url: "https://falyarisol.com/faq",
+    siteName: "Falya Risol Mayo",
+    images: [
+      {
+        url: "/images/restaurant-menu.webp",
+        width: 1200,
+        height: 630,
+        alt: "Pusat Bantuan & FAQ Falya Balikpapan",
+      },
+    ],
+    locale: "id_ID",
+    type: "website",
   },
 };
 
 export default function FaqLayout({
   children,
-}: Readonly<{ children: React.ReactNode }>) {
+}: {
+  children: React.ReactNode;
+}) {
   return <>{children}</>;
 }

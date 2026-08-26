@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { getAllMedia, saveMedia } from "@/app/actions/media";
+import { getAllMedia, saveMedia, uploadMediaAction } from "@/app/actions/media";
 import {
   Image as ImageIcon,
   UploadCloud,
@@ -49,9 +49,6 @@ export default function MediaLibraryModal({
   // Manual URL state
   const [manualUrl, setManualUrl] = useState("");
 
-  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "qemsyn4o";
-  const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "ckqeshcx";
-
   const fetchMedia = async () => {
     setIsLoading(true);
     const list = await getAllMedia();
@@ -74,13 +71,13 @@ export default function MediaLibraryModal({
     onClose();
   };
 
-  // Upload file direct to Cloudinary & save to DB
+  // Upload file via Authenticated Server Action (Signed Cloudinary Upload)
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      setUploadError("Harap pilih file gambar (JPG, PNG, WebP).");
+      setUploadError("Harap pilih file gambar (JPG, PNG, WebP, GIF).");
       return;
     }
 
@@ -90,27 +87,16 @@ export default function MediaLibraryModal({
 
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("upload_preset", uploadPreset);
 
-      const res = await fetch(
-        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
+      const res = await uploadMediaAction(formData);
 
-      const data = await res.json();
-
-      if (data.secure_url) {
-        // Simpan ke database Media
-        await saveMedia(data.secure_url, file.name);
+      if (res.success && res.url) {
         await fetchMedia();
-        handleSelectAndConfirm(data.secure_url);
+        handleSelectAndConfirm(res.url);
       } else {
-        setUploadError(data.error?.message || "Gagal mengunggah gambar ke Cloudinary.");
+        setUploadError(res.error || "Gagal mengunggah gambar ke Cloudinary.");
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("Cloudinary upload error:", err);
       setUploadError("Koneksi gagal saat mengunggah gambar.");
     } finally {

@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { getAdminSession } from "@/lib/auth";
 
 export async function createPost(formData: {
   title: string;
@@ -14,6 +15,11 @@ export async function createPost(formData: {
   isPublished?: boolean;
 }) {
   try {
+    const session = await getAdminSession();
+    if (!session) {
+      return { success: false, error: "Akses ditolak. Sesi admin diperlukan." };
+    }
+
     // Standardize slug for SEO (lowercase, hyphens only)
     const cleanSlug = formData.slug
       .toLowerCase()
@@ -68,6 +74,11 @@ export async function updatePost(
   }
 ) {
   try {
+    const session = await getAdminSession();
+    if (!session) {
+      return { success: false, error: "Akses ditolak. Sesi admin diperlukan." };
+    }
+
     const cleanSlug = formData.slug
       .toLowerCase()
       .trim()
@@ -110,6 +121,11 @@ export async function updatePost(
 
 export async function deletePost(id: string) {
   try {
+    const session = await getAdminSession();
+    if (!session) {
+      return { success: false, error: "Akses ditolak. Sesi admin diperlukan." };
+    }
+
     await prisma.post.delete({
       where: { id },
     });

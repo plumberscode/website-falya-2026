@@ -1,22 +1,44 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Jual Snack Box Balikpapan untuk Acara, Kantor & Hajatan | Falya",
+  title: "Paket Snack Box & Kue Nampan Balikpapan | Falya Risol",
   description:
-    "Snack box & kue nampan Balikpapan untuk rapat kantor, tahlilan, pengajian, dan hajatan. Pesan snack box kekinian dari Falya via WhatsApp.",
+    "Pesan paket snack box mini, reguler, komplit, dan kue nampan lezat di Balikpapan. Pilihan terbaik untuk rapat kantor, pengajian, hajatan, & arisan. Pesan praktis via WhatsApp.",
+  keywords: [
+    "snack box balikpapan",
+    "jual snack box balikpapan",
+    "snack box kantor balikpapan",
+    "snack box pengajian balikpapan",
+    "kue nampan balikpapan",
+    "paket snack box murah balikpapan",
+    "catering snack balikpapan",
+  ],
   alternates: {
-    canonical: "/snackbox",
+    canonical: "https://falyarisol.com/snackbox",
   },
   openGraph: {
-    title: "Jual Snack Box Balikpapan untuk Acara, Kantor & Hajatan | Falya",
+    title: "Paket Snack Box & Kue Nampan Balikpapan | Falya Risol",
     description:
-      "Snack box & kue nampan untuk rapat kantor, tahlilan, pengajian, dan hajatan di Balikpapan. Pesan via WhatsApp.",
+      "Pilihan paket snack box dan kue nampan untuk berbagai acara di Balikpapan. Praktis dan lezat.",
     url: "https://falyarisol.com/snackbox",
+    siteName: "Falya Risol Mayo",
+    images: [
+      {
+        url: "/images/2026/snackbox01.webp",
+        width: 1200,
+        height: 630,
+        alt: "Paket Snack Box Falya Balikpapan",
+      },
+    ],
+    locale: "id_ID",
+    type: "website",
   },
 };
 
 export default function SnackboxLayout({
   children,
-}: Readonly<{ children: React.ReactNode }>) {
+}: {
+  children: React.ReactNode;
+}) {
   return <>{children}</>;
 }

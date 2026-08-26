@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { v2 as cloudinary } from "cloudinary";
+import { getAdminSession } from "@/lib/auth";
 
 if (process.env.CLOUDINARY_URL) {
   cloudinary.config({
@@ -20,8 +21,86 @@ if (process.env.CLOUDINARY_URL) {
   });
 }
 
+export async function uploadMediaAction(formData: FormData) {
+  try {
+    const session = await getAdminSession();
+    if (!session) {
+      return { success: false, error: "Akses ditolak. Sesi admin diperlukan." };
+    }
+
+    const file = formData.get("file") as File | null;
+    if (!file) {
+      return { success: false, error: "File tidak ditemukan." };
+    }
+
+    // Validasi mime type
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/avif"];
+    if (!allowedTypes.includes(file.type)) {
+      return {
+        success: false,
+        error: "Format file tidak didukung. Harap gunakan format JPG, PNG, WebP, atau GIF.",
+      };
+    }
+
+    // Validasi ukuran file (maksimal 10MB)
+    const MAX_SIZE = 10 * 1024 * 1024;
+    if (file.size > MAX_SIZE) {
+      return {
+        success: false,
+        error: "Ukuran file terlalu besar. Maksimal 10MB.",
+      };
+    }
+
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+
+    // Upload ke Cloudinary melalui backend stream secara aman (Signed Upload)
+    const uploadResult: any = await new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          folder: "falya-blog",
+          resource_type: "image",
+        },
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      );
+      uploadStream.end(buffer);
+    });
+
+    if (!uploadResult?.secure_url) {
+      return { success: false, error: "Gagal mendapatkan URL dari Cloudinary." };
+    }
+
+    // Simpan otomatis ke database
+    const fileName = file.name || "Gambar Blog";
+    const media = await prisma.media.upsert({
+      where: { url: uploadResult.secure_url },
+      update: { name: fileName },
+      create: {
+        url: uploadResult.secure_url,
+        name: fileName,
+      },
+    });
+
+    return { success: true, url: uploadResult.secure_url, media };
+  } catch (error: any) {
+    console.error("Upload error in uploadMediaAction:", error);
+    return {
+      success: false,
+      error: error?.message || "Terjadi kesalahan saat mengunggah gambar.",
+    };
+  }
+}
+
 export async function saveMedia(url: string, name?: string) {
   try {
+    const session = await getAdminSession();
+    if (!session) {
+      return { success: false, error: "Akses ditolak. Sesi admin diperlukan." };
+    }
+
     if (!url || !url.trim()) return { success: false, error: "URL tidak valid" };
 
     const cleanUrl = url.trim();
@@ -177,6 +256,11 @@ export async function getAllMedia() {
 
 export async function deleteMedia(id: string) {
   try {
+    const session = await getAdminSession();
+    if (!session) {
+      return { success: false, error: "Akses ditolak. Sesi admin diperlukan." };
+    }
+
     await prisma.media.delete({
       where: { id },
     });

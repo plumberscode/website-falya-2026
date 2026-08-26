@@ -52,9 +52,6 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
   const [tableRows, setTableRows] = useState(3);
   const [tableCols, setTableCols] = useState(3);
 
-  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "qemsyn4o";
-  const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "ckqeshcx";
-
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
