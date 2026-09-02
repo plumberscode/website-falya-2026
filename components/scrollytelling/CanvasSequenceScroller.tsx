@@ -362,7 +362,7 @@ export default function CanvasSequenceScroller({
                     <span className="text-[#f7b733]">Falya</span>
                   </h1>
                   <p className="text-base sm:text-xl text-white/95 font-normal leading-relaxed max-w-xl">
-                    Jagonya{" "}
+                    Spesial{" "}
                     <strong className="text-white font-bold">Risol</strong> dan{" "}
                     <strong className="text-white font-bold">Nasi Liwet</strong>{" "}
                     di Balikpapan
