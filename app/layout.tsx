@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://falyarisol.com"),
   title: "Risol Enak di Balikpapan | Risol Mayo & Nasi Liwet – Falya",
   description:
-    "Risol mayo renyah hangat, nasi liwet, snack box & kue nampan enak di Balikpapan. Pesan mudah via WhatsApp — untuk acara kantor, tahlilan, dan hajatan.",
+    "Risol mayo renyah hangat, nasi liwet, snack box & kue nampan enak di Balikpapan. Pesan mudah via WhatsApp — untuk acara kantor dan hajatan.",
   keywords: [
     "risol enak di balikpapan",
     "risol mayo balikpapan",
@@ -30,7 +30,6 @@ export const metadata: Metadata = {
     "snack box balikpapan",
     "jual snack box balikpapan",
     "snack box acara kantor balikpapan",
-    "snack box tahlilan balikpapan",
     "nasi kotak balikpapan",
     "kue nampan balikpapan",
     "catering balikpapan harian",
