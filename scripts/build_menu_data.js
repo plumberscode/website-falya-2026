@@ -100,7 +100,7 @@ export const FALYA_CONTACT = {
   whatsappNumber: '6285954227622',
   instagram: '@falya_risol',
   facebook: 'falyarisol',
-  address: 'Jl. Syarifuddin Yoes no.4 RT 41, Balikpapan Selatan',
+  address: 'Jl. Syarifuddin Yoes no.4 RT 41, Seberang Pelangi B-Point, belakang bengkel BBS, Balikpapan Selatan',
   hours: 'Senin - Minggu: 08:00 - 18:00 WITA',
   googleMapsUrl: 'https://maps.app.goo.gl/falya',
 };

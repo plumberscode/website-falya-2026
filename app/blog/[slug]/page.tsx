@@ -2,6 +2,7 @@ import type { Metadata, ResolvingMetadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getPostBySlug } from "@/app/actions/blog";
+import { cleanExcerpt } from "@/lib/utils";
 import { getAdminSession } from "@/lib/auth";
 import BlogImage from "@/components/blog/BlogImage";
 import { Calendar, ArrowLeft, Share2, Tag, AlertTriangle, Clock, Edit3 } from "lucide-react";
@@ -9,6 +10,8 @@ import { Calendar, ArrowLeft, Share2, Tag, AlertTriangle, Clock, Edit3 } from "l
 interface Props {
   params: Promise<{ slug: string }>;
 }
+
+const DEFAULT_OG_IMAGE = "https://falyarisol.com/images/2026/snackbox01.webp";
 
 // Next.js Dynamic SEO Metadata Generator
 export async function generateMetadata(
@@ -19,17 +22,25 @@ export async function generateMetadata(
   const session = await getAdminSession();
   const post = await getPostBySlug(slug, !!session);
 
+  const siteUrl = "https://falyarisol.com";
+  const canonicalUrl = `${siteUrl}/blog/${slug}`;
+
   if (!post) {
     return {
-      title: "Artikel Tidak Ditemukan - Falya",
+      title: "Artikel Tidak Ditemukan | Blog Falya",
+      description: "Artikel yang Anda cari tidak ditemukan atau belum dipublikasikan.",
+      alternates: {
+        canonical: canonicalUrl,
+      },
+      robots: { index: false, follow: false },
     };
   }
 
-  const siteUrl = "https://falyarisol.com";
-  const canonicalUrl = `${siteUrl}/blog/${post.slug}`;
-  const description =
-    post.metaDescription ||
-    post.content.replace(/<[^>]+>/g, "").slice(0, 160) + "...";
+  const description = post.metaDescription?.trim()
+    ? post.metaDescription.trim()
+    : cleanExcerpt(post.content);
+
+  const ogImage = post.imageUrl?.trim() || DEFAULT_OG_IMAGE;
 
   return {
     title: `${post.title} | Blog Falya`,
@@ -46,21 +57,21 @@ export async function generateMetadata(
       locale: "id_ID",
       type: "article",
       publishedTime: (post.publishedAt || post.createdAt).toISOString(),
-      modifiedTime: post.updatedAt.toISOString(),
-      images: post.imageUrl
-        ? [
-            {
-              url: post.imageUrl,
-              alt: post.title,
-            },
-          ]
-        : [],
+      modifiedTime: (post.updatedAt || post.createdAt).toISOString(),
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
       title: post.title,
       description,
-      images: post.imageUrl ? [post.imageUrl] : [],
+      images: [ogImage],
     },
   };
 }
@@ -79,15 +90,21 @@ export default async function BlogPostDetailPage({ params }: Props) {
   const isDraft = !post.isPublished;
   const isScheduled = post.publishedAt && new Date(post.publishedAt) > new Date();
 
+  const description = post.metaDescription?.trim()
+    ? post.metaDescription.trim()
+    : cleanExcerpt(post.content);
+
+  const ogImage = post.imageUrl?.trim() || DEFAULT_OG_IMAGE;
+
   // Schema.org Article Structured Data for Google Rich Snippets
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     headline: post.title,
-    description: post.metaDescription,
-    image: post.imageUrl ? [post.imageUrl] : undefined,
+    description: description,
+    image: [ogImage],
     datePublished: (post.publishedAt || post.createdAt).toISOString(),
-    dateModified: post.updatedAt.toISOString(),
+    dateModified: (post.updatedAt || post.createdAt).toISOString(),
     author: {
       "@type": "Organization",
       name: "Falya Risol",
@@ -98,7 +115,7 @@ export default async function BlogPostDetailPage({ params }: Props) {
       name: "Falya Risol",
       logo: {
         "@type": "ImageObject",
-        url: "https://falyarisol.com/favicon.ico",
+        url: "https://falyarisol.com/images/logo-risol-mayo.webp",
       },
     },
     mainEntityOfPage: {

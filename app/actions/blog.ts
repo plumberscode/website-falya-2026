@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { getAdminSession } from "@/lib/auth";
+import { cleanExcerpt } from "@/lib/utils";
 
 export async function createPost(formData: {
   title: string;
@@ -28,18 +29,25 @@ export async function createPost(formData: {
       .replace(/[\s_-]+/g, "-")
       .replace(/^-+|-+$/g, "");
 
-    const scheduleDate = formData.publishedAt
-      ? new Date(formData.publishedAt)
-      : new Date();
+    // Jika dipublish sekarang, set waktu sedikit di masa lalu (-2 detik) untuk mencegah clock-skew database vs server
+    const isScheduled = formData.publishedAt && new Date(formData.publishedAt) > new Date();
+    const scheduleDate = isScheduled
+      ? new Date(formData.publishedAt!)
+      : new Date(Date.now() - 2000);
+
+    // Enforce meta description: jika kosong, auto-generate dari konten
+    const finalMetaDescription = formData.metaDescription?.trim()
+      ? formData.metaDescription.trim()
+      : cleanExcerpt(formData.content);
 
     const post = await prisma.post.create({
       data: {
-        title: formData.title,
+        title: formData.title.trim(),
         slug: cleanSlug,
         content: formData.content,
-        metaDescription: formData.metaDescription || null,
-        category: formData.category || null,
-        imageUrl: formData.imageUrl || null,
+        metaDescription: finalMetaDescription,
+        category: formData.category?.trim() || null,
+        imageUrl: formData.imageUrl?.trim() || null,
         publishedAt: scheduleDate,
         isPublished: formData.isPublished !== undefined ? formData.isPublished : true,
       },
@@ -86,19 +94,27 @@ export async function updatePost(
       .replace(/[\s_-]+/g, "-")
       .replace(/^-+|-+$/g, "");
 
+    const isScheduled = formData.publishedAt && new Date(formData.publishedAt) > new Date();
     const scheduleDate = formData.publishedAt
-      ? new Date(formData.publishedAt)
+      ? isScheduled
+        ? new Date(formData.publishedAt)
+        : new Date(Date.now() - 2000)
       : undefined;
+
+    // Enforce meta description: jika kosong, auto-generate dari konten
+    const finalMetaDescription = formData.metaDescription?.trim()
+      ? formData.metaDescription.trim()
+      : cleanExcerpt(formData.content);
 
     const post = await prisma.post.update({
       where: { id },
       data: {
-        title: formData.title,
+        title: formData.title.trim(),
         slug: cleanSlug,
         content: formData.content,
-        metaDescription: formData.metaDescription || null,
-        category: formData.category || null,
-        imageUrl: formData.imageUrl || null,
+        metaDescription: finalMetaDescription,
+        category: formData.category?.trim() || null,
+        imageUrl: formData.imageUrl?.trim() || null,
         ...(scheduleDate && { publishedAt: scheduleDate }),
         ...(formData.isPublished !== undefined && { isPublished: formData.isPublished }),
       },
@@ -145,14 +161,15 @@ export async function deletePost(id: string) {
 // Untuk halaman admin: includeScheduled = true (menampilkan semua artikel termasuk jadwal mendatang)
 export async function getAllPosts(includeScheduled: boolean = false, category?: string) {
   try {
-    const now = new Date();
+    // Toleransi clock-skew 60 detik di masa depan agar artikel yang baru saja dipublish instan langsung muncul
+    const nowWithBuffer = new Date(Date.now() + 60 * 1000);
     
     // Build where clause
     const whereClause: any = includeScheduled 
       ? {} 
       : {
           isPublished: true,
-          publishedAt: { lte: now },
+          publishedAt: { lte: nowWithBuffer },
         };
         
     if (category) {
@@ -171,7 +188,8 @@ export async function getAllPosts(includeScheduled: boolean = false, category?: 
 
 export async function getPostBySlug(slug: string, allowScheduled: boolean = false) {
   try {
-    const now = new Date();
+    // Toleransi clock-skew 60 detik di masa depan agar query instan tidak menganggap artikel terjadwal
+    const nowWithBuffer = new Date(Date.now() + 60 * 1000);
     return await prisma.post.findFirst({
       where: {
         slug,
@@ -179,7 +197,7 @@ export async function getPostBySlug(slug: string, allowScheduled: boolean = fals
           ? {}
           : {
               isPublished: true,
-              publishedAt: { lte: now },
+              publishedAt: { lte: nowWithBuffer },
             }),
       },
     });
@@ -221,3 +239,4 @@ export async function getAllCategories() {
     return [];
   }
 }
+

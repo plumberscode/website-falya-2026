@@ -70,7 +70,7 @@ const FAQ_GROUPS = [
       },
       {
         q: "Kapan jam operasional Falya?",
-        a: "Falya buka setiap hari Senin–Minggu pukul 08.00–18.00 WITA, berlokasi di Jl. Syarifuddin Yoes no.4 RT 41, Balikpapan Selatan.",
+        a: "Falya buka setiap hari Senin–Minggu pukul 08.00–18.00 WITA, berlokasi di Jl. Syarifuddin Yoes no.4 RT 41, Seberang Pelangi B-Point, belakang bengkel BBS, Balikpapan Selatan.",
       },
       {
         q: "Apakah bisa untuk kebutuhan acara atau kantor?",

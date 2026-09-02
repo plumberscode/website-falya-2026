@@ -37,15 +37,35 @@ export default function NewBlogPostPage() {
     setSlug(generatedSlug);
   };
 
+  // Auto-generate excerpt from HTML content
+  const handleGenerateMetaFromContent = () => {
+    if (!content) return;
+    const clean = content
+      .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
+      .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
+      .replace(/<[^>]+>/g, " ")
+      .replace(/&nbsp;/gi, " ")
+      .replace(/&amp;/gi, "&")
+      .replace(/&quot;/gi, '"')
+      .replace(/&#39;/gi, "'")
+      .replace(/&lt;/gi, "<")
+      .replace(/&gt;/gi, ">")
+      .replace(/\s+/g, " ")
+      .trim();
+    if (clean) {
+      setMetaDescription(clean.slice(0, 155));
+    }
+  };
+
   const handleSavePost = async (forceDraft = false) => {
     const isDraft = forceDraft || publishMode === "draft";
 
-    if (!title || !slug) {
-      setMessage({ type: "error", text: "Judul dan Slug wajib diisi." });
+    if (!title.trim() || !slug.trim()) {
+      setMessage({ type: "error", text: "Judul dan Slug URL wajib diisi." });
       return;
     }
 
-    if (!isDraft && !content) {
+    if (!isDraft && !content.trim()) {
       setMessage({ type: "error", text: "Isi konten artikel wajib diisi sebelum dipublikasikan." });
       return;
     }
@@ -53,6 +73,17 @@ export default function NewBlogPostPage() {
     if (!isDraft && publishMode === "schedule" && !scheduledDateTime) {
       setMessage({ type: "error", text: "Pilih tanggal dan jam untuk publikasi terjadwal." });
       return;
+    }
+
+    // Auto-generate meta description jika kosong sebelum publish
+    let finalMetaDesc = metaDescription.trim();
+    if (!finalMetaDesc && content) {
+      const clean = content
+        .replace(/<[^>]+>/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+      finalMetaDesc = clean.slice(0, 155);
+      setMetaDescription(finalMetaDesc);
     }
 
     setIsSubmitting(true);
@@ -64,11 +95,11 @@ export default function NewBlogPostPage() {
         : new Date();
 
     const res = await createPost({
-      title,
-      slug,
+      title: title.trim(),
+      slug: slug.trim(),
       content: content || "<p></p>",
-      metaDescription,
-      category: category || undefined,
+      metaDescription: finalMetaDesc,
+      category: category.trim() || undefined,
       imageUrl: imageUrl || undefined,
       publishedAt,
       isPublished: !isDraft,
@@ -83,7 +114,7 @@ export default function NewBlogPostPage() {
           ? "Artikel berhasil disimpan sebagai Draf (Belum Terbit)!"
           : publishMode === "schedule"
           ? "Artikel berhasil dijadwalkan! Akan otomatis terbit pada waktu yang ditentukan."
-          : "Artikel blog berhasil dipublikasikan sekarang!",
+          : "Artikel blog berhasil dipublikasikan sekarang dengan SEO & OG lengkap!",
       });
       setTimeout(() => {
         router.push("/admin/blog");
@@ -97,6 +128,14 @@ export default function NewBlogPostPage() {
     e.preventDefault();
     await handleSavePost(false);
   };
+
+  const previewDescription =
+    metaDescription ||
+    (content
+      ? content.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").slice(0, 155) + "..."
+      : "Ini adalah contoh cuplikan deskripsi artikel yang akan dilihat pengunjung saat mencari kata kunci terkait di Google Search...");
+
+  const fallbackOgImage = "https://falyarisol.com/images/2026/snackbox01.webp";
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 pt-24 pb-12 px-4 sm:px-6 lg:px-8">
@@ -112,7 +151,7 @@ export default function NewBlogPostPage() {
             </Link>
             <div>
               <h1 className="text-2xl font-bold tracking-tight">Tulis Artikel Blog Baru</h1>
-              <p className="text-sm text-zinc-500">Optimasi untuk kata kunci (Long Tail SEO)</p>
+              <p className="text-sm text-zinc-500">Optimasi untuk kata kunci & SEO On-Page Otomatis</p>
             </div>
           </div>
         </div>
@@ -180,14 +219,23 @@ export default function NewBlogPostPage() {
 
           {/* Gambar Thumbnail Cloudinary */}
           <div className="bg-white dark:bg-zinc-900 p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800 space-y-4">
-            <label className="block text-sm font-semibold">Gambar Utama (Cloudinary Media Storage)</label>
-            <p className="text-xs text-zinc-500 pb-2">
-              Gambar akan di-hosting di Cloudinary dan otomatis dikompres ke format WebP untuk kecepatan maksimal.
-            </p>
+            <div className="flex items-center justify-between">
+              <div>
+                <label className="block text-sm font-semibold">Gambar Utama & OpenGraph Image (1200x630)</label>
+                <p className="text-xs text-zinc-500 mt-0.5">
+                  Gambar ini akan menjadi thumbnail artikel serta cover otomatis saat artikel dibagikan di WhatsApp, Facebook, dan Twitter.
+                </p>
+              </div>
+            </div>
             <CldUploadButton
               onSuccess={(url) => setImageUrl(url)}
               currentImageUrl={imageUrl}
             />
+            {!imageUrl && (
+              <p className="text-xs text-amber-600 dark:text-amber-400 bg-amber-500/10 p-3 rounded-xl border border-amber-500/20">
+                💡 Jika tidak mengunggah gambar custom, sistem akan otomatis menggunakan gambar fallback default Falya untuk OpenGraph tag media sosial.
+              </p>
+            )}
           </div>
 
           {/* Konten Rich Text */}
@@ -297,16 +345,27 @@ export default function NewBlogPostPage() {
           </div>
 
           {/* SEO Meta Description & Google Preview */}
-          <div className="bg-white dark:bg-zinc-900 p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 space-y-4">
+          <div className="bg-white dark:bg-zinc-900 p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 space-y-5">
             <div>
-              <div className="flex items-center justify-between mb-1">
-                <label className="block text-sm font-semibold">Meta Description (Cuplikan Google)</label>
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <label className="block text-sm font-semibold">Meta Description (Cuplikan Google & OG)</label>
+                  <button
+                    type="button"
+                    onClick={handleGenerateMetaFromContent}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-500/20 text-xs font-semibold transition cursor-pointer"
+                    title="Buat deskripsi otomatis dari paragraf pertama isi artikel"
+                  >
+                    <Sparkles className="w-3 h-3" />
+                    Generate dari Konten
+                  </button>
+                </div>
                 <span
                   className={`text-xs font-mono ${
                     metaDescription.length > 160
                       ? "text-red-500 font-bold"
                       : metaDescription.length >= 120
-                      ? "text-emerald-500"
+                      ? "text-emerald-500 font-semibold"
                       : "text-zinc-400"
                   }`}
                 >
@@ -316,27 +375,64 @@ export default function NewBlogPostPage() {
               <textarea
                 value={metaDescription}
                 onChange={(e) => setMetaDescription(e.target.value)}
-                placeholder="Tuliskan rangkuman menarik artikel Anda yang mengandung kata kunci pencarian..."
+                placeholder="Tuliskan rangkuman menarik artikel Anda yang mengandung kata kunci pencarian, atau klik 'Generate dari Konten'..."
                 rows={3}
                 className="w-full px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition text-sm"
               />
+              <p className="text-[11px] text-zinc-500 mt-1">
+                💡 Jika dibiarkan kosong, sistem secara otomatis mengekstrak 155 karakter pertama dari konten artikel untuk mengisi meta description, canonical, dan OpenGraph tag.
+              </p>
             </div>
 
             {/* Google SERP Preview */}
-            <div className="p-4 rounded-xl bg-zinc-100 dark:bg-zinc-950/80 border border-zinc-200 dark:border-zinc-800 space-y-1">
-              <div className="flex items-center gap-1.5 text-xs text-zinc-500 mb-1">
-                <Globe className="w-3.5 h-3.5" />
-                <span>Pratinjau Hasil Pencarian Google:</span>
+            <div className="space-y-2">
+              <div className="flex items-center gap-1.5 text-xs font-semibold text-zinc-600 dark:text-zinc-400">
+                <Globe className="w-3.5 h-3.5 text-blue-500" />
+                <span>Pratinjau Hasil Pencarian Google (SERP):</span>
               </div>
-              <div className="text-xs text-zinc-500 truncate">
-                https://falyarisol.com › blog › {slug || "judul-artikel"}
+              <div className="p-4 rounded-xl bg-zinc-100 dark:bg-zinc-950/80 border border-zinc-200 dark:border-zinc-800 space-y-1">
+                <div className="text-xs text-zinc-500 truncate">
+                  https://falyarisol.com › blog › {slug || "judul-artikel"}
+                </div>
+                <div className="text-base text-blue-600 dark:text-blue-400 font-medium hover:underline cursor-pointer truncate">
+                  {title || "Judul Artikel Blog Anda"} | Blog Falya
+                </div>
+                <div className="text-xs text-zinc-600 dark:text-zinc-400 line-clamp-2">
+                  {previewDescription}
+                </div>
               </div>
-              <div className="text-base text-blue-600 dark:text-blue-400 font-medium hover:underline cursor-pointer truncate">
-                {title || "Judul Artikel Blog Anda"} - Falya
+            </div>
+
+            {/* Social Media & WhatsApp Card Preview (OpenGraph) */}
+            <div className="space-y-2 pt-2 border-t border-zinc-200 dark:border-zinc-800">
+              <div className="flex items-center gap-1.5 text-xs font-semibold text-zinc-600 dark:text-zinc-400">
+                <Sparkles className="w-3.5 h-3.5 text-emerald-500" />
+                <span>Pratinjau Kartu Berbagi Sosial Media (WhatsApp / Facebook / Twitter):</span>
               </div>
-              <div className="text-xs text-zinc-600 dark:text-zinc-400 line-clamp-2">
-                {metaDescription ||
-                  "Ini adalah contoh cuplikan deskripsi artikel yang akan dilihat pengunjung saat mencari kata kunci terkait di Google Search..."}
+              <div className="max-w-md rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm">
+                <div className="relative aspect-video w-full bg-zinc-200 dark:bg-zinc-800 overflow-hidden">
+                  <img
+                    src={imageUrl || fallbackOgImage}
+                    alt="Preview OG"
+                    className="w-full h-full object-cover"
+                  />
+                  {!imageUrl && (
+                    <div className="absolute top-2 right-2 px-2 py-1 bg-black/60 backdrop-blur-xs text-white text-[10px] rounded-md font-medium">
+                      Default Brand OG Image
+                    </div>
+                  )}
+                </div>
+                <div className="p-3.5 space-y-1">
+                  <p className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
+                    falyarisol.com
+                  </p>
+                  <p className="font-bold text-sm text-zinc-900 dark:text-zinc-100 line-clamp-1">
+                    {title || "Judul Artikel Blog Anda"}
+                  </p>
+                  <p className="text-xs text-zinc-500 line-clamp-2">
+                    {previewDescription}
+                  </p>
+                </div>
               </div>
             </div>
           </div>

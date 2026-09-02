@@ -5,11 +5,35 @@ import BlogImage from "@/components/blog/BlogImage";
 import { Calendar, ArrowRight, BookOpen, Tag } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Blog & Artikel | Falya Risol",
+  title: "Blog & Artikel Kuliner | Falya Risol Balikpapan",
   description:
-    "Kumpulan tips, resep, dan informasi seputar aneka camilan, snack box, dan kuliner premium dari Falya.",
+    "Kumpulan tips, rekomendasi menu, panduan memilih snack box kantor, nasi liwet, dan aneka kuliner lezat dari Falya Risol Balikpapan.",
   alternates: {
     canonical: "https://falyarisol.com/blog",
+  },
+  openGraph: {
+    title: "Blog & Artikel Kuliner | Falya Risol Balikpapan",
+    description:
+      "Kumpulan tips, rekomendasi menu, panduan memilih snack box kantor, nasi liwet, dan aneka kuliner lezat dari Falya Risol Balikpapan.",
+    url: "https://falyarisol.com/blog",
+    siteName: "Falya Risol",
+    locale: "id_ID",
+    type: "website",
+    images: [
+      {
+        url: "https://falyarisol.com/images/2026/snackbox01.webp",
+        width: 1200,
+        height: 630,
+        alt: "Blog & Artikel Kuliner Falya Risol Balikpapan",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Blog & Artikel Kuliner | Falya Risol Balikpapan",
+    description:
+      "Kumpulan tips, rekomendasi menu, panduan memilih snack box kantor, nasi liwet, dan aneka kuliner lezat dari Falya Risol Balikpapan.",
+    images: ["https://falyarisol.com/images/2026/snackbox01.webp"],
   },
 };
 

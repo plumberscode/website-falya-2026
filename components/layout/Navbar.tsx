@@ -17,7 +17,6 @@ import { FALYA_CONTACT } from "@/lib/data/menuData";
 export default function Navbar() {
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -27,15 +26,7 @@ export default function Navbar() {
   useEffect(() => {
     setMounted(true);
     const handleScroll = () => {
-      const scrollY = window.scrollY;
-
-      if (pathname === "/") {
-        setIsVisible(scrollY > window.innerHeight * 3.8);
-      } else {
-        setIsVisible(true);
-      }
-
-      setIsScrolled(scrollY > 30);
+      setIsScrolled(window.scrollY > 30);
     };
 
     handleScroll();
@@ -54,13 +45,11 @@ export default function Navbar() {
     <>
       <header
         className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
-          isVisible
-            ? "translate-y-0 opacity-100"
-            : "-translate-y-full opacity-0 pointer-events-none"
-        } ${
           isScrolled || mobileMenuOpen
             ? "bg-white/90 backdrop-blur-md shadow-[0_1px_20px_rgba(36,27,24,0.07)] py-3"
-            : "bg-transparent py-5"
+            : pathname === "/"
+              ? "bg-white/50 backdrop-blur-sm py-5"
+              : "bg-transparent py-5"
         }`}
       >
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 flex items-center justify-between">
@@ -92,9 +81,7 @@ export default function Navbar() {
                     className={`text-sm font-medium tracking-wide transition-colors duration-200 ${
                       isActive
                         ? "text-[#a82868] font-semibold"
-                        : isScrolled || mobileMenuOpen || pathname !== "/"
-                          ? "text-[#665b56] hover:text-[#241b18]"
-                          : "text-white/90 hover:text-white"
+                        : "text-[#665b56] hover:text-[#241b18]"
                     }`}
                   >
                     {link.label}
@@ -117,11 +104,7 @@ export default function Navbar() {
             {/* Cart — Ghost Style */}
             <button
               onClick={toggleCart}
-              className={`relative flex items-center gap-2 text-sm font-medium transition-colors duration-200 cursor-pointer ${
-                isScrolled || mobileMenuOpen || pathname !== "/"
-                  ? "text-[#665b56] hover:text-[#a82868]"
-                  : "text-white/90 hover:text-white"
-              }`}
+              className={`relative flex items-center gap-2 text-sm font-medium transition-colors duration-200 cursor-pointer text-[#665b56] hover:text-[#a82868]`}
               aria-label="Keranjang Belanja"
             >
               <ShoppingCart className="w-4.5 h-4.5" />
@@ -138,11 +121,7 @@ export default function Navbar() {
             {/* Mobile Hamburger — Ghost */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className={`md:hidden p-1 transition-colors ${
-                isScrolled || mobileMenuOpen || pathname !== "/"
-                  ? "text-[#241b18] hover:text-[#a82868]"
-                  : "text-white hover:text-white/70"
-              }`}
+              className="md:hidden p-1 transition-colors text-[#241b18] hover:text-[#a82868]"
               aria-label="Toggle menu"
             >
               {mobileMenuOpen ? (

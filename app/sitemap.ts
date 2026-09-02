@@ -47,10 +47,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Fetch all dynamic blog posts from Neon database for Google Indexing
   try {
+    const nowWithBuffer = new Date(Date.now() + 60 * 1000);
     const posts = await prisma.post.findMany({
       where: {
         isPublished: true,
-        publishedAt: { lte: now },
+        publishedAt: { lte: nowWithBuffer },
       },
       select: {
         slug: true,

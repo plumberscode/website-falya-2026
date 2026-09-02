@@ -49,6 +49,16 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        source: "/index",
+        destination: "/",
+        permanent: true,
+      },
+      {
+        source: "/index.html",
+        destination: "/",
+        permanent: true,
+      },
+      {
         // Redirect URL lama berakhiran .html ke URL bersih yang baru
         source: "/:slug.html",
         destination: "/:slug",
