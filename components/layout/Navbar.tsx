@@ -17,7 +17,8 @@ import { FALYA_CONTACT } from "@/lib/data/menuData";
 export default function Navbar() {
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+  // true  = user has scrolled past the scrollytelling zone (or is on a non-home page)
+  const [pastHero, setPastHero] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const { getTotalItems, toggleCart } = useCartStore();
@@ -25,8 +26,25 @@ export default function Navbar() {
 
   useEffect(() => {
     setMounted(true);
+
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 30);
+      if (pathname !== "/") {
+        setPastHero(true);
+        return;
+      }
+
+      // Query the scrollytelling container to get its real bottom position
+      const heroSection = document.querySelector<HTMLElement>(
+        "[data-scrollytelling]",
+      );
+      if (heroSection) {
+        // rect.bottom < 0  →  container completely scrolled past viewport top
+        const rect = heroSection.getBoundingClientRect();
+        setPastHero(rect.bottom <= 0);
+      } else {
+        // Fallback: treat 450vh as default scrollytelling height
+        setPastHero(window.scrollY > window.innerHeight * 4.5);
+      }
     };
 
     handleScroll();
@@ -41,16 +59,19 @@ export default function Navbar() {
     { label: "Nasi Liwet", href: "/nasi-liwet" },
   ];
 
+  // On homepage: semi-transparent while inside hero scroll zone, solid after
+  const headerBg = mobileMenuOpen
+    ? "bg-white/90 backdrop-blur-md shadow-[0_1px_20px_rgba(36,27,24,0.07)] py-3"
+    : pastHero
+      ? "bg-white/90 backdrop-blur-md shadow-[0_1px_20px_rgba(36,27,24,0.07)] py-3"
+      : pathname === "/"
+        ? "bg-white/50 backdrop-blur-sm py-5"
+        : "bg-transparent py-5";
+
   return (
     <>
       <header
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
-          isScrolled || mobileMenuOpen
-            ? "bg-white/90 backdrop-blur-md shadow-[0_1px_20px_rgba(36,27,24,0.07)] py-3"
-            : pathname === "/"
-              ? "bg-white/50 backdrop-blur-sm py-5"
-              : "bg-transparent py-5"
-        }`}
+        className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${headerBg}`}
       >
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 flex items-center justify-between">
           {/* Brand Logo */}

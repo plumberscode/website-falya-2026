@@ -306,7 +306,7 @@ export default function CanvasSequenceScroller({
   }, [totalFrames, totalDuration, sceneForFrame, renderFrame, preloadAround, evictDistantFrames]);
 
   return (
-    <div ref={containerRef} className="relative w-full h-[450vh] bg-[#241b18]">
+    <div ref={containerRef} data-scrollytelling className="relative w-full h-[450vh] bg-[#241b18]">
       {/* Sticky Fullscreen Canvas Viewport */}
       <div className="sticky top-0 left-0 w-full h-screen overflow-hidden flex items-center justify-center">
         {/* First Frame Poster Image — Terdaftar instan oleh Chromium sebagai LCP */}
