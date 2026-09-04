@@ -2,6 +2,7 @@
 
 import React, {
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
   useMemo,
@@ -14,6 +15,25 @@ interface CanvasSequenceScrollerProps {
   totalDuration?: number;
 }
 
+// Minimal typing untuk Network Information API — belum masuk lib.dom.d.ts
+// standar TypeScript, dan tidak didukung semua browser (mis. Safari/iOS).
+interface NetworkInformation {
+  saveData?: boolean;
+  effectiveType?: "slow-2g" | "2g" | "3g" | "4g";
+}
+
+// Ambang waktu muat frame ke-2 (index 1) sebelum dianggap koneksi lambat.
+// Dipakai sebagai fallback behavioral untuk browser tanpa Network
+// Information API (mis. Safari/iOS) — lihat maybeEnterSlowMode().
+const SLOW_FRAME_THRESHOLD_MS = 1200;
+
+// Ambang untuk indikator "Memuat…": gambar dianggap "tertinggal" dari
+// posisi scroll kalau selisihnya > BEHIND_FRAME_THRESHOLD frame, dan
+// baru ditampilkan ke user kalau kondisi itu bertahan lebih dari
+// BEHIND_TIME_THRESHOLD_MS (hindari kedip untuk lag sangat singkat).
+const BEHIND_FRAME_THRESHOLD = 15;
+const BEHIND_TIME_THRESHOLD_MS = 400;
+
 export default function CanvasSequenceScroller({
   totalFrames = 301,
   fps = 15,
@@ -25,6 +45,18 @@ export default function CanvasSequenceScroller({
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [loadedCount, setLoadedCount] = useState<number>(0);
   const [activeScene, setActiveScene] = useState<number>(1);
+  // Mode sederhana untuk koneksi lambat: hero jadi 1 layar penuh (bukan
+  // 450vh scroll-jack) — cukup frame pertama + judul + tagline, lalu
+  // visitor lanjut scroll normal ke section berikutnya.
+  const [isSlowMode, setIsSlowMode] = useState<boolean>(false);
+  const mountTimeRef = useRef<number>(0);
+  const slowModeAppliedRef = useRef<boolean>(false);
+  // Indikator "Memuat…": true kalau gambar tertinggal jauh & lama dari
+  // posisi scroll (lihat checkBuffering). behindSinceRef menyimpan kapan
+  // kondisi "tertinggal" mulai, null kalau sedang tidak tertinggal.
+  const [isBuffering, setIsBuffering] = useState<boolean>(false);
+  const isBufferingRef = useRef<boolean>(false);
+  const behindSinceRef = useRef<number | null>(null);
 
   const imagesRef = useRef<(HTMLImageElement | undefined)[]>([]);
   const requestedRef = useRef<Set<number>>(new Set());
@@ -33,6 +65,10 @@ export default function CanvasSequenceScroller({
   // decode/scrub tetap mulus di HP. Fallback otomatis ke WebP jika AVIF gagal.
   const frameExtRef = useRef<"avif" | "webp">("avif");
   const currentFrameRef = useRef<number>(0);
+  // Frame yang BENAR-BENAR sedang tampil di canvas (bukan target scroll murni).
+  // Ini yang jadi sumber kebenaran untuk activeScene agar teks tidak pernah
+  // mendahului gambar saat frame di sekitarnya belum selesai dimuat.
+  const displayedFrameRef = useRef<number>(0);
   const activeSceneRef = useRef<number>(1);
 
   // Smooth Lerp Motion State Refs
@@ -40,6 +76,51 @@ export default function CanvasSequenceScroller({
   const smoothProgressRef = useRef<number>(0);
   const isTickingRef = useRef<boolean>(false);
   const animationFrameIdRef = useRef<number | null>(null);
+
+  // ─── Slow-Connection Fallback: masuk mode hero 1-layar ──────────────────
+  // Hanya diterapkan kalau user belum mulai scroll (scrollY masih ~0) saat
+  // terdeteksi, supaya tidak ada lompatan posisi scroll yang mengganggu.
+  const maybeEnterSlowMode = useCallback(() => {
+    if (slowModeAppliedRef.current) return;
+    if (typeof window === "undefined") return;
+    if (window.scrollY > 50) return;
+    slowModeAppliedRef.current = true;
+    setIsSlowMode(true);
+    // Hero sudah beralih ke tampilan 1-layar — indikator "Memuat…" tidak
+    // relevan lagi di layout ini.
+    if (isBufferingRef.current) {
+      isBufferingRef.current = false;
+      setIsBuffering(false);
+    }
+  }, []);
+
+  // Sinyal instan (sebelum paint pertama): Network Information API.
+  // Tidak semua browser mendukung ini (mis. Safari/iOS) — fallback
+  // behavioral di bawah (timing frame ke-2) menutup celah itu.
+  // Dijalankan sekali di mount sebelum paint agar tidak ada flash/CLS
+  // saat beralih ke layout mode-lambat — ini kasus valid untuk membaca
+  // API browser eksternal yang tidak bisa diketahui saat SSR/render awal.
+  useLayoutEffect(() => {
+    if (typeof navigator === "undefined") return;
+    const nav = navigator as Navigator & {
+      connection?: NetworkInformation;
+      mozConnection?: NetworkInformation;
+      webkitConnection?: NetworkInformation;
+    };
+    const conn = nav.connection ?? nav.mozConnection ?? nav.webkitConnection;
+    if (
+      conn &&
+      (conn.saveData === true ||
+        conn.effectiveType === "2g" ||
+        conn.effectiveType === "slow-2g")
+    ) {
+      slowModeAppliedRef.current = true;
+      // Baca Network Information API sekali di mount, sebelum paint
+      // pertama; tidak ada cara mengetahui ini saat render/SSR.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setIsSlowMode(true);
+    }
+  }, []);
 
   // ─── Scene → frame-range mapping ───────────────────────────────────────
   const scenes = useMemo(() => {
@@ -66,15 +147,18 @@ export default function CanvasSequenceScroller({
     [scenes],
   );
 
-  // Center-safe draw image on canvas with high quality interpolation
-  const renderFrame = useCallback((frameIndex: number) => {
+  // Center-safe draw image on canvas with high quality interpolation.
+  // Return value menandakan apakah frame benar-benar berhasil digambar
+  // (sudah loaded) — dipakai untuk memastikan teks overlay tidak pernah
+  // mendahului gambar yang sebenarnya tampil.
+  const renderFrame = useCallback((frameIndex: number): boolean => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas) return false;
     const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    if (!ctx) return false;
 
     const img = imagesRef.current[frameIndex];
-    if (!img || !img.complete || img.naturalWidth === 0) return;
+    if (!img || !img.complete || img.naturalWidth === 0) return false;
 
     const canvasWidth = canvas.width;
     const canvasHeight = canvas.height;
@@ -100,6 +184,81 @@ export default function CanvasSequenceScroller({
     ctx.imageSmoothingQuality = "high";
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
     ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+    return true;
+  }, []);
+
+  // ─── Resolve Frame yang Benar-Benar Bisa Ditampilkan ────────────────────
+  // Mencegah teks overlay (scene) mendahului gambar: kalau targetFrame belum
+  // loaded (fast-scroll / koneksi lambat), cari mundur frame ter-dekat yang
+  // sudah loaded. Kalau tidak ada dalam radius, tetap tampilkan frame
+  // terakhir yang sukses digambar (jangan pernah "mundur" balik ke frame 0).
+  const isFrameReady = useCallback((index: number) => {
+    const img = imagesRef.current[index];
+    return !!img && img.complete && img.naturalWidth !== 0;
+  }, []);
+
+  const resolveDisplayFrame = useCallback(
+    (targetFrame: number) => {
+      if (isFrameReady(targetFrame)) return targetFrame;
+
+      const RADIUS = 40;
+      for (let offset = 1; offset <= RADIUS; offset++) {
+        const candidate = targetFrame - offset;
+        if (candidate < 0) break;
+        if (isFrameReady(candidate)) return candidate;
+      }
+
+      return displayedFrameRef.current;
+    },
+    [isFrameReady],
+  );
+
+  // Gambar canvas + scene text di-update bersamaan, hanya berdasarkan frame
+  // yang benar-benar loaded — dipanggil dari rAF loop maupun dari callback
+  // load frame (kasus: frame yang ditunggu tiba setelah lerp sudah berhenti).
+  const syncDisplay = useCallback(
+    (targetFrame: number) => {
+      const displayFrame = resolveDisplayFrame(targetFrame);
+      if (displayFrame === displayedFrameRef.current) return;
+      if (!renderFrame(displayFrame)) return;
+
+      displayedFrameRef.current = displayFrame;
+      const newScene = sceneForFrame(displayFrame);
+      if (newScene !== activeSceneRef.current) {
+        activeSceneRef.current = newScene;
+        setActiveScene(newScene);
+      }
+    },
+    [resolveDisplayFrame, renderFrame, sceneForFrame],
+  );
+
+  // Nyalakan/matikan indikator "Memuat…" berdasarkan seberapa jauh & lama
+  // gambar (displayedFrameRef) tertinggal dari posisi scroll (targetFrame).
+  // Dipanggil setelah syncDisplay supaya "behind" dihitung dari state
+  // gambar yang paling baru di tick ini.
+  const checkBuffering = useCallback((targetFrame: number) => {
+    const behind =
+      Math.abs(targetFrame - displayedFrameRef.current) > BEHIND_FRAME_THRESHOLD;
+
+    if (!behind) {
+      behindSinceRef.current = null;
+      if (isBufferingRef.current) {
+        isBufferingRef.current = false;
+        setIsBuffering(false);
+      }
+      return;
+    }
+
+    const now = performance.now();
+    if (behindSinceRef.current === null) {
+      behindSinceRef.current = now;
+    } else if (
+      !isBufferingRef.current &&
+      now - behindSinceRef.current > BEHIND_TIME_THRESHOLD_MS
+    ) {
+      isBufferingRef.current = true;
+      setIsBuffering(true);
+    }
   }, []);
 
   // ─── Single Frame Loader with Fallback ──────────────────────────────────
@@ -121,8 +280,14 @@ export default function CanvasSequenceScroller({
       img.onload = () => {
         imagesRef.current[index] = img;
         setLoadedCount((c) => c + 1);
+        // Frame ke-2 dipakai sebagai probe kecepatan koneksi: kalau lambat
+        // datang, kemungkinan besar frame-frame berikutnya juga akan lag
+        // jauh di belakang posisi scroll — lebih baik masuk mode 1-layar.
+        if (index === 1 && performance.now() - mountTimeRef.current > SLOW_FRAME_THRESHOLD_MS) {
+          maybeEnterSlowMode();
+        }
         if (index === currentFrameRef.current || index === 0) {
-          renderFrame(index);
+          syncDisplay(currentFrameRef.current);
           setIsLoading(false);
         }
       };
@@ -134,8 +299,11 @@ export default function CanvasSequenceScroller({
           fb.onload = () => {
             imagesRef.current[index] = fb;
             setLoadedCount((c) => c + 1);
+            if (index === 1 && performance.now() - mountTimeRef.current > SLOW_FRAME_THRESHOLD_MS) {
+              maybeEnterSlowMode();
+            }
             if (index === currentFrameRef.current || index === 0) {
-              renderFrame(index);
+              syncDisplay(currentFrameRef.current);
               setIsLoading(false);
             }
           };
@@ -149,7 +317,7 @@ export default function CanvasSequenceScroller({
         loadFallback(`/videos/frames-desktop/frame_${frameNumber}.webp`);
       };
     },
-    [totalFrames, renderFrame],
+    [totalFrames, syncDisplay, maybeEnterSlowMode],
   );
 
   // ─── On-Demand Frame Preload Window (Scroll-Driven Streamer) ───────────
@@ -180,6 +348,8 @@ export default function CanvasSequenceScroller({
 
   // ─── Initial Fast Hero Mount (Hanya Muat Frame 0 & 1 untuk LCP Instan) ──
   useEffect(() => {
+    mountTimeRef.current = performance.now();
+
     const isDesktop =
       typeof window !== "undefined" ? window.innerWidth >= 768 : true;
     const folder = isDesktop
@@ -192,10 +362,17 @@ export default function CanvasSequenceScroller({
     requestFrame(0, folder, true);
     requestFrame(1, folder, false);
 
-    // Timeout pengaman agar preloader tidak pernah hang
-    const safety = setTimeout(() => setIsLoading(false), 2000);
+    // Timeout pengaman agar preloader tidak pernah hang. Kalau sampai
+    // detik ini frame ke-2 masih belum termuat sama sekali, itu sinyal
+    // koneksi sangat lambat — masuk mode hero 1-layar juga.
+    const safety = setTimeout(() => {
+      setIsLoading(false);
+      if (!imagesRef.current[1]) {
+        maybeEnterSlowMode();
+      }
+    }, 2000);
     return () => clearTimeout(safety);
-  }, [requestFrame]);
+  }, [requestFrame, maybeEnterSlowMode]);
 
   // ─── Canvas Resize Handler ──────────────────────────────────────────────
   useEffect(() => {
@@ -207,7 +384,7 @@ export default function CanvasSequenceScroller({
       canvas.width = window.innerWidth * dpr;
       canvas.height = window.innerHeight * dpr;
 
-      renderFrame(currentFrameRef.current);
+      renderFrame(displayedFrameRef.current);
     };
 
     handleResize();
@@ -233,18 +410,18 @@ export default function CanvasSequenceScroller({
           Math.max(0, Math.floor(smoothProgress * (totalFrames - 1))),
         );
 
-        const newScene = sceneForFrame(targetFrame);
-        if (newScene !== activeSceneRef.current) {
-          activeSceneRef.current = newScene;
-          setActiveScene(newScene);
-        }
-
         if (targetFrame !== currentFrameRef.current) {
           currentFrameRef.current = targetFrame;
-          renderFrame(targetFrame);
           preloadAround(targetFrame, folderRef.current, 12);
           evictDistantFrames(targetFrame);
         }
+
+        // Teks/scene & gambar mengikuti frame yang BENAR-BENAR sudah loaded
+        // (bisa jadi tertinggal dari targetFrame saat fast-scroll / koneksi
+        // lambat) — bukan posisi scroll target murni. Ini mencegah teks
+        // mendahului gambar yang belum sempat digambar.
+        syncDisplay(targetFrame);
+        checkBuffering(targetFrame);
 
         // Lanjutkan animasi selama masih bergerak
         animationFrameIdRef.current = requestAnimationFrame(tick);
@@ -255,11 +432,9 @@ export default function CanvasSequenceScroller({
           totalFrames - 1,
           Math.max(0, Math.floor(target * (totalFrames - 1))),
         );
-
-        if (targetFrame !== currentFrameRef.current) {
-          currentFrameRef.current = targetFrame;
-          renderFrame(targetFrame);
-        }
+        currentFrameRef.current = targetFrame;
+        syncDisplay(targetFrame);
+        checkBuffering(targetFrame);
 
         isTickingRef.current = false;
         animationFrameIdRef.current = null;
@@ -303,12 +478,38 @@ export default function CanvasSequenceScroller({
         cancelAnimationFrame(animationFrameIdRef.current);
       }
     };
-  }, [totalFrames, totalDuration, sceneForFrame, renderFrame, preloadAround, evictDistantFrames]);
+  }, [
+    totalFrames,
+    totalDuration,
+    syncDisplay,
+    checkBuffering,
+    preloadAround,
+    evictDistantFrames,
+  ]);
 
   return (
-    <div ref={containerRef} data-scrollytelling className="relative w-full h-[450vh] bg-[#241b18]">
+    <div
+      ref={containerRef}
+      data-scrollytelling
+      className={`relative w-full bg-[#241b18] ${isSlowMode ? "h-screen" : "h-[450vh]"}`}
+    >
       {/* Sticky Fullscreen Canvas Viewport */}
       <div className="sticky top-0 left-0 w-full h-screen overflow-hidden flex items-center justify-center">
+        {/* Progress bar tipis: muncul hanya saat gambar tertinggal dari
+            posisi scroll (lihat checkBuffering), menunjukkan rasio frame
+            yang sudah termuat agar visitor tahu hero masih menyusul. */}
+        <div
+          className={`absolute top-0 left-0 right-0 z-30 h-0.5 bg-white/10 transition-opacity duration-300 ${
+            isBuffering ? "opacity-100" : "opacity-0"
+          }`}
+          aria-hidden="true"
+        >
+          <div
+            className="h-full bg-food-gold transition-[width] duration-200 ease-out"
+            style={{ width: `${Math.min(100, (loadedCount / totalFrames) * 100)}%` }}
+          />
+        </div>
+
         {/* First Frame Poster Image — Terdaftar instan oleh Chromium sebagai LCP */}
         <picture className="absolute inset-0 w-full h-full select-none pointer-events-none">
           <source
@@ -423,11 +624,17 @@ export default function CanvasSequenceScroller({
           </div>
         </div>
 
-        {/* Scroll Indicator */}
+        {/* Scroll Indicator — beralih jadi "Memuat…" (pulse, bukan bounce)
+            saat gambar tertinggal jauh dari posisi scroll, supaya visitor
+            tahu hero masih menyusul, bukan macet. */}
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center animate-in fade-in duration-1000">
-          <span className="text-white/80 text-[10px] tracking-[0.2em] uppercase mb-2 drop-shadow-md">Scroll ke bawah</span>
+          <span className="text-white/80 text-[10px] tracking-[0.2em] uppercase mb-2 drop-shadow-md">
+            {isBuffering ? "Memuat…" : "Scroll ke bawah"}
+          </span>
           <div className="w-5 h-8 border border-white/60 rounded-full flex justify-center p-1 shadow-sm">
-            <div className="w-1 h-2 bg-white rounded-full animate-bounce"></div>
+            <div
+              className={`w-1 h-2 bg-white rounded-full ${isBuffering ? "animate-pulse" : "animate-bounce"}`}
+            ></div>
           </div>
         </div>
       </div>
