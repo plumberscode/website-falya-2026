@@ -15,6 +15,7 @@ import MenuCard from "@/components/menu/MenuCard";
 import TestimonialSlider from "@/components/testimonials/TestimonialSlider";
 import { Button } from "@/components/ui/button";
 import { FALYA_CONTACT, INITIAL_MENU } from "@/lib/data/menuData";
+import { withImageVersion } from "@/lib/utils/cacheBustImage";
 
 export default function HomePage() {
   // 3 Best Sellers as specified in AGENTS.md / original website
@@ -154,7 +155,7 @@ export default function HomePage() {
             {/* Image — shadow, no border */}
             <div className="lg:col-span-5 relative aspect-[4/3] rounded-[20px] overflow-hidden shadow-[0_4px_20px_rgba(36,27,24,0.1)]">
               <Image
-                src="/images/2026/snackbox01.webp"
+                src={withImageVersion("/images/2026/snackbox01.webp")}
                 alt="Paket Snack Box Falya"
                 fill
                 className="object-cover"
@@ -187,7 +188,7 @@ export default function HomePage() {
             >
               <div className="relative w-full aspect-[4/3] rounded-[16px] overflow-hidden bg-[#faf0f4] mb-4">
                 <Image
-                  src="/images/2026/risol-mayo-2026.webp"
+                  src={withImageVersion("/images/2026/risol-mayo-2026.webp")}
                   alt="Risol Mayo Falya"
                   fill
                   className="object-cover group-hover:scale-104 transition-transform duration-500"
@@ -215,7 +216,7 @@ export default function HomePage() {
             >
               <div className="relative w-full aspect-[4/3] rounded-[16px] overflow-hidden bg-[#faf0f4] mb-4">
                 <Image
-                  src="/images/item-ayam-serundeng.webp"
+                  src={withImageVersion("/images/item-ayam-serundeng.webp")}
                   alt="Nasi Liwet Falya"
                   fill
                   className="object-cover group-hover:scale-104 transition-transform duration-500"
@@ -243,7 +244,7 @@ export default function HomePage() {
             >
               <div className="relative w-full aspect-[4/3] rounded-[16px] overflow-hidden bg-[#faf0f4] mb-4">
                 <Image
-                  src="/images/2026/snackbox.webp"
+                  src={withImageVersion("/images/2026/snackbox.webp")}
                   alt="Snack Box Falya"
                   fill
                   className="object-cover group-hover:scale-104 transition-transform duration-500"

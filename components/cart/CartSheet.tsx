@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useCartStore, OrderType } from "@/lib/store/cartStore";
+import { withImageVersion } from "@/lib/utils/cacheBustImage";
 
 export default function CartSheet() {
   const {
@@ -110,7 +111,7 @@ export default function CartSheet() {
                   {/* Item image — no border */}
                   <div className="relative w-16 h-16 rounded-[12px] overflow-hidden bg-[#faf0f4] shrink-0 shadow-[0_1px_6px_rgba(36,27,24,0.08)]">
                     <Image
-                      src={item.menuItem.image}
+                      src={withImageVersion(item.menuItem.image)}
                       alt={item.menuItem.name}
                       fill
                       sizes="64px"

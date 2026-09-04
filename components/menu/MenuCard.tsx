@@ -4,6 +4,7 @@ import React from "react";
 import Image from "next/image";
 import { Plus, Check } from "lucide-react";
 import { MenuItem } from "@/lib/data/menuData";
+import { withImageVersion } from "@/lib/utils/cacheBustImage";
 import { useCartStore } from "@/lib/store/cartStore";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -33,7 +34,7 @@ export default function MenuCard({ item }: MenuCardProps) {
       {/* Product Photo Container (4:3 ratio) */}
       <div className="relative w-full aspect-[4/3] bg-[#faf0f4] overflow-hidden">
         <Image
-          src={item.image}
+          src={withImageVersion(item.image)}
           alt={item.name}
           fill
           className="object-cover group-hover:scale-104 transition-transform duration-500"

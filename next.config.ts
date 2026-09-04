@@ -27,6 +27,10 @@ const nextConfig: NextConfig = {
   },
   images: {
     formats: ["image/avif", "image/webp"],
+    // Izinkan query-string cache-buster (?v=hash, lihat
+    // lib/utils/cacheBustImage.ts) pada gambar lokal di /images/** —
+    // `search` sengaja tidak diisi karena hash-nya berbeda per file.
+    localPatterns: [{ pathname: "/images/**" }],
     remotePatterns: [
       {
         protocol: "https",
@@ -43,6 +47,21 @@ const nextConfig: NextConfig = {
       {
         source: "/(.*)",
         headers: securityHeaders,
+      },
+      {
+        // Foto menu di-serve dengan query-string cache-buster (?v=hash
+        // konten, lihat lib/utils/cacheBustImage.ts + scripts/generate-
+        // image-manifest.mjs) — begitu isi file berubah, URL-nya ikut
+        // berubah, jadi aman diberi cache sangat panjang di sini: file
+        // lama tidak akan diminta lagi, dan file baru otomatis punya
+        // URL baru yang belum pernah di-cache siapa pun.
+        source: "/images/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
       },
     ];
   },
