@@ -59,6 +59,11 @@ export default function Navbar() {
     { label: "Nasi Liwet", href: "/nasi-liwet" },
   ];
 
+  // Mobile icons (cart + hamburger) start white over the transparent hero
+  // and switch to dark once the solid navbar background appears.
+  const lightMobileIcons =
+    !mobileMenuOpen && !pastHero && pathname === "/";
+
   // On homepage: semi-transparent while inside hero scroll zone, solid after
   const headerBg = mobileMenuOpen
     ? "bg-white/90 backdrop-blur-md shadow-[0_1px_20px_rgba(36,27,24,0.07)] py-3"
@@ -125,7 +130,11 @@ export default function Navbar() {
             {/* Cart — Ghost Style */}
             <button
               onClick={toggleCart}
-              className={`relative flex items-center gap-2 text-sm font-medium transition-colors duration-200 cursor-pointer text-[#665b56] hover:text-[#a82868]`}
+              className={`relative flex items-center gap-2 text-sm font-medium transition-colors duration-200 cursor-pointer hover:text-[#a82868] ${
+                lightMobileIcons
+                  ? "text-white md:text-[#665b56]"
+                  : "text-[#665b56]"
+              }`}
               aria-label="Keranjang Belanja"
             >
               <ShoppingCart className="w-4.5 h-4.5" />
@@ -142,7 +151,9 @@ export default function Navbar() {
             {/* Mobile Hamburger — Ghost */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-1 transition-colors text-[#241b18] hover:text-[#a82868]"
+              className={`md:hidden p-1 transition-colors hover:text-[#a82868] ${
+                lightMobileIcons ? "text-white" : "text-[#241b18]"
+              }`}
               aria-label="Toggle menu"
             >
               {mobileMenuOpen ? (
