@@ -53,7 +53,33 @@ export default function Navbar() {
 
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("resize", handleScroll, { passive: true });
+
+    // The scrollytelling hero can change height after this effect's first
+    // run — e.g. it starts at h-[450vh] then collapses to h-screen once
+    // slow-connection mode kicks in (see CanvasSequenceScroller). If that
+    // resize happens while we're still at the top of the page, no scroll
+    // event fires to trigger a recheck, so handleScroll() stays stuck on
+    // whatever (possibly stale/incorrect) measurement it took on mount —
+    // which is exactly what made the icons render dark until the user
+    // scrolled. Watch the hero element directly so a height change alone
+    // re-evaluates pastHero.
+    let resizeObserver: ResizeObserver | undefined;
+    if (pathname === "/" && typeof ResizeObserver !== "undefined") {
+      const heroSection = document.querySelector<HTMLElement>(
+        "[data-scrollytelling]",
+      );
+      if (heroSection) {
+        resizeObserver = new ResizeObserver(handleScroll);
+        resizeObserver.observe(heroSection);
+      }
+    }
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+      resizeObserver?.disconnect();
+    };
   }, [pathname]);
 
   const navLinks = [
