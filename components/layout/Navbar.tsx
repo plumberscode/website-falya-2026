@@ -10,6 +10,10 @@ import {
   X,
   MessageCircle,
   ChevronRight,
+  Home,
+  UtensilsCrossed,
+  Package,
+  Soup,
 } from "lucide-react";
 import { useCartStore } from "@/lib/store/cartStore";
 import { FALYA_CONTACT } from "@/lib/data/menuData";
@@ -53,10 +57,10 @@ export default function Navbar() {
   }, [pathname]);
 
   const navLinks = [
-    { label: "Home", href: "/" },
-    { label: "Menu", href: "/menu" },
-    { label: "Snack Box", href: "/snackbox" },
-    { label: "Nasi Liwet", href: "/nasi-liwet" },
+    { label: "Home", href: "/", icon: Home },
+    { label: "Menu", href: "/menu", icon: UtensilsCrossed },
+    { label: "Snack Box", href: "/snackbox", icon: Package },
+    { label: "Nasi Liwet", href: "/nasi-liwet", icon: Soup },
   ];
 
   // Mobile icons (cart + hamburger) start white over the transparent hero
@@ -175,6 +179,7 @@ export default function Navbar() {
               <nav className="flex flex-col gap-2">
                 {navLinks.map((link, i) => {
                   const isActive = pathname === link.href;
+                  const Icon = link.icon;
                   return (
                     <div
                       key={link.href}
@@ -184,19 +189,33 @@ export default function Navbar() {
                       <Link
                         href={link.href}
                         onClick={() => setMobileMenuOpen(false)}
-                        className={`group flex items-center justify-between rounded-2xl px-5 py-4 text-base transition-all duration-200 ${
+                        className={`group flex items-center justify-between rounded-2xl px-4 py-3.5 transition-all duration-200 ${
                           isActive
-                            ? "bg-[#fdf2f7] text-[#a82868] font-semibold"
-                            : "text-[#665b56] font-medium hover:bg-[#fdf2f7] hover:text-[#241b18]"
+                            ? "text-[#a82868]"
+                            : "text-[#241b18] hover:bg-[#fdf2f7]/60"
                         }`}
                       >
-                        <span className="flex items-center gap-3">
+                        <span className="flex items-center gap-3.5">
                           <span
-                            className={`h-1.5 w-1.5 rounded-full transition-all duration-200 ${
-                              isActive ? "bg-[#a82868]" : "bg-transparent"
+                            className={`w-10 h-10 shrink-0 rounded-full flex items-center justify-center transition-colors duration-200 ${
+                              isActive
+                                ? "bg-[#a82868]"
+                                : "bg-[#f7ebdd] text-[#665b56]"
                             }`}
-                          />
-                          <span>{link.label}</span>
+                          >
+                            <Icon
+                              className={`w-4.5 h-4.5 ${
+                                isActive ? "text-white" : "text-[#665b56]"
+                              }`}
+                            />
+                          </span>
+                          <span
+                            className={`text-lg ${
+                              isActive ? "font-bold" : "font-semibold"
+                            }`}
+                          >
+                            {link.label}
+                          </span>
                         </span>
                         <ChevronRight
                           className={`w-4 h-4 transition-all duration-200 ${
