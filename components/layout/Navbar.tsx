@@ -64,14 +64,13 @@ export default function Navbar() {
   const lightMobileIcons =
     !mobileMenuOpen && !pastHero && pathname === "/";
 
-  // On homepage: semi-transparent while inside hero scroll zone, solid after
+  // On homepage: fully transparent (no background) while the scrollytelling
+  // hero is still playing, solid white only once it's scrolled past.
   const headerBg = mobileMenuOpen
     ? "bg-white/90 backdrop-blur-md shadow-[0_1px_20px_rgba(36,27,24,0.07)] py-3"
     : pastHero
       ? "bg-white/90 backdrop-blur-md shadow-[0_1px_20px_rgba(36,27,24,0.07)] py-3"
-      : pathname === "/"
-        ? "bg-white/50 backdrop-blur-sm py-5"
-        : "bg-transparent py-5";
+      : "bg-transparent py-5";
 
   return (
     <>
