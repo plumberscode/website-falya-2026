@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { MenuItem, INITIAL_MENU, FALYA_CONTACT } from '@/lib/data/menuData';
+import { MenuItem, FALYA_CONTACT } from '@/lib/data/menuData';
 
 export interface CartItem {
   menuItem: MenuItem;
@@ -12,9 +12,8 @@ export type OrderType = 'delivery' | 'pickup' | 'dine-in';
 
 interface CartStoreState {
   items: CartItem[];
-  menuItems: MenuItem[];
   isOpen: boolean;
-  
+
   // Cart Actions
   addItem: (item: MenuItem, quantity?: number, notes?: string) => void;
   removeItem: (itemId: string) => void;
@@ -34,21 +33,22 @@ interface CartStoreState {
 
   // WhatsApp Order Link Generator
   generateWhatsAppLink: (orderType: OrderType) => string;
-
-  // Menu Management (for Admin)
-  updateMenuItem: (id: string, updatedData: Partial<MenuItem>) => void;
-  updateMenuItemPrice: (id: string, newPrice: number) => void;
-  toggleMenuItemAvailability: (id: string) => void;
-  addMenuItem: (item: MenuItem) => void;
-  deleteMenuItem: (id: string) => void;
-  resetMenuToDefault: () => void;
 }
 
+// Catatan: katalog menu (menuItems) TIDAK lagi disimpan di store ini.
+// Dulu menuItems ikut di-persist ke localStorage lewat store ini, artinya
+// perubahan dari admin panel (tambah/edit/hapus menu, ganti gambar, dst.)
+// hanya tersimpan di browser admin itu sendiri — tidak pernah terlihat
+// oleh pengunjung lain di device/browser berbeda. Sekarang katalog menu
+// dibaca dari database (lihat app/actions/menu.ts, dipakai oleh
+// app/page.tsx, app/menu, app/snackbox, app/nasi-liwet, dan app/admin),
+// jadi perubahan admin langsung terlihat semua orang tanpa perlu deploy.
+// Store ini murni untuk keranjang belanja (state per-browser, memang
+// wajar tidak dibagi antar device).
 export const useCartStore = create<CartStoreState>()(
   persist(
     (set, get) => ({
       items: [],
-      menuItems: INITIAL_MENU,
       isOpen: false,
       orderNotes: '',
 
@@ -164,78 +164,12 @@ export const useCartStore = create<CartStoreState>()(
         const encodedMessage = encodeURIComponent(text);
         return `https://wa.me/${FALYA_CONTACT.whatsappNumber}?text=${encodedMessage}`;
       },
-
-      // Admin actions
-      updateMenuItem: (id, updatedData) => {
-        set((state) => ({
-          menuItems: state.menuItems.map((item) =>
-            item.id === id ? { ...item, ...updatedData } : item
-          ),
-        }));
-      },
-
-      updateMenuItemPrice: (id, newPrice) => {
-        set((state) => ({
-          menuItems: state.menuItems.map((item) =>
-            item.id === id ? { ...item, price: newPrice } : item
-          ),
-        }));
-      },
-
-      toggleMenuItemAvailability: (id) => {
-        set((state) => ({
-          menuItems: state.menuItems.map((item) =>
-            item.id === id ? { ...item, isAvailable: !item.isAvailable } : item
-          ),
-        }));
-      },
-
-      addMenuItem: (item) => {
-        set((state) => ({
-          menuItems: [item, ...state.menuItems],
-        }));
-      },
-
-      deleteMenuItem: (id) => {
-        set((state) => ({
-          menuItems: state.menuItems.filter((item) => item.id !== id),
-        }));
-      },
-
-      resetMenuToDefault: () => {
-        set({ menuItems: INITIAL_MENU });
-      },
     }),
     {
-      name: 'falya-cart-menu-storage-v12',
+      name: 'falya-cart-menu-storage-v13',
       partialize: (state) => ({
         items: state.items,
-        menuItems: state.menuItems,
       }),
-      merge: (persistedState: any, currentState) => {
-        const persistedMenuItems = persistedState?.menuItems || [];
-        const mergedMenuItems = INITIAL_MENU.map((initialItem) => {
-          const persisted = persistedMenuItems.find((p: MenuItem) => p.id === initialItem.id);
-          if (persisted) {
-            return {
-              ...initialItem,
-              ...persisted,
-            };
-          }
-          return initialItem;
-        });
-
-        // Also include custom items that were added by admin
-        const customItems = persistedMenuItems.filter(
-          (p: MenuItem) => !INITIAL_MENU.some((init) => init.id === p.id)
-        );
-
-        return {
-          ...currentState,
-          ...persistedState,
-          menuItems: [...mergedMenuItems, ...customItems],
-        };
-      },
     }
   )
 );

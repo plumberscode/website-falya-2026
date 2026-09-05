@@ -1,14 +1,19 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { logoutAction } from "@/app/actions/auth";
 import {
+  getAllMenuItems,
+  createMenuItem,
+  toggleMenuItemAvailability as toggleMenuItemAvailabilityAction,
+  deleteMenuItem as deleteMenuItemAction,
+} from "@/app/actions/menu";
+import {
   Plus,
   Trash2,
   X,
-  RefreshCw,
   Eye,
   EyeOff,
   LogOut,
@@ -19,7 +24,6 @@ import {
   Edit3,
   UtensilsCrossed,
 } from "lucide-react";
-import { useCartStore } from "@/lib/store/cartStore";
 import {
   MenuItem,
   MENU_CATEGORIES,
@@ -32,17 +36,24 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 
 export default function AdminPage() {
-  const {
-    menuItems,
-    toggleMenuItemAvailability,
-    addMenuItem,
-    deleteMenuItem,
-    resetMenuToDefault,
-  } = useCartStore();
-
   const router = useRouter();
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("semua");
+
+  const loadMenuItems = useCallback(async () => {
+    const items = await getAllMenuItems();
+    setMenuItems(items);
+    setIsLoading(false);
+  }, []);
+
+  useEffect(() => {
+    // Muat katalog menu dari database sekali di mount — tidak ada cara
+    // lain mengetahui data server tanpa efek ini.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadMenuItems();
+  }, [loadMenuItems]);
 
   const [showAddForm, setShowAddForm] = useState<boolean>(false);
   const [newItem, setNewItem] = useState<Partial<MenuItem>>({
@@ -56,26 +67,30 @@ export default function AdminPage() {
     isPopular: false,
   });
 
-  const handleCreateNewItem = (e: React.FormEvent) => {
+  const handleCreateNewItem = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newItem.name || !newItem.price) {
       toast.error("Nama dan harga menu wajib diisi.");
       return;
     }
 
-    const itemToAdd: MenuItem = {
-      id: `custom-${Date.now()}`,
+    const result = await createMenuItem({
       name: newItem.name.trim(),
-      category: (newItem.category as any) || "risol",
+      category: (newItem.category as MenuItem["category"]) || "risol",
       price: Number(newItem.price),
       description: newItem.description?.trim() || "",
       image: newItem.image || "/images/item-risol-mayo.webp",
       unit: newItem.unit?.trim() || "pcs",
       isAvailable: true,
       isPopular: newItem.isPopular || false,
-    };
+    });
 
-    addMenuItem(itemToAdd);
+    if (!result.success) {
+      toast.error(result.error || "Gagal menambahkan menu.");
+      return;
+    }
+
+    await loadMenuItems();
     setShowAddForm(false);
     setNewItem({
       name: "",
@@ -87,7 +102,32 @@ export default function AdminPage() {
       isAvailable: true,
       isPopular: false,
     });
-    toast.success(`Menu "${itemToAdd.name}" berhasil ditambahkan!`);
+    toast.success(`Menu "${newItem.name}" berhasil ditambahkan!`);
+  };
+
+  const handleToggleAvailability = async (item: MenuItem) => {
+    // Update optimis di UI, sinkron ke database di belakang layar.
+    setMenuItems((prev) =>
+      prev.map((m) => (m.id === item.id ? { ...m, isAvailable: !m.isAvailable } : m)),
+    );
+    const result = await toggleMenuItemAvailabilityAction(item.id);
+    if (!result.success) {
+      toast.error(result.error || "Gagal mengubah status.");
+      await loadMenuItems(); // rollback ke state database yang sebenarnya
+      return;
+    }
+    toast.info(`Status "${item.name}" diubah.`);
+  };
+
+  const handleDelete = async (item: MenuItem) => {
+    if (!confirm(`Yakin ingin menghapus menu "${item.name}"?`)) return;
+    const result = await deleteMenuItemAction(item.id);
+    if (!result.success) {
+      toast.error(result.error || "Gagal menghapus menu.");
+      return;
+    }
+    setMenuItems((prev) => prev.filter((m) => m.id !== item.id));
+    toast.success(`Menu "${item.name}" telah dihapus.`);
   };
 
   const filteredItems = useMemo(() => {
@@ -138,20 +178,6 @@ export default function AdminPage() {
             >
               <Plus className="w-4 h-4" />
               Tambah Menu Baru
-            </Button>
-
-            <Button
-              onClick={() => {
-                if (confirm("Reset seluruh daftar menu ke default bawaan sistem?")) {
-                  resetMenuToDefault();
-                  toast.success("Menu telah di-reset ke default.");
-                }
-              }}
-              variant="outline"
-              className="border-[#f3d5e3] hover:bg-[#faf0f4] text-[#665b56] text-xs rounded-full"
-              title="Reset ke menu awal"
-            >
-              <RefreshCw className="w-3.5 h-3.5" />
             </Button>
 
             <Button
@@ -247,7 +273,10 @@ export default function AdminPage() {
                 <select
                   value={newItem.category}
                   onChange={(e) =>
-                    setNewItem({ ...newItem, category: e.target.value as any })
+                    setNewItem({
+                      ...newItem,
+                      category: e.target.value as MenuItem["category"],
+                    })
                   }
                   className="w-full bg-[#faf0f4] border-0 text-[#241b18] rounded-xl text-sm h-11 px-3"
                 >
@@ -368,7 +397,11 @@ export default function AdminPage() {
         {/* Simplified Product List */}
         <div className="bg-white rounded-[24px] overflow-hidden shadow-[0_4px_24px_rgba(168,40,104,0.05)] border border-[#f3d5e3]/40">
           <div className="divide-y divide-[#f3d5e3]/20">
-            {filteredItems.length === 0 ? (
+            {isLoading ? (
+              <div className="p-12 text-center text-[#968b85] text-xs">
+                Memuat data produk...
+              </div>
+            ) : filteredItems.length === 0 ? (
               <div className="p-12 text-center text-[#968b85] text-xs">
                 Tidak ada produk yang cocok dengan pencarian.
               </div>
@@ -408,10 +441,7 @@ export default function AdminPage() {
                   <div className="flex items-center gap-3 shrink-0">
                     {/* Status Pill Button */}
                     <button
-                      onClick={() => {
-                        toggleMenuItemAvailability(item.id);
-                        toast.info(`Status "${item.name}" diubah.`);
-                      }}
+                      onClick={() => handleToggleAvailability(item)}
                       className={`px-3 py-1.5 rounded-full text-xs font-bold border transition cursor-pointer flex items-center gap-1.5 ${
                         item.isAvailable
                           ? "bg-[#3e7c59]/10 border-[#3e7c59]/30 text-[#3e7c59] hover:bg-[#3e7c59]/20"
@@ -445,12 +475,7 @@ export default function AdminPage() {
 
                     {/* Delete Button */}
                     <button
-                      onClick={() => {
-                        if (confirm(`Yakin ingin menghapus menu "${item.name}"?`)) {
-                          deleteMenuItem(item.id);
-                          toast.success(`Menu "${item.name}" telah dihapus.`);
-                        }
-                      }}
+                      onClick={() => handleDelete(item)}
                       className="p-2 text-[#968b85] hover:text-[#c74343] hover:bg-red-50 rounded-xl transition cursor-pointer"
                       title="Hapus Menu"
                     >

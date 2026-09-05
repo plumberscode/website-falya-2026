@@ -3,13 +3,12 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { useCartStore } from "@/lib/store/cartStore";
 import {
-  MENU_CATEGORIES,
-  LIWET_CATEGORIES,
-  SNACKBOX_CATEGORIES,
-  MenuItem,
-} from "@/lib/data/menuData";
+  getMenuItemById,
+  updateMenuItem,
+  deleteMenuItem,
+} from "@/app/actions/menu";
+import { MENU_CATEGORIES, LIWET_CATEGORIES, SNACKBOX_CATEGORIES, MenuItem } from "@/lib/data/menuData";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -32,18 +31,23 @@ export default function EditMenuItemPage() {
   const router = useRouter();
   const id = params?.id as string;
 
-  const { menuItems, updateMenuItem, deleteMenuItem } = useCartStore();
-
   const [formData, setFormData] = useState<MenuItem | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    const item = menuItems.find((m) => m.id === id);
-    if (item) {
-      setFormData({ ...item });
-    }
-    setIsLoaded(true);
-  }, [id, menuItems]);
+    let cancelled = false;
+    (async () => {
+      const item = await getMenuItemById(id);
+      if (!cancelled) {
+        setFormData(item);
+        setIsLoaded(true);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [id]);
 
   if (!isLoaded) {
     return (
@@ -71,7 +75,7 @@ export default function EditMenuItemPage() {
     );
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name.trim()) {
       toast.error("Nama produk tidak boleh kosong.");
@@ -82,7 +86,8 @@ export default function EditMenuItemPage() {
       return;
     }
 
-    updateMenuItem(id, {
+    setIsSaving(true);
+    const result = await updateMenuItem(id, {
       name: formData.name.trim(),
       description: formData.description.trim(),
       category: formData.category,
@@ -92,17 +97,26 @@ export default function EditMenuItemPage() {
       isPopular: formData.isPopular,
       image: formData.image,
     });
+    setIsSaving(false);
+
+    if (!result.success) {
+      toast.error(result.error || "Gagal menyimpan perubahan.");
+      return;
+    }
 
     toast.success(`Perubahan pada "${formData.name}" berhasil disimpan!`);
     router.push("/admin");
   };
 
-  const handleDelete = () => {
-    if (confirm(`Yakin ingin menghapus menu "${formData.name}"?`)) {
-      deleteMenuItem(id);
-      toast.success("Menu berhasil dihapus.");
-      router.push("/admin");
+  const handleDelete = async () => {
+    if (!confirm(`Yakin ingin menghapus menu "${formData.name}"?`)) return;
+    const result = await deleteMenuItem(id);
+    if (!result.success) {
+      toast.error(result.error || "Gagal menghapus menu.");
+      return;
     }
+    toast.success("Menu berhasil dihapus.");
+    router.push("/admin");
   };
 
   return (
@@ -171,7 +185,9 @@ export default function EditMenuItemPage() {
                 </label>
                 <select
                   value={formData.category}
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value as any })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, category: e.target.value as MenuItem["category"] })
+                  }
                   className="w-full bg-[#faf0f4]/50 border border-[#ebd7c0] text-[#241b18] font-medium rounded-2xl text-sm h-12 px-3.5 focus:outline-none focus:border-[#a82868]"
                 >
                   <optgroup label="Menu Reguler / Camilan">
@@ -332,10 +348,11 @@ export default function EditMenuItemPage() {
 
             <Button
               type="submit"
-              className="bg-[#a82868] hover:bg-[#861f53] text-white font-bold rounded-full text-xs px-8 h-12 shadow-md shadow-[#a82868]/20 flex items-center gap-2"
+              disabled={isSaving}
+              className="bg-[#a82868] hover:bg-[#861f53] text-white font-bold rounded-full text-xs px-8 h-12 shadow-md shadow-[#a82868]/20 flex items-center gap-2 disabled:opacity-60"
             >
               <Save className="w-4 h-4" />
-              Simpan Perubahan
+              {isSaving ? "Menyimpan..." : "Simpan Perubahan"}
             </Button>
           </div>
         </form>

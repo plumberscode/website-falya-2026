@@ -14,13 +14,21 @@ import CanvasSequenceScroller from "@/components/scrollytelling/CanvasSequenceSc
 import MenuCard from "@/components/menu/MenuCard";
 import TestimonialSlider from "@/components/testimonials/TestimonialSlider";
 import { Button } from "@/components/ui/button";
-import { FALYA_CONTACT, INITIAL_MENU } from "@/lib/data/menuData";
+import { FALYA_CONTACT } from "@/lib/data/menuData";
 import { withImageVersion } from "@/lib/utils/cacheBustImage";
+import { getAllMenuItems } from "@/app/actions/menu";
 
-export default function HomePage() {
+// Data menu (termasuk Best Seller) dibaca dari database supaya
+// perubahan dari admin panel langsung terlihat di homepage tanpa
+// perlu deploy ulang. revalidatePath() di app/actions/menu.ts
+// menghapus cache instan saat ada perubahan; 60s cuma jaring pengaman.
+export const revalidate = 60;
+
+export default async function HomePage() {
   // 3 Best Sellers as specified in AGENTS.md / original website
   const bestSellerIds = ["risol001", "risol004", "kuliner003"];
-  const bestSellers = INITIAL_MENU.filter((item) =>
+  const allMenuItems = await getAllMenuItems();
+  const bestSellers = allMenuItems.filter((item) =>
     bestSellerIds.includes(item.id),
   );
 

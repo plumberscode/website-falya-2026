@@ -36,3 +36,24 @@ model Media {
   createdAt DateTime @default(now())
 }
 
+model MenuItem {
+  // Id manual (bukan @default(cuid())) supaya id lama dari seed data
+  // (mis. "risol001") tetap terjaga; item baru dari admin memakai cuid().
+  id          String   @id
+  name        String
+  // Kategori disimpan sebagai String (bukan enum Prisma) supaya menambah
+  // kategori baru dari kode tidak perlu migrasi skema — validasi union
+  // type tetap dijaga di sisi TypeScript (lihat lib/data/menuData.ts).
+  category    String
+  price       Int
+  description String   @db.Text
+  image       String
+  unit        String?
+  isPopular   Boolean  @default(false)
+  isAvailable Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([category])
+}
+
