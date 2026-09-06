@@ -89,9 +89,9 @@ export default function Navbar() {
     { label: "Nasi Liwet", href: "/nasi-liwet", icon: Soup },
   ];
 
-  // Mobile icons (cart + hamburger) start white over the transparent hero
-  // and switch to dark once the solid navbar background appears.
-  const lightMobileIcons =
+  // Desktop menu links, mobile icons, and cart start white over the transparent hero
+  // and switch to dark once the solid navbar background appears after scroll.
+  const isLightNav =
     !mobileMenuOpen && !pastHero && pathname === "/";
 
   // On homepage: fully transparent (no background) while the scrollytelling
@@ -135,8 +135,12 @@ export default function Navbar() {
                   <span
                     className={`text-sm font-medium tracking-wide transition-colors duration-200 ${
                       isActive
-                        ? "text-[#a82868] font-semibold"
-                        : "text-[#665b56] hover:text-[#241b18]"
+                        ? isLightNav
+                          ? "text-white font-semibold"
+                          : "text-[#a82868] font-semibold"
+                        : isLightNav
+                          ? "text-white/80 hover:text-white"
+                          : "text-[#665b56] hover:text-[#241b18]"
                     }`}
                   >
                     {link.label}
@@ -145,8 +149,12 @@ export default function Navbar() {
                   <span
                     className={`block h-[3px] rounded-full transition-all duration-300 ${
                       isActive
-                        ? "w-4 bg-[#a82868]"
-                        : "w-0 bg-[#a82868] group-hover:w-3 group-hover:bg-[#a82868]/40"
+                        ? isLightNav
+                          ? "w-4 bg-white"
+                          : "w-4 bg-[#a82868]"
+                        : isLightNav
+                          ? "w-0 bg-white group-hover:w-3 group-hover:bg-white/60"
+                          : "w-0 bg-[#a82868] group-hover:w-3 group-hover:bg-[#a82868]/40"
                     }`}
                   />
                 </Link>
@@ -159,10 +167,10 @@ export default function Navbar() {
             {/* Cart — Ghost Style */}
             <button
               onClick={toggleCart}
-              className={`relative flex items-center gap-2 text-sm font-medium transition-colors duration-200 cursor-pointer hover:text-[#a82868] ${
-                lightMobileIcons
-                  ? "text-white md:text-[#665b56]"
-                  : "text-[#665b56]"
+              className={`relative flex items-center gap-2 text-sm font-medium transition-colors duration-200 cursor-pointer ${
+                isLightNav
+                  ? "text-white hover:text-white/80"
+                  : "text-[#665b56] hover:text-[#a82868]"
               }`}
               aria-label="Keranjang Belanja"
             >
@@ -180,8 +188,10 @@ export default function Navbar() {
             {/* Mobile Hamburger — Ghost */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className={`md:hidden p-1 transition-colors hover:text-[#a82868] ${
-                lightMobileIcons ? "text-white" : "text-[#241b18]"
+              className={`md:hidden p-1 transition-colors ${
+                isLightNav
+                  ? "text-white hover:text-white/80"
+                  : "text-[#241b18] hover:text-[#a82868]"
               }`}
               aria-label="Toggle menu"
             >
