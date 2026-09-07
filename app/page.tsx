@@ -20,9 +20,13 @@ import { getAllMenuItems } from "@/app/actions/menu";
 
 // Data menu (termasuk Best Seller) dibaca dari database supaya
 // perubahan dari admin panel langsung terlihat di homepage tanpa
-// perlu deploy ulang. revalidatePath() di app/actions/menu.ts
-// menghapus cache instan saat ada perubahan; 60s cuma jaring pengaman.
-export const revalidate = 60;
+// perlu deploy ulang. revalidatePath() di app/actions/menu.ts sudah
+// menghapus cache instan saat ada perubahan, jadi halaman ini statis
+// per-deployment (revalidate: false) — tanpa time-based ISR yang
+// membuat edge node Vercel meregenerasi halaman secara independen
+// tiap 60 detik dan sempat menyajikan snapshot navbar yang berbeda-beda
+// antar node setelah deploy (lihat riwayat bug warna navbar).
+export const revalidate = false;
 
 export default async function HomePage() {
   // 3 Best Sellers as specified in AGENTS.md / original website
