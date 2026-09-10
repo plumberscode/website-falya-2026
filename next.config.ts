@@ -68,20 +68,34 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        // 301 Permanent Redirect: /index (versi lama) → /
         source: "/index",
         destination: "/",
-        permanent: true,
+        statusCode: 301,
       },
       {
+        // 301 Permanent Redirect: /index.html (versi lama) → /
         source: "/index.html",
         destination: "/",
-        permanent: true,
+        statusCode: 301,
       },
       {
-        // Redirect URL lama berakhiran .html ke URL bersih yang baru
+        // 301 Permanent Redirect: /menu.html (versi lama) → /menu
+        source: "/menu.html",
+        destination: "/menu",
+        statusCode: 301,
+      },
+      {
+        // 301 Permanent Redirect: /snackbox.html (versi lama) → /snackbox
+        source: "/snackbox.html",
+        destination: "/snackbox",
+        statusCode: 301,
+      },
+      {
+        // Catch-all: URL lama lain yang berakhiran .html → versi bersih tanpa .html (301)
         source: "/:slug.html",
         destination: "/:slug",
-        permanent: true,
+        statusCode: 301,
       },
     ];
   },
