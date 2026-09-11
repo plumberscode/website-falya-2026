@@ -35,7 +35,7 @@ export default function SnackboxPageClient({ items }: { items: MenuItem[] }) {
             SNACK & CATERING
           </span>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-[#241b18] tracking-tight">
-            Pilihan Paket Snack Box & Kue Nampan mulai dari Rp. 13.000/box
+            Paket Snack Box & Kue Nampan Balikpapan mulai dari Rp. 13.000/box.
           </h1>
           <p className="text-[#665b56] text-sm sm:text-base leading-relaxed">
             Sempurnakan acaramu dengan snack box dan kue nampan lezat dari Falya
