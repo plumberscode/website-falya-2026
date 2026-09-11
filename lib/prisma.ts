@@ -4,7 +4,12 @@ import { PrismaClient } from "@prisma/client";
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient };
 
-const connectionString = process.env.DATABASE_URL;
+const rawConnectionString = process.env.DATABASE_URL;
+// Cegah security warning pg-connection-string dengan menggunakan sslmode=verify-full eksplisit
+const connectionString = rawConnectionString?.replace(
+  "sslmode=require",
+  "sslmode=verify-full"
+);
 const pool = new Pool({ connectionString });
 const adapter = new PrismaPg(pool);
 

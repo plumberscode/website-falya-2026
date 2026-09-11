@@ -73,15 +73,20 @@ export default function SnackboxPageClient({ items }: { items: MenuItem[] }) {
 
         {/* Event Use-Case Section */}
         <div className="bg-[#fff8ef] rounded-[24px] p-6 sm:p-8 mb-16 shadow-[0_8px_30px_rgba(168,40,104,0.06)]">
-          <h2 className="text-lg sm:text-xl font-extrabold text-[#241b18] mb-1">
+          <h2 className="text-lg sm:text-xl font-extrabold text-[#241b18] mb-2">
             Snack Box untuk Berbagai Acara
           </h2>
-          <p className="text-[#665b56] text-xs sm:text-sm leading-relaxed max-w-2xl mb-5">
+          <p className="text-[#665b56] text-xs sm:text-sm leading-relaxed max-w-2xl mb-3">
             Butuh konsumsi untuk rapat kantor, pengajian, atau hajatan? Snack
             box dan kue nampan Falya siap menemani acara kamu di Balikpapan —
             praktis, rapi, dan tinggal antar.
           </p>
-          <div className="flex flex-wrap gap-2">
+          <p className="text-[#665b56] text-xs sm:text-sm leading-relaxed max-w-2xl mb-5">
+            Cocok jadi snack meeting kantor untuk rapat internal, coffee break
+            seminar atau workshop, sampai konsumsi rapat rutin bulanan — dikemas
+            rapi per box dan diantar tepat waktu ke lokasi kamu di Balikpapan.
+          </p>
+          <div className="flex flex-wrap gap-2 mb-6">
             {["Rapat & Meeting Kantor", "Pengajian", "Hajatan", "Arisan"].map(
               (event) => (
                 <span
@@ -92,6 +97,27 @@ export default function SnackboxPageClient({ items }: { items: MenuItem[] }) {
                 </span>
               ),
             )}
+          </div>
+          <div className="pt-6 border-t border-[#ebd7c0]/60 space-y-4 max-w-2xl">
+            <div>
+              <h3 className="text-sm sm:text-base font-bold text-[#241b18] mb-1">
+                Bisa custom isi snack box buat rapat kantor?
+              </h3>
+              <p className="text-[#665b56] text-xs sm:text-sm leading-relaxed">
+                Bisa banget. Kamu bisa mix isi snack sesuai budget dan jumlah peserta
+                rapat — tinggal chat mimin buat konsultasi paket. Harga mengikuti paket
+                yang tersedia di katalog (Mini, Reguler, Komplit).
+              </p>
+            </div>
+            <div>
+              <h3 className="text-sm sm:text-base font-bold text-[#241b18] mb-1">
+                Berapa lama sebelum acara harus pesan?
+              </h3>
+              <p className="text-[#665b56] text-xs sm:text-sm leading-relaxed">
+                Disarankan pesan H-1 untuk memastikan ketersediaan, terutama untuk
+                jumlah besar atau acara mendadak bisa tanya dulu ke mimin.
+              </p>
+            </div>
           </div>
         </div>
 
