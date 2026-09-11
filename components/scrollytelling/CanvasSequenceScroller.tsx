@@ -564,7 +564,8 @@ export default function CanvasSequenceScroller({
                   </h1>
                   <p className="text-base sm:text-xl text-white/95 font-normal leading-relaxed max-w-xl">
                     Spesial{" "}
-                    <strong className="text-white font-bold">Risol</strong> dan{" "}
+                    <strong className="text-white font-bold">Risol</strong>,
+                    Snack Box dan{" "}
                     <strong className="text-white font-bold">Nasi Liwet</strong>{" "}
                     di Balikpapan
                   </p>
