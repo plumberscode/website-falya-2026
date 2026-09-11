@@ -961,6 +961,17 @@ export const SNACKBOX_CATEGORIES = [
   { id: "kue-nampan", label: "Paket Kue Nampan" },
 ] as const;
 
+// Kategori item snackbox saja (tanpa "semua", yang hanya tab filter UI).
+// Sumber tunggal dipakai SnackboxPageClient untuk filter tampilan, dan
+// lib/seo/snackboxJsonLd.ts untuk generate JSON-LD per kategori — supaya
+// keduanya tidak bisa mismatch satu sama lain.
+export const SNACKBOX_ITEM_CATEGORIES = [
+  "snackbox-mini",
+  "snackbox-reguler",
+  "snackbox-komplit",
+  "kue-nampan",
+] as const satisfies readonly MenuItem["category"][];
+
 export const FALYA_CONTACT = {
   phone: "085954227622",
   whatsappNumber: "6285954227622",

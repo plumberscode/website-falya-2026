@@ -1,5 +1,6 @@
 import { getAllMenuItems } from "@/app/actions/menu";
 import SnackboxPageClient from "@/components/menu/SnackboxPageClient";
+import { buildSnackboxJsonLd } from "@/lib/seo/snackboxJsonLd";
 
 // Statis per-deployment (revalidate: false) — lihat catatan lengkap
 // di app/menu/page.tsx. revalidatePath("/snackbox") di
@@ -8,5 +9,20 @@ export const revalidate = false;
 
 export default async function SnackboxPage() {
   const items = await getAllMenuItems();
-  return <SnackboxPageClient items={items} />;
+  const snackboxJsonLd = buildSnackboxJsonLd(items);
+
+  return (
+    <>
+      {/* Product + AggregateOffer per kategori snack box, dihitung dari
+          `items` di atas supaya Google (termasuk AI Overview) baca range
+          harga per kategori yang akurat, bukan cuma harga item termahal. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(snackboxJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
+      <SnackboxPageClient items={items} />
+    </>
+  );
 }

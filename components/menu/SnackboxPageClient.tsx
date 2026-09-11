@@ -3,15 +3,13 @@
 import React, { useState, useMemo } from "react";
 import { MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { FALYA_CONTACT, SNACKBOX_CATEGORIES, MenuItem } from "@/lib/data/menuData";
+import {
+  FALYA_CONTACT,
+  SNACKBOX_CATEGORIES,
+  SNACKBOX_ITEM_CATEGORIES,
+  MenuItem,
+} from "@/lib/data/menuData";
 import MenuCard from "@/components/menu/MenuCard";
-
-const SNACKBOX_ITEM_CATEGORIES = [
-  "snackbox-mini",
-  "snackbox-reguler",
-  "snackbox-komplit",
-  "kue-nampan",
-];
 
 export default function SnackboxPageClient({ items }: { items: MenuItem[] }) {
   const [selectedCategory, setSelectedCategory] = useState<string>("semua");
@@ -20,7 +18,9 @@ export default function SnackboxPageClient({ items }: { items: MenuItem[] }) {
     if (!items || !Array.isArray(items)) return [];
     return items.filter((item) => {
       if (selectedCategory === "semua") {
-        return SNACKBOX_ITEM_CATEGORIES.includes(item.category);
+        return (SNACKBOX_ITEM_CATEGORIES as readonly string[]).includes(
+          item.category,
+        );
       }
       return item.category === selectedCategory;
     });
@@ -35,12 +35,12 @@ export default function SnackboxPageClient({ items }: { items: MenuItem[] }) {
             SNACK & CATERING
           </span>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-[#241b18] tracking-tight">
-            Pilihan Paket Snack Box & Kue Nampan
+            Pilihan Paket Snack Box & Kue Nampan mulai dari Rp. 13.000/box
           </h1>
           <p className="text-[#665b56] text-sm sm:text-base leading-relaxed">
             Sempurnakan acaramu dengan snack box dan kue nampan lezat dari Falya
-            di Balikpapan — untuk rapat kantor, pengajian, hingga hajatan.
-            Praktis dan menggugah selera!
+            di Balikpapan — untuk rapat kantor, pengajian, hingga hajatan. Harga
+            mulai dari Rp. 13.000/box. Praktis dan menggugah selera!
           </p>
         </div>
 
@@ -104,9 +104,10 @@ export default function SnackboxPageClient({ items }: { items: MenuItem[] }) {
                 Bisa custom isi snack box buat rapat kantor?
               </h3>
               <p className="text-[#665b56] text-xs sm:text-sm leading-relaxed">
-                Bisa banget. Kamu bisa mix isi snack sesuai budget dan jumlah peserta
-                rapat — tinggal chat mimin buat konsultasi paket. Harga mengikuti paket
-                yang tersedia di katalog (Mini, Reguler, Komplit).
+                Bisa banget. Kamu bisa mix isi snack sesuai budget dan jumlah
+                peserta rapat — tinggal chat mimin buat konsultasi paket. Harga
+                mengikuti paket yang tersedia di katalog (Mini, Reguler,
+                Komplit).
               </p>
             </div>
             <div>
@@ -114,8 +115,8 @@ export default function SnackboxPageClient({ items }: { items: MenuItem[] }) {
                 Berapa lama sebelum acara harus pesan?
               </h3>
               <p className="text-[#665b56] text-xs sm:text-sm leading-relaxed">
-                Disarankan pesan H-1 untuk memastikan ketersediaan, terutama untuk
-                jumlah besar atau acara mendadak bisa tanya dulu ke mimin.
+                Disarankan pesan H-1 untuk memastikan ketersediaan, terutama
+                untuk jumlah besar atau acara mendadak bisa tanya dulu ke mimin.
               </p>
             </div>
           </div>
