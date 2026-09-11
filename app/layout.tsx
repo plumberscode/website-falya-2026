@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -106,6 +107,12 @@ export default function RootLayout({
   return (
     <html lang="id" className={`${sans.variable} scroll-smooth`}>
       <body className="bg-[#fdfbfc] text-[#241b18] font-sans antialiased selection:bg-[#f3d5e3] selection:text-[#861f53] min-h-screen flex flex-col">
+        <Script
+          id="ahrefs-analytics"
+          src="https://analytics.ahrefs.com/analytics.js"
+          data-key="XQbMYubDj4Ziw2NF/9RANQ"
+          strategy="afterInteractive"
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(restaurantSchema) }}
