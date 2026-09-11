@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Paket Snack Box & Kue Nampan Balikpapan | Falya Risol",
   description:
-    "Pesan paket snack box mini, reguler, komplit, dan kue nampan lezat di Balikpapan. Pilihan terbaik untuk rapat kantor, pengajian, hajatan, & arisan. Pesan praktis via WhatsApp.",
+    "Paket snack box mini, reguler, komplit & kue nampan Balikpapan untuk rapat kantor, pengajian, hajatan, arisan. Mulai Rp13.000/box. WhatsApp 085954227622.",
   keywords: [
     "snack box balikpapan",
     "jual snack box balikpapan",
