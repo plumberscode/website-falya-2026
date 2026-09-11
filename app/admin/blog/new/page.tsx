@@ -135,7 +135,7 @@ export default function NewBlogPostPage() {
       ? content.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").slice(0, 155) + "..."
       : "Ini adalah contoh cuplikan deskripsi artikel yang akan dilihat pengunjung saat mencari kata kunci terkait di Google Search...");
 
-  const fallbackOgImage = "https://falyarisol.com/images/2026/snackbox01.webp";
+  const fallbackOgImage = "https://www.falyarisol.com/images/2026/snackbox01.webp";
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 pt-24 pb-12 px-4 sm:px-6 lg:px-8">
@@ -392,7 +392,7 @@ export default function NewBlogPostPage() {
               </div>
               <div className="p-4 rounded-xl bg-zinc-100 dark:bg-zinc-950/80 border border-zinc-200 dark:border-zinc-800 space-y-1">
                 <div className="text-xs text-zinc-500 truncate">
-                  https://falyarisol.com › blog › {slug || "judul-artikel"}
+                  https://www.falyarisol.com › blog › {slug || "judul-artikel"}
                 </div>
                 <div className="text-base text-blue-600 dark:text-blue-400 font-medium hover:underline cursor-pointer truncate">
                   {title || "Judul Artikel Blog Anda"} | Blog Falya
@@ -424,7 +424,7 @@ export default function NewBlogPostPage() {
                 </div>
                 <div className="p-3.5 space-y-1">
                   <p className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
-                    falyarisol.com
+                    www.falyarisol.com
                   </p>
                   <p className="font-bold text-sm text-zinc-900 dark:text-zinc-100 line-clamp-1">
                     {title || "Judul Artikel Blog Anda"}

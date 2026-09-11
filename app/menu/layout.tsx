@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Daftar Menu & Harga Risol, Snack, Kuliner | Falya Balikpapan",
+  title: "Daftar Menu Risol & Harga Terbaru 2026 | Falya Balikpapan",
   description:
-    "Lihat daftar menu lengkap & harga Falya Risol Mayo Balikpapan. Aneka risol gurih, snack nikmat, aneka jus buah segar, kopi, dan kuliner khas siap pesan via WhatsApp.",
+    "Daftar menu risol Falya Balikpapan lengkap: risol mayo, mozza, tuna, mulai Rp 5.000. Plus nasi liwet, snack, kopi & jus. Pesan gampang via WhatsApp.",
   keywords: [
     "daftar menu falya",
     "harga risol mayo balikpapan",
@@ -12,13 +12,13 @@ export const metadata: Metadata = {
     "falya menu",
   ],
   alternates: {
-    canonical: "https://falyarisol.com/menu",
+    canonical: "https://www.falyarisol.com/menu",
   },
   openGraph: {
-    title: "Daftar Menu & Harga Risol, Snack, Kuliner | Falya Balikpapan",
+    title: "Daftar Menu Risol & Harga Terbaru 2026 | Falya Balikpapan",
     description:
-      "Lihat daftar menu lengkap & harga Falya Risol Mayo Balikpapan. Pesan mudah via WhatsApp.",
-    url: "https://falyarisol.com/menu",
+      "Daftar menu risol Falya Balikpapan lengkap: risol mayo, mozza, tuna, mulai Rp 5.000. Plus nasi liwet, snack, kopi & jus. Pesan gampang via WhatsApp.",
+    url: "https://www.falyarisol.com/menu",
     siteName: "Falya Risol Mayo",
     images: [
       {
@@ -30,6 +30,13 @@ export const metadata: Metadata = {
     ],
     locale: "id_ID",
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Daftar Menu Risol & Harga Terbaru 2026 | Falya Balikpapan",
+    description:
+      "Daftar menu risol Falya Balikpapan lengkap: risol mayo, mozza, tuna, mulai Rp 5.000. Plus nasi liwet, snack, kopi & jus. Pesan gampang via WhatsApp.",
+    images: ["/images/2026/risol-mayo-2026.webp"],
   },
 };
 

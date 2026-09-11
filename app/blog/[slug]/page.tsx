@@ -11,7 +11,7 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
-const DEFAULT_OG_IMAGE = "https://falyarisol.com/images/2026/snackbox01.webp";
+const DEFAULT_OG_IMAGE = "https://www.falyarisol.com/images/2026/snackbox01.webp";
 
 // Next.js Dynamic SEO Metadata Generator
 export async function generateMetadata(
@@ -22,7 +22,7 @@ export async function generateMetadata(
   const session = await getAdminSession();
   const post = await getPostBySlug(slug, !!session);
 
-  const siteUrl = "https://falyarisol.com";
+  const siteUrl = "https://www.falyarisol.com";
   const canonicalUrl = `${siteUrl}/blog/${slug}`;
 
   if (!post) {
@@ -108,19 +108,19 @@ export default async function BlogPostDetailPage({ params }: Props) {
     author: {
       "@type": "Organization",
       name: "Falya Risol",
-      url: "https://falyarisol.com",
+      url: "https://www.falyarisol.com",
     },
     publisher: {
       "@type": "Organization",
       name: "Falya Risol",
       logo: {
         "@type": "ImageObject",
-        url: "https://falyarisol.com/images/logo-risol-mayo.webp",
+        url: "https://www.falyarisol.com/images/logo-risol-mayo.webp",
       },
     },
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": `https://falyarisol.com/blog/${post.slug}`,
+      "@id": `https://www.falyarisol.com/blog/${post.slug}`,
     },
   };
 

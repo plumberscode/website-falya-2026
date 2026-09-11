@@ -12,13 +12,13 @@ export const metadata: Metadata = {
     "kontak falya balikpapan",
   ],
   alternates: {
-    canonical: "https://falyarisol.com/faq",
+    canonical: "https://www.falyarisol.com/faq",
   },
   openGraph: {
     title: "Tanya Jawab (FAQ) & Cara Pemesanan | Falya Balikpapan",
     description:
       "Temukan jawaban seputar produk, pemesanan, dan layanan Falya Balikpapan.",
-    url: "https://falyarisol.com/faq",
+    url: "https://www.falyarisol.com/faq",
     siteName: "Falya Risol Mayo",
     images: [
       {

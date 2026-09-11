@@ -14,13 +14,13 @@ export const metadata: Metadata = {
     "catering snack balikpapan",
   ],
   alternates: {
-    canonical: "https://falyarisol.com/snackbox",
+    canonical: "https://www.falyarisol.com/snackbox",
   },
   openGraph: {
     title: "Paket Snack Box & Kue Nampan Balikpapan | Falya Risol",
     description:
       "Pilihan paket snack box dan kue nampan untuk berbagai acara di Balikpapan. Praktis dan lezat.",
-    url: "https://falyarisol.com/snackbox",
+    url: "https://www.falyarisol.com/snackbox",
     siteName: "Falya Risol Mayo",
     images: [
       {

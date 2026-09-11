@@ -13,13 +13,13 @@ export const metadata: Metadata = {
     "kuliner liwet balikpapan",
   ],
   alternates: {
-    canonical: "https://falyarisol.com/nasi-liwet",
+    canonical: "https://www.falyarisol.com/nasi-liwet",
   },
   openGraph: {
     title: "Paket Nasi Liwet Kotak & Tampah Balikpapan | Falya",
     description:
       "Paket nasi liwet otentik kotak & tampah di Balikpapan. Pas untuk acara kantor, keluarga, dan syukuran.",
-    url: "https://falyarisol.com/nasi-liwet",
+    url: "https://www.falyarisol.com/nasi-liwet",
     siteName: "Falya Risol Mayo",
     images: [
       {

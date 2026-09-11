@@ -17,7 +17,7 @@ const sans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://falyarisol.com"),
+  metadataBase: new URL("https://www.falyarisol.com"),
   title: "Risol Enak di Balikpapan | Risol Mayo & Nasi Liwet – Falya",
   description:
     "Risol mayo renyah hangat, nasi liwet, snack box & kue nampan enak di Balikpapan. Pesan mudah via WhatsApp — untuk acara kantor dan hajatan.",
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     title: "Risol Enak di Balikpapan | Risol Mayo & Nasi Liwet – Falya",
     description:
       "Risol mayo renyah, nasi liwet otentik, snack box & kue nampan untuk berbagai acara di Balikpapan. Pesan via WhatsApp.",
-    url: "https://falyarisol.com",
+    url: "https://www.falyarisol.com",
     siteName: "Falya Risol Mayo",
     images: [
       {
@@ -65,8 +65,8 @@ const restaurantSchema = {
   "@context": "https://schema.org",
   "@type": "FoodEstablishment",
   name: "Falya Risol Mayo",
-  image: "https://falyarisol.com/images/logo-risol-mayo.webp",
-  url: "https://falyarisol.com",
+  image: "https://www.falyarisol.com/images/logo-risol-mayo.webp",
+  url: "https://www.falyarisol.com",
   telephone: "+6285954227622",
   priceRange: "Rp",
   servesCuisine: ["Risol Mayo", "Nasi Liwet", "Snack Box", "Kue Nampan"],
