@@ -638,7 +638,7 @@ export const INITIAL_MENU: MenuItem[] = [
     category: "liwet-ayam",
     price: 32000,
     description:
-      "Isi: Nasi liwet bakar, Ayam goreng / ayam bakar, Tempe goreng, Sambal, Lalapan.",
+      "Isi: Nasi liwet bakar, Ayam goreng serundeng / ayam bakar, Tempe goreng, Sambal, Lalapan.",
     image: "/images/2026/paket-ayam-a.webp",
     isPopular: false,
     isAvailable: true,
@@ -650,7 +650,7 @@ export const INITIAL_MENU: MenuItem[] = [
     category: "liwet-ayam",
     price: 37000,
     description:
-      "Isi: Nasi liwet bakar, Ayam goreng / ayam bakar, Tempe & tahu goreng, Sambal, Lalapan, Buah.",
+      "Isi: Nasi liwet bakar, Ayam goreng serundeng / ayam bakar, Tempe & tahu goreng, Sambal, Lalapan, Buah.",
     image: "/images/liwet/ayamb.webp",
     isPopular: false,
     isAvailable: true,
@@ -662,7 +662,7 @@ export const INITIAL_MENU: MenuItem[] = [
     category: "liwet-ayam",
     price: 42000,
     description:
-      "Isi: Nasi liwet bakar, Ayam goreng / ayam bakar, Tempe & tahu goreng, Sambal, Lalapan, Buah, Air mineral botol 330 ml.",
+      "Isi: Nasi liwet bakar, Ayam goreng serundeng / ayam bakar, Tempe & tahu goreng, Sambal, Lalapan, Buah, Air mineral botol 330 ml.",
     image: "/images/liwet/ayamc.webp",
     isPopular: false,
     isAvailable: true,
@@ -674,7 +674,7 @@ export const INITIAL_MENU: MenuItem[] = [
     category: "liwet-ayam",
     price: 47000,
     description:
-      "Isi: Nasi liwet bakar, Ayam goreng / ayam bakar, Tempe & tahu goreng, Sambal, Lalapan, Buah, Urap.",
+      "Isi: Nasi liwet bakar, Ayam goreng serundeng / ayam bakar, Tempe & tahu goreng, Sambal, Lalapan, Buah, Urap.",
     image: "/images/liwet/ayamd.webp",
     isPopular: false,
     isAvailable: true,

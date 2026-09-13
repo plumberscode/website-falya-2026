@@ -30,11 +30,11 @@ export default function NasiLiwetPageClient({ items }: { items: MenuItem[] }) {
             KULINER KHAS FALYA
           </span>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-[#241b18] tracking-tight">
-            Pilihan Paket Nasi Liwet
+            Pilihan Paket Nasi Liwet Sunda
           </h1>
           <p className="text-[#665b56] text-sm sm:text-base leading-relaxed">
-            Sajikan kehangatan dan kelezatan Nasi Liwet khas Falya untuk momen
-            spesial Anda. Pilihan tepat untuk berbagai acara!
+            Sajikan kehangatan dan kelezatan Nasi Liwet Sunda khas Falya
+            untuk momen spesial Anda. Pilihan tepat untuk berbagai acara!
           </p>
         </div>
 
