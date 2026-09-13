@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
+import { TextSelection } from "@tiptap/pm/state";
 import StarterKit from "@tiptap/starter-kit";
 import LinkExtension from "@tiptap/extension-link";
 import ImageExtension from "@tiptap/extension-image";
@@ -58,6 +59,7 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
         heading: {
           levels: [2, 3], // H2 & H3 for SEO hierarchy
         },
+        link: false, // disable StarterKit's bundled Link so it doesn't duplicate the one configured below
       }),
       LinkExtension.configure({
         openOnClick: false,
@@ -132,6 +134,55 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
   };
 
   // Handle Table Insertion
+  // Apply H2/H3 only to the highlighted text, splitting the surrounding
+  // paragraph so the untouched parts stay as regular paragraphs.
+  //
+  // Without this, toggleHeading() promotes the WHOLE paragraph containing
+  // the selection to a heading (that's how ProseMirror block types work) —
+  // so highlighting just one sentence inside a longer paragraph turned
+  // every other sentence in that same paragraph into a heading too, which
+  // looked like the entire article had become H2 when the paragraph was
+  // the only (or main) content written so far.
+  const applyHeading = (level: 2 | 3) => {
+    editor
+      .chain()
+      .focus()
+      .command(({ tr, state, dispatch }) => {
+        const { $from, $to } = state.selection;
+
+        // A collapsed cursor (no highlighted text) keeps the normal
+        // "convert the whole current paragraph" behavior.
+        if (state.selection.empty || !$from.sameParent($to)) return false;
+
+        const parentStart = $from.start();
+        const parentEnd = $to.end();
+
+        if (!dispatch) return true;
+
+        if ($to.pos < parentEnd) {
+          tr.split($to.pos);
+        }
+        const mappedFrom = tr.mapping.map($from.pos);
+        const mappedParentStart = tr.mapping.map(parentStart);
+        if (mappedFrom > mappedParentStart) {
+          tr.split(mappedFrom);
+        }
+
+        // Re-select exactly the (now isolated) text so toggleHeading below
+        // only affects that block. Bias selTo to the left (-1) of the split
+        // point it came from, so it stays the end of the isolated block
+        // instead of snapping into the start of the next one.
+        const selFrom = tr.mapping.map($from.pos, 1);
+        const selTo = tr.mapping.map($to.pos, -1);
+        tr.setSelection(TextSelection.create(tr.doc, selFrom, selTo));
+
+        return true;
+      })
+      .run();
+
+    editor.chain().focus().toggleHeading({ level }).run();
+  };
+
   const handleInsertTable = () => {
     editor
       .chain()
@@ -237,7 +288,7 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
         {/* Headings */}
         <button
           type="button"
-          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+          onClick={() => applyHeading(2)}
           className={`px-2 py-1 rounded-lg text-xs font-bold transition cursor-pointer flex items-center gap-1 ${
             editor.isActive("heading", { level: 2 })
               ? "bg-zinc-200 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100"
@@ -250,7 +301,7 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
 
         <button
           type="button"
-          onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+          onClick={() => applyHeading(3)}
           className={`px-2 py-1 rounded-lg text-xs font-bold transition cursor-pointer flex items-center gap-1 ${
             editor.isActive("heading", { level: 3 })
               ? "bg-zinc-200 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100"
