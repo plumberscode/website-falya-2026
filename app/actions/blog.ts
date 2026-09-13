@@ -7,9 +7,11 @@ import { cleanExcerpt } from "@/lib/utils";
 
 export async function createPost(formData: {
   title: string;
+  headline?: string;
   slug: string;
   content: string;
   metaDescription?: string;
+  excerpt?: string;
   category?: string;
   imageUrl?: string;
   publishedAt?: string | Date;
@@ -40,12 +42,19 @@ export async function createPost(formData: {
       ? formData.metaDescription.trim()
       : cleanExcerpt(formData.content);
 
+    // headline (H1) & excerpt (kutipan tampil di halaman) boleh kosong di form —
+    // fallback ke title/metaDescription supaya render tidak pernah blank.
+    const finalHeadline = formData.headline?.trim() || formData.title.trim();
+    const finalExcerpt = formData.excerpt?.trim() || finalMetaDescription;
+
     const post = await prisma.post.create({
       data: {
         title: formData.title.trim(),
+        headline: finalHeadline,
         slug: cleanSlug,
         content: formData.content,
         metaDescription: finalMetaDescription,
+        excerpt: finalExcerpt,
         category: formData.category?.trim() || null,
         imageUrl: formData.imageUrl?.trim() || null,
         publishedAt: scheduleDate,
@@ -72,9 +81,11 @@ export async function updatePost(
   id: string,
   formData: {
     title: string;
+    headline?: string;
     slug: string;
     content: string;
     metaDescription?: string;
+    excerpt?: string;
     category?: string;
     imageUrl?: string;
     publishedAt?: string | Date;
@@ -106,13 +117,20 @@ export async function updatePost(
       ? formData.metaDescription.trim()
       : cleanExcerpt(formData.content);
 
+    // headline (H1) & excerpt (kutipan tampil di halaman) boleh kosong di form —
+    // fallback ke title/metaDescription supaya render tidak pernah blank.
+    const finalHeadline = formData.headline?.trim() || formData.title.trim();
+    const finalExcerpt = formData.excerpt?.trim() || finalMetaDescription;
+
     const post = await prisma.post.update({
       where: { id },
       data: {
         title: formData.title.trim(),
+        headline: finalHeadline,
         slug: cleanSlug,
         content: formData.content,
         metaDescription: finalMetaDescription,
+        excerpt: finalExcerpt,
         category: formData.category?.trim() || null,
         imageUrl: formData.imageUrl?.trim() || null,
         ...(scheduleDate && { publishedAt: scheduleDate }),

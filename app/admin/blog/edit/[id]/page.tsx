@@ -15,8 +15,10 @@ export default function EditBlogPostPage() {
   const id = params?.id as string;
 
   const [title, setTitle] = useState("");
+  const [headline, setHeadline] = useState("");
   const [slug, setSlug] = useState("");
   const [metaDescription, setMetaDescription] = useState("");
+  const [excerpt, setExcerpt] = useState("");
   const [category, setCategory] = useState("");
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [content, setContent] = useState("");
@@ -34,8 +36,10 @@ export default function EditBlogPostPage() {
       const post = await getPostById(id);
       if (post) {
         setTitle(post.title);
+        setHeadline(post.headline || "");
         setSlug(post.slug);
         setMetaDescription(post.metaDescription || "");
+        setExcerpt(post.excerpt || "");
         setCategory(post.category || "");
         setImageUrl(post.imageUrl || null);
         setContent(post.content);
@@ -120,9 +124,11 @@ export default function EditBlogPostPage() {
 
     const res = await updatePost(id, {
       title: title.trim(),
+      headline: headline.trim() || undefined,
       slug: slug.trim(),
       content,
       metaDescription: finalMetaDesc,
+      excerpt: excerpt.trim() || undefined,
       category: category.trim() || undefined,
       imageUrl: imageUrl || undefined,
       publishedAt,
@@ -185,7 +191,7 @@ export default function EditBlogPostPage() {
           {/* Judul, Slug & Kategori */}
           <div className="bg-white dark:bg-zinc-900 p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 space-y-4">
             <div>
-              <label className="block text-sm font-semibold mb-1">Judul Artikel</label>
+              <label className="block text-sm font-semibold mb-1">Judul SEO (untuk tag &lt;title&gt; & URL Slug)</label>
               <input
                 type="text"
                 value={title}
@@ -194,6 +200,23 @@ export default function EditBlogPostPage() {
                 className="w-full px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition text-lg font-medium"
                 required
               />
+              <p className="text-[11px] text-zinc-500 mt-1">
+                💡 Muncul di tab browser & hasil pencarian Google (otomatis ditambah "| Blog Falya"). Jangan tambahkan suffix brand sendiri di sini — sudah otomatis.
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold mb-1">Judul Tampil di Halaman (H1)</label>
+              <input
+                type="text"
+                value={headline}
+                onChange={(e) => setHeadline(e.target.value)}
+                placeholder="Contoh: 7 Tips Memilih Snack Box Berkualitas"
+                className="w-full px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition text-lg font-medium"
+              />
+              <p className="text-[11px] text-zinc-500 mt-1">
+                💡 Judul murni yang tampil sebagai heading utama artikel — tanpa suffix brand. Kosongkan untuk memakai Judul SEO di atas.
+              </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -357,7 +380,7 @@ export default function EditBlogPostPage() {
             <div>
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
-                  <label className="block text-sm font-semibold">Meta Description (Cuplikan Google & OG)</label>
+                  <label className="block text-sm font-semibold">Meta Description (SEO: Google, OG & Twitter)</label>
                   <button
                     type="button"
                     onClick={handleGenerateMetaFromContent}
@@ -388,7 +411,21 @@ export default function EditBlogPostPage() {
                 className="w-full px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition text-sm"
               />
               <p className="text-[11px] text-zinc-500 mt-1">
-                💡 Jika dibiarkan kosong, sistem secara otomatis mengekstrak 155 karakter pertama dari konten artikel untuk mengisi meta description, canonical, dan OpenGraph tag.
+                💡 Jika dibiarkan kosong, sistem secara otomatis mengekstrak 155 karakter pertama dari konten artikel untuk mengisi meta description, canonical, dan OpenGraph tag. Field ini HANYA untuk tag SEO — tidak tampil di halaman artikel (lihat "Kutipan Tampil di Halaman" di bawah).
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold mb-1">Kutipan Tampil di Halaman (Excerpt)</label>
+              <textarea
+                value={excerpt}
+                onChange={(e) => setExcerpt(e.target.value)}
+                placeholder="Kutipan singkat yang tampil di bawah judul artikel. Kosongkan untuk memakai Meta Description di atas."
+                rows={2}
+                className="w-full px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition text-sm"
+              />
+              <p className="text-[11px] text-zinc-500 mt-1">
+                💡 Ini yang tampil sebagai kutipan italic di halaman artikel (bukan untuk mesin pencari). Kosongkan untuk memakai Meta Description sebagai fallback.
               </p>
             </div>
 

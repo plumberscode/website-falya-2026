@@ -8,10 +8,22 @@ datasource db {
 
 model Post {
   id              String   @id @default(cuid())
+  // `title`: dipakai untuk <title> tag (SEO, dapat suffix "| Blog Falya" di
+  // layer template) dan basis slug. BUKAN untuk H1 — pakai `headline`.
   title           String
   slug            String   @unique
   content         String   @db.Text
+  // `headline`: H1 murni yang tampil di halaman artikel, tanpa suffix brand.
+  // Nullable untuk kompatibilitas data lama; render selalu fallback ke
+  // `title` kalau kosong (lihat app/blog/[slug]/page.tsx).
+  headline        String?  @db.Text
+  // `metaDescription`: <meta name="description">, OG description, Twitter
+  // description. BUKAN kutipan yang tampil di halaman — pakai `excerpt`.
   metaDescription String?  @db.Text
+  // `excerpt`: kutipan singkat yang tampil di halaman artikel (di bawah H1).
+  // Nullable untuk kompatibilitas data lama; render fallback ke
+  // `metaDescription` kalau kosong.
+  excerpt         String?  @db.Text
   category        String?
   imageUrl        String?
   isPublished     Boolean  @default(true)
@@ -23,7 +35,7 @@ model Post {
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
-  password  String   // Akan disimpan dalam bentuk hash
+  password  String // Akan disimpan dalam bentuk hash
   name      String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -56,4 +68,3 @@ model MenuItem {
 
   @@index([category])
 }
-

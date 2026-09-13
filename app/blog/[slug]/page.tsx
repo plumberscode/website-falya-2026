@@ -96,11 +96,14 @@ export default async function BlogPostDetailPage({ params }: Props) {
 
   const ogImage = post.imageUrl?.trim() || DEFAULT_OG_IMAGE;
 
+  const headline = post.headline?.trim() || post.title;
+  const excerpt = post.excerpt?.trim() || post.metaDescription;
+
   // Schema.org Article Structured Data for Google Rich Snippets
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
-    headline: post.title,
+    headline: headline,
     description: description,
     image: [ogImage],
     datePublished: (post.publishedAt || post.createdAt).toISOString(),
@@ -221,12 +224,12 @@ export default async function BlogPostDetailPage({ params }: Props) {
             </div>
 
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-zinc-900 dark:text-zinc-50 leading-tight mb-6">
-              {post.title}
+              {headline}
             </h1>
 
-            {post.metaDescription && (
+            {excerpt && (
               <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed italic border-l-4 border-emerald-500 pl-4">
-                {post.metaDescription}
+                {excerpt}
               </p>
             )}
           </header>
