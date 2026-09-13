@@ -92,6 +92,12 @@ const nextConfig: NextConfig = {
         statusCode: 301,
       },
       {
+        // 301 Permanent Redirect: /nasi-liwet.html (versi lama) → /nasi-liwet
+        source: "/nasi-liwet.html",
+        destination: "/nasi-liwet",
+        statusCode: 301,
+      },
+      {
         // Catch-all: URL lama lain yang berakhiran .html → versi bersih tanpa .html (301)
         source: "/:slug.html",
         destination: "/:slug",
