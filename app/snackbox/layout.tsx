@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Paket Snack Box & Kue Nampan Balikpapan | Falya Risol",
+  title: "Snack Box & Kue Nampan Balikpapan | Meeting, Rapat & Acara | Falya Risol",
   description:
     "Paket snack box mini, reguler, komplit & kue nampan Balikpapan untuk rapat kantor, pengajian, hajatan, arisan. Mulai Rp13.000/box. WhatsApp 085954227622.",
   keywords: [
@@ -17,9 +17,9 @@ export const metadata: Metadata = {
     canonical: "https://www.falyarisol.com/snackbox",
   },
   openGraph: {
-    title: "Paket Snack Box & Kue Nampan Balikpapan | Falya Risol",
+    title: "Snack Box & Kue Nampan Balikpapan | Meeting, Rapat & Acara | Falya Risol",
     description:
-      "Pilihan paket snack box dan kue nampan untuk berbagai acara di Balikpapan. Praktis dan lezat.",
+      "Paket snack box mini, reguler, komplit & kue nampan Balikpapan untuk rapat kantor, pengajian, hajatan, arisan. Mulai Rp13.000/box. WhatsApp 085954227622.",
     url: "https://www.falyarisol.com/snackbox",
     siteName: "Falya Risol Mayo",
     images: [
