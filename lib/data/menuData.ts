@@ -18,6 +18,12 @@ export interface MenuItem {
   description: string;
   image: string;
   isPopular?: boolean;
+  // Di-set otomatis oleh Agent "Website Sync" (crew Python di folder
+  // "Karyawan AI") berdasarkan ranking revenue 30 hari terakhir dari data
+  // penjualan app kasir -- BUKAN dikurasi manual. Badge "BEST SELLER" di
+  // seluruh situs (lihat MenuCard.tsx, app/page.tsx) ikut field ini, bukan
+  // isPopular lagi. Jangan diedit manual dari form admin.
+  isBestseller?: boolean;
   isAvailable: boolean;
   unit?: string;
 }

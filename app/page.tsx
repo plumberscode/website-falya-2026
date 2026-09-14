@@ -29,11 +29,14 @@ import { getAllMenuItems } from "@/app/actions/menu";
 export const revalidate = false;
 
 export default async function HomePage() {
-  // Produk Best Seller ditandai lewat tag "isPopular" di admin panel —
-  // section ini otomatis mengikuti berapa pun jumlahnya (slider menampung
-  // lebih dari 3 produk, tidak lagi dibatasi 3 id hardcoded).
+  // Produk Best Seller ditandai otomatis lewat isBestseller -- di-set oleh
+  // Agent "Website Sync" (crew Python, folder "Karyawan AI") berdasarkan
+  // ranking revenue 30 hari terakhir dari data penjualan app kasir, BUKAN
+  // tag manual admin lagi. Section ini otomatis mengikuti berapa pun
+  // jumlahnya (slider menampung lebih dari 3 produk, tidak lagi dibatasi 3
+  // id hardcoded).
   const allMenuItems = await getAllMenuItems();
-  const bestSellers = allMenuItems.filter((item) => item.isPopular);
+  const bestSellers = allMenuItems.filter((item) => item.isBestseller);
 
   return (
     <main className="w-full bg-[#fdfbfc] text-[#241b18] min-h-screen">

@@ -41,8 +41,9 @@ export default function MenuCard({ item }: MenuCardProps) {
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
 
-        {/* Badges on top */}
-        {item.isPopular && (
+        {/* Badges on top -- isBestseller: otomatis dari Agent "Website Sync",
+            lihat lib/data/menuData.ts */}
+        {item.isBestseller && (
           <div className="absolute top-3 left-3 z-10">
             <span className="bg-[#a82868] text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow-xs tracking-wider uppercase">
               BEST SELLER

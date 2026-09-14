@@ -94,7 +94,10 @@ export default function EditMenuItemPage() {
       price: Number(formData.price),
       unit: formData.unit?.trim() || "pcs",
       isAvailable: formData.isAvailable,
-      isPopular: formData.isPopular,
+      // isBestseller SENGAJA tidak dikirim -- itu cuma boleh diubah lewat
+      // Agent "Website Sync" (POST /api/admin/products/bestseller), bukan
+      // dari form admin, supaya edit apapun di sini tidak menimpa hasil
+      // ranking data penjualan.
       image: formData.image,
     });
     setIsSaving(false);
@@ -306,19 +309,22 @@ export default function EditMenuItemPage() {
               </div>
             </div>
 
+            {/* Read-only, bukan checkbox: status bestseller otomatis dari
+                Agent "Website Sync" berdasarkan revenue 30 hari terakhir,
+                bukan kurasi manual -- edit di sini tidak mengubahnya. */}
             <div className="pt-2">
-              <label className="flex items-center gap-2.5 cursor-pointer text-xs font-bold text-[#241b18] p-3 rounded-2xl bg-[#faf0f4]/40 hover:bg-[#faf0f4] transition">
-                <input
-                  type="checkbox"
-                  checked={formData.isPopular || false}
-                  onChange={(e) => setFormData({ ...formData, isPopular: e.target.checked })}
-                  className="accent-[#a82868] w-4 h-4 rounded cursor-pointer"
+              <div className="flex items-center gap-2.5 text-xs font-bold text-[#241b18] p-3 rounded-2xl bg-[#faf0f4]/40">
+                <Sparkles
+                  className={`w-3.5 h-3.5 ${formData.isBestseller ? "text-[#a82868]" : "text-[#968b85]"}`}
                 />
-                <span className="flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-[#a82868]" />
-                  Tandai sebagai Produk Terlaris (BEST SELLER)
-                </span>
-              </label>
+                {formData.isBestseller ? (
+                  <span>Produk ini sedang jadi Best Seller (otomatis dari data penjualan)</span>
+                ) : (
+                  <span className="text-[#968b85] font-semibold">
+                    Bukan Best Seller saat ini (status otomatis, diperbarui sistem)
+                  </span>
+                )}
+              </div>
             </div>
           </div>
 

@@ -64,7 +64,6 @@ export default function AdminPage() {
     image: "/images/item-risol-mayo.webp",
     unit: "pcs",
     isAvailable: true,
-    isPopular: false,
   });
 
   const handleCreateNewItem = async (e: React.FormEvent) => {
@@ -82,7 +81,6 @@ export default function AdminPage() {
       image: newItem.image || "/images/item-risol-mayo.webp",
       unit: newItem.unit?.trim() || "pcs",
       isAvailable: true,
-      isPopular: newItem.isPopular || false,
     });
 
     if (!result.success) {
@@ -100,7 +98,6 @@ export default function AdminPage() {
       image: "/images/item-risol-mayo.webp",
       unit: "pcs",
       isAvailable: true,
-      isPopular: false,
     });
     toast.success(`Menu "${newItem.name}" berhasil ditambahkan!`);
   };
@@ -141,8 +138,10 @@ export default function AdminPage() {
     });
   }, [menuItems, searchQuery, selectedCategory]);
 
+  // isBestseller: otomatis dari Agent "Website Sync" (crew Python), bukan
+  // kurasi manual -- lihat lib/data/menuData.ts.
   const bestSellerItems = useMemo(
-    () => menuItems.filter((item) => item.isPopular),
+    () => menuItems.filter((item) => item.isBestseller),
     [menuItems],
   );
 
@@ -357,19 +356,10 @@ export default function AdminPage() {
                 />
               </div>
 
-              <div className="sm:col-span-2 flex items-center justify-between pt-2">
-                <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-[#241b18]">
-                  <input
-                    type="checkbox"
-                    checked={newItem.isPopular}
-                    onChange={(e) =>
-                      setNewItem({ ...newItem, isPopular: e.target.checked })
-                    }
-                    className="accent-[#a82868] w-4 h-4 rounded"
-                  />
-                  Tandai sebagai BEST SELLER
-                </label>
-
+              {/* Tidak ada lagi checkbox "Tandai sebagai BEST SELLER" --
+                  status bestseller sekarang otomatis dari Agent "Website
+                  Sync" berdasarkan data penjualan, bukan kurasi manual. */}
+              <div className="sm:col-span-2 flex items-center justify-end pt-2">
                 <Button
                   type="submit"
                   className="bg-[#a82868] hover:bg-[#861f53] text-white font-semibold rounded-full text-xs px-6 h-10"
@@ -464,7 +454,7 @@ export default function AdminPage() {
                       <span className="font-bold text-sm sm:text-base text-[#241b18] group-hover:text-[#a82868] transition">
                         {item.name}
                       </span>
-                      {item.isPopular && (
+                      {item.isBestseller && (
                         <span className="inline-flex items-center gap-0.5 text-[10px] bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded-full shrink-0">
                           <Sparkles className="w-2.5 h-2.5" /> Best Seller
                         </span>

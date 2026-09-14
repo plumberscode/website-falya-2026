@@ -63,6 +63,11 @@ model MenuItem {
   unit        String?
   isPopular   Boolean  @default(false)
   isAvailable Boolean  @default(true)
+  // Di-set oleh Agent "Website Sync" (crew Python di folder Karyawan AI)
+  // berdasarkan ranking revenue 30 hari terakhir dari data penjualan app
+  // kasir — BUKAN dikurasi manual seperti isPopular. Lihat
+  // app/api/admin/products/bestseller/route.ts.
+  isBestseller Boolean @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

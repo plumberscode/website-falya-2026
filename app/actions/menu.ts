@@ -7,7 +7,10 @@ import type { MenuItem } from "@/lib/data/menuData";
 
 // Halaman yang menampilkan daftar menu (dan perlu di-refresh setiap ada
 // perubahan menu apapun: tambah, edit, hapus, ubah ketersediaan).
-function revalidateMenuPages() {
+// async: wajib, semua export top-level di file "use server" harus async
+// function (constraint Next.js Server Actions) — dipakai juga dari
+// app/api/admin/products/bestseller/route.ts.
+export async function revalidateMenuPages() {
   revalidatePath("/");
   revalidatePath("/menu");
   revalidatePath("/snackbox");
@@ -65,7 +68,7 @@ export async function createMenuItem(data: Omit<MenuItem, "id">) {
       },
     });
 
-    revalidateMenuPages();
+    await revalidateMenuPages();
     return { success: true, item };
   } catch (error) {
     console.error("Failed to create menu item:", error);
@@ -94,7 +97,7 @@ export async function updateMenuItem(id: string, data: Partial<Omit<MenuItem, "i
       },
     });
 
-    revalidateMenuPages();
+    await revalidateMenuPages();
     return { success: true, item };
   } catch (error) {
     console.error("Failed to update menu item:", error);
@@ -119,7 +122,7 @@ export async function toggleMenuItemAvailability(id: string) {
       data: { isAvailable: !current.isAvailable },
     });
 
-    revalidateMenuPages();
+    await revalidateMenuPages();
     return { success: true, item };
   } catch (error) {
     console.error("Failed to toggle menu availability:", error);
@@ -136,7 +139,7 @@ export async function deleteMenuItem(id: string) {
 
     await prisma.menuItem.delete({ where: { id } });
 
-    revalidateMenuPages();
+    await revalidateMenuPages();
     return { success: true };
   } catch (error) {
     console.error("Failed to delete menu item:", error);
