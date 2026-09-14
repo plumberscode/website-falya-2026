@@ -11,7 +11,7 @@ import {
   MessageCircle,
 } from "lucide-react";
 import CanvasSequenceScroller from "@/components/scrollytelling/CanvasSequenceScroller";
-import MenuCard from "@/components/menu/MenuCard";
+import BestSellerSlider from "@/components/menu/BestSellerSlider";
 import TestimonialSlider from "@/components/testimonials/TestimonialSlider";
 import { Button } from "@/components/ui/button";
 import { FALYA_CONTACT } from "@/lib/data/menuData";
@@ -29,12 +29,11 @@ import { getAllMenuItems } from "@/app/actions/menu";
 export const revalidate = false;
 
 export default async function HomePage() {
-  // 3 Best Sellers as specified in AGENTS.md / original website
-  const bestSellerIds = ["risol001", "risol004", "kuliner003"];
+  // Produk Best Seller ditandai lewat tag "isPopular" di admin panel —
+  // section ini otomatis mengikuti berapa pun jumlahnya (slider menampung
+  // lebih dari 3 produk, tidak lagi dibatasi 3 id hardcoded).
   const allMenuItems = await getAllMenuItems();
-  const bestSellers = allMenuItems.filter((item) =>
-    bestSellerIds.includes(item.id),
-  );
+  const bestSellers = allMenuItems.filter((item) => item.isPopular);
 
   return (
     <main className="w-full bg-[#fdfbfc] text-[#241b18] min-h-screen">
@@ -86,11 +85,7 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            {bestSellers.map((item) => (
-              <MenuCard key={item.id} item={item} />
-            ))}
-          </div>
+          <BestSellerSlider items={bestSellers} />
         </div>
       </section>
 

@@ -141,6 +141,11 @@ export default function AdminPage() {
     });
   }, [menuItems, searchQuery, selectedCategory]);
 
+  const bestSellerItems = useMemo(
+    () => menuItems.filter((item) => item.isPopular),
+    [menuItems],
+  );
+
   const availableCount = menuItems.filter((i) => i.isAvailable).length;
   const unavailableCount = menuItems.length - availableCount;
 
@@ -373,6 +378,45 @@ export default function AdminPage() {
                 </Button>
               </div>
             </form>
+          </div>
+        )}
+
+        {/* Produk Best Seller */}
+        {!isLoading && bestSellerItems.length > 0 && (
+          <div className="mb-6">
+            <div className="flex items-center gap-1.5 mb-3">
+              <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+              <span className="text-xs font-bold text-[#241b18]">
+                Produk Best Seller
+              </span>
+              <span className="text-[11px] text-[#968b85]">
+                ({bestSellerItems.length})
+              </span>
+            </div>
+            <div className="flex gap-3 overflow-x-auto pb-1 -mx-1 px-1">
+              {bestSellerItems.map((item) => (
+                <Link
+                  key={item.id}
+                  href={`/admin/menu/${item.id}`}
+                  className="group shrink-0 flex items-center gap-2.5 bg-white border border-amber-200/60 rounded-2xl pl-2 pr-4 py-2 shadow-xs hover:border-amber-300 hover:shadow-[0_4px_16px_rgba(245,158,11,0.12)] transition"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="w-11 h-11 rounded-xl object-cover shrink-0 bg-[#faf0f4]"
+                  />
+                  <div className="min-w-0">
+                    <span className="block text-xs font-bold text-[#241b18] group-hover:text-[#a82868] transition truncate max-w-[140px]">
+                      {item.name}
+                    </span>
+                    <span className="block text-[11px] font-semibold text-[#665b56]">
+                      Rp {item.price.toLocaleString("id-ID")}
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
         )}
 
