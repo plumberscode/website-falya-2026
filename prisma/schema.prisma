@@ -74,6 +74,31 @@ model SeoAuditReport {
   @@index([generatedAt])
 }
 
+// Usulan fix otomatis dari audit SEO -- SAAT INI HANYA untuk
+// Post.metaDescription yang kosong (satu-satunya isu yang punya target
+// tulis aman & nilai fallback resmi, lihat cleanExcerpt di lib/utils.ts).
+// Butuh approval admin sebelum diterapkan (lihat agents.md bagian 7). Tanpa
+// @relation Prisma -- konsisten dengan model lain di file ini, join
+// dilakukan di kode aplikasi (lihat app/actions/seo.ts).
+model SeoProposedFix {
+  id            String    @id @default(cuid())
+  auditReportId String
+  postId        String
+  // "metaDescription" -- string (bukan enum) supaya field lain gampang
+  // ditambah nanti tanpa migrasi enum.
+  field         String
+  issueType     String
+  currentValue  String?   @db.Text
+  proposedValue String    @db.Text
+  // "pending" | "approved" | "applied" | "rejected"
+  status        String    @default("pending")
+  createdAt     DateTime  @default(now())
+  decidedAt     DateTime?
+
+  @@index([status])
+  @@index([postId])
+}
+
 model MenuItem {
   // Id manual (bukan @default(cuid())) supaya id lama dari seed data
   // (mis. "risol001") tetap terjaga; item baru dari admin memakai cuid().

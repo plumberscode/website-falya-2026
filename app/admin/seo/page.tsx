@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { getSeoAuditReports } from "@/app/actions/seo";
+import { getSeoAuditReports, getPendingSeoFixes, approveSeoFix, rejectSeoFix } from "@/app/actions/seo";
 import { logoutAction } from "@/app/actions/auth";
 import {
   UtensilsCrossed,
@@ -16,6 +16,10 @@ import {
   Gauge,
   ChevronDown,
   ChevronUp,
+  Sparkles,
+  Check,
+  X,
+  ExternalLink,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -52,6 +56,14 @@ interface SeoAuditReportRow {
   reportJson: unknown;
 }
 
+interface PendingFixRow {
+  id: string;
+  field: string;
+  currentValue: string | null;
+  proposedValue: string;
+  post: { id: string; title: string; slug: string } | null;
+}
+
 function performanceBadgeClass(score: number | null) {
   if (score === null) return "bg-zinc-100 text-zinc-600";
   if (score >= 90) return "bg-emerald-100 text-emerald-800";
@@ -64,14 +76,51 @@ export default function AdminSeoPage() {
   const [reports, setReports] = useState<SeoAuditReportRow[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [pendingFixes, setPendingFixes] = useState<PendingFixRow[]>([]);
+  const [isLoadingFixes, setIsLoadingFixes] = useState(true);
+  const [decidingFixId, setDecidingFixId] = useState<string | null>(null);
+
+  const loadPendingFixes = async () => {
+    const data = await getPendingSeoFixes();
+    setPendingFixes(data as PendingFixRow[]);
+    setIsLoadingFixes(false);
+  };
 
   useEffect(() => {
+    // Muat laporan & fix pending sekali di mount -- tidak ada cara lain
+    // mengetahui data server tanpa efek ini.
     (async () => {
       const data = await getSeoAuditReports();
       setReports(data as SeoAuditReportRow[]);
       setIsLoading(false);
     })();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadPendingFixes();
   }, []);
+
+  const handleApproveFix = async (id: string) => {
+    setDecidingFixId(id);
+    const result = await approveSeoFix(id);
+    setDecidingFixId(null);
+    if (!result.success) {
+      toast.error(result.error || "Gagal menerapkan fix.");
+      return;
+    }
+    toast.success("Fix diterapkan ke artikel.");
+    setPendingFixes((prev) => prev.filter((f) => f.id !== id));
+  };
+
+  const handleRejectFix = async (id: string) => {
+    setDecidingFixId(id);
+    const result = await rejectSeoFix(id);
+    setDecidingFixId(null);
+    if (!result.success) {
+      toast.error(result.error || "Gagal menolak fix.");
+      return;
+    }
+    toast.info("Usulan fix ditolak.");
+    setPendingFixes((prev) => prev.filter((f) => f.id !== id));
+  };
 
   return (
     <div className="w-full bg-[#fdfbfc] text-[#241b18] min-h-screen pt-28 pb-20">
@@ -135,6 +184,76 @@ export default function AdminSeoPage() {
           (crew Python, <code>python -m falya_crew.seo_audit</code>) -- audit-only,
           belum ada perubahan otomatis ke website.
         </p>
+
+        {/* Fix Diusulkan -- HANYA untuk meta description artikel blog yang
+            kosong, satu-satunya isu yang punya nilai fallback aman
+            (cleanExcerpt). Butuh approval eksplisit sebelum diterapkan. */}
+        {!isLoadingFixes && pendingFixes.length > 0 && (
+          <div className="mb-6">
+            <div className="flex items-center gap-1.5 mb-3">
+              <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+              <span className="text-xs font-bold text-[#241b18]">Fix Diusulkan</span>
+              <span className="text-[11px] text-[#968b85]">({pendingFixes.length})</span>
+            </div>
+            <div className="space-y-3 mb-2">
+              {pendingFixes.map((fix) => (
+                <div
+                  key={fix.id}
+                  className="bg-white rounded-[18px] p-4 sm:p-5 border border-amber-200/60 shadow-[0_2px_12px_rgba(245,158,11,0.06)]"
+                >
+                  <div className="flex items-center justify-between gap-3 mb-3 flex-wrap">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="font-bold text-sm text-[#241b18] truncate">
+                        {fix.post?.title ?? "(artikel tidak ditemukan)"}
+                      </span>
+                      {fix.post && (
+                        <a
+                          href={`/blog/${fix.post.slug}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[#968b85] hover:text-[#a82868] transition shrink-0"
+                          title="Lihat artikel"
+                        >
+                          <ExternalLink className="w-3.5 h-3.5" />
+                        </a>
+                      )}
+                      <span className="text-[10px] font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full shrink-0">
+                        Meta Description Kosong
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <Button
+                        onClick={() => handleApproveFix(fix.id)}
+                        disabled={decidingFixId === fix.id}
+                        className="bg-emerald-600 hover:bg-emerald-500 text-white rounded-full text-xs h-8 px-3 flex items-center gap-1"
+                      >
+                        <Check className="w-3.5 h-3.5" />
+                        Terapkan
+                      </Button>
+                      <Button
+                        onClick={() => handleRejectFix(fix.id)}
+                        disabled={decidingFixId === fix.id}
+                        variant="outline"
+                        className="border-[#f3d5e3] text-[#665b56] hover:bg-[#faf0f4] rounded-full text-xs h-8 px-3 flex items-center gap-1"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                        Tolak
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="text-xs space-y-1.5">
+                    <p className="text-[#968b85]">
+                      Saat ini: <span className="italic">{fix.currentValue?.trim() || "(kosong)"}</span>
+                    </p>
+                    <p className="text-[#241b18] bg-emerald-50 border border-emerald-200/60 rounded-lg px-3 py-2">
+                      Usulan: {fix.proposedValue}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Report Listing */}
         <div className="bg-white rounded-[24px] overflow-hidden shadow-[0_4px_24px_rgba(168,40,104,0.05)] border border-[#f3d5e3]/40">

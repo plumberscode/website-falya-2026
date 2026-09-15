@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { cleanExcerpt } from "@/lib/utils";
 
 /**
  * Endpoint machine-to-machine untuk Agent "SEO Auditor" (crew Python di
@@ -22,12 +23,18 @@ import { prisma } from "@/lib/prisma";
  * run mingguan = 1 baris baru, sesuai semantik "riwayat audit".
  */
 
+interface MetaIssue {
+  page_url: string;
+  issue_type: string;
+  detail: string;
+}
+
 interface SeoAuditReportBody {
   generated_at: string;
   website_base_url: string;
   crawl: {
     broken_links: unknown[];
-    meta_issues: unknown[];
+    meta_issues: MetaIssue[];
     sitemap_diff: unknown;
   };
   pagespeed: {
@@ -56,6 +63,14 @@ function isValidBody(body: unknown): body is SeoAuditReportBody {
   ) {
     return false;
   }
+  const metaIssuesValid = crawl.meta_issues.every(
+    (issue) =>
+      issue &&
+      typeof issue === "object" &&
+      typeof (issue as Record<string, unknown>).page_url === "string" &&
+      typeof (issue as Record<string, unknown>).issue_type === "string"
+  );
+  if (!metaIssuesValid) return false;
 
   const pagespeed = b.pagespeed as Record<string, unknown> | undefined;
   if (!pagespeed || !Array.isArray(pagespeed.scores)) {
@@ -125,6 +140,17 @@ export async function POST(request: NextRequest) {
     },
   });
 
+  // Best-effort: usulkan fix untuk missing_meta_description pada halaman
+  // blog (satu-satunya isu yang punya target tulis aman & nilai fallback
+  // resmi -- lihat komentar model SeoProposedFix di schema.prisma dan plan
+  // "Auto-Fix Agent 3"). Gagal di sini TIDAK BOLEH menggagalkan penyimpanan
+  // laporan audit itu sendiri, jadi dibungkus try/catch terpisah.
+  try {
+    await generateProposedFixesForMissingMetaDescription(report.id, body.crawl.meta_issues);
+  } catch (error) {
+    console.error("[seo-audit-report] Gagal generate usulan fix:", error);
+  }
+
   return NextResponse.json({
     success: true,
     id: report.id,
@@ -134,4 +160,41 @@ export async function POST(request: NextRequest) {
     avgPerformanceScore,
     timestamp: new Date().toISOString(),
   });
+}
+
+// Slug halaman blog ada di path setelah /blog/, lihat app/blog/[slug]/page.tsx.
+const BLOG_SLUG_PATTERN = /\/blog\/([^/?#]+)\/?(?:[?#].*)?$/;
+
+async function generateProposedFixesForMissingMetaDescription(auditReportId: string, metaIssues: MetaIssue[]) {
+  const missingDescriptionIssues = metaIssues.filter((issue) => issue.issue_type === "missing_meta_description");
+
+  for (const issue of missingDescriptionIssues) {
+    const slugMatch = issue.page_url.match(BLOG_SLUG_PATTERN);
+    if (!slugMatch) {
+      // Bukan halaman blog (mis. homepage/kategori statis) -- tidak ada
+      // kolom database untuk ditulis, jadi tetap sebagai temuan audit biasa
+      // tanpa usulan fix (lihat plan "Di luar scope").
+      continue;
+    }
+
+    const post = await prisma.post.findUnique({ where: { slug: slugMatch[1] } });
+    if (!post) continue;
+
+    const existingPending = await prisma.seoProposedFix.findFirst({
+      where: { postId: post.id, field: "metaDescription", status: "pending" },
+    });
+    if (existingPending) continue; // sudah ada usulan menunggu keputusan admin
+
+    await prisma.seoProposedFix.create({
+      data: {
+        auditReportId,
+        postId: post.id,
+        field: "metaDescription",
+        issueType: issue.issue_type,
+        currentValue: post.metaDescription,
+        proposedValue: cleanExcerpt(post.content),
+        status: "pending",
+      },
+    });
+  }
 }
