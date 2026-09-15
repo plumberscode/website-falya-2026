@@ -107,21 +107,21 @@ export default function RootLayout({
   return (
     <html lang="id" className={`${sans.variable} scroll-smooth`}>
       <body className="bg-[#fdfbfc] text-[#241b18] font-sans antialiased selection:bg-[#f3d5e3] selection:text-[#861f53] min-h-screen flex flex-col">
-        {/* DINONAKTIFKAN SEMENTARA (diagnostik) -- baik strategy
-            "afterInteractive" maupun "lazyOnload" sama-sama berkorelasi
-            dengan NO_LCP konsisten di PageSpeed audit setelah CSP
-            mengizinkan script ini jalan (lihat plan/percakapan investigasi
-            NO_LCP homepage). Dimatikan sementara untuk konfirmasi apakah
-            Ahrefs memang akar masalahnya sebelum dicari cara pasang lagi
-            yang tidak ganggu LCP. TODO: aktifkan lagi setelah solusinya
-            ketemu -- Ahrefs Analytics TIDAK mengumpulkan data selama ini.
+        {/* strategy="lazyOnload" (bukan default "afterInteractive"): analytics
+            pihak ketiga TIDAK KRITIS untuk render awal, jadi ditunda sampai
+            browser idle -- praktik umum untuk script non-kritis, terlepas
+            dari NO_LCP di homepage (sempat dicurigai terkait script ini,
+            tapi sudah dikonfirmasi TIDAK -- NO_LCP tetap muncul walau
+            Ahrefs dimatikan total saat investigasi). Akar penyebab NO_LCP
+            masih belum diketahui pasti, kemungkinan besar karakteristik lab
+            test Lighthouse untuk halaman ini, bukan bug spesifik yang bisa
+            di-patch satu baris. */}
         <Script
           id="ahrefs-analytics"
           src="https://analytics.ahrefs.com/analytics.js"
           data-key="XQbMYubDj4Ziw2NF/9RANQ"
           strategy="lazyOnload"
         />
-        */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(restaurantSchema) }}
