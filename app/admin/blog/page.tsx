@@ -20,6 +20,7 @@ import {
   Clock,
   CheckCircle,
   FileText,
+  SearchCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -102,7 +103,7 @@ export default function AdminBlogListPage() {
           </div>
         </div>
 
-        {/* Tab Switcher: Menu vs Blog */}
+        {/* Tab Switcher: Menu vs Blog vs Audit SEO */}
         <div className="flex items-center gap-2 mb-8 bg-white p-1.5 rounded-2xl border border-[#f3d5e3]/40 w-fit shadow-xs">
           <Link
             href="/admin"
@@ -116,6 +117,14 @@ export default function AdminBlogListPage() {
             <BookOpen className="w-4 h-4 text-white" />
             Artikel Blog ({posts.length})
           </div>
+
+          <Link
+            href="/admin/seo"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold text-[#665b56] hover:bg-[#faf0f4] transition"
+          >
+            <SearchCheck className="w-4 h-4 text-[#968b85]" />
+            Audit SEO
+          </Link>
         </div>
 
         {/* Search Bar */}
