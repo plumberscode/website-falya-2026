@@ -110,6 +110,21 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  const taskId = (body as { taskId?: unknown } | null)?.taskId;
+  if (typeof taskId === "string" && taskId) {
+    // Best-effort -- sync SUDAH selesai di titik ini, kegagalan menandai
+    // AgentTaskRequest (mis. task_id sudah tidak ada) TIDAK BOLEH membuat
+    // response ini error, pola sama persis content/draft/route.ts.
+    try {
+      await prisma.agentTaskRequest.update({
+        where: { id: taskId },
+        data: { status: "processed", processedAt: new Date() },
+      });
+    } catch (error) {
+      console.error(`Gagal menandai AgentTaskRequest ${taskId} selesai:`, error);
+    }
+  }
+
   return NextResponse.json({
     success: true,
     setBestseller: matchedNames,

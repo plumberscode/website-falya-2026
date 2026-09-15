@@ -14,20 +14,19 @@ import {
   Search,
   BookOpen,
   Calendar,
-  UtensilsCrossed,
   LogOut,
   Sparkles,
   Loader2,
   Clock,
   CheckCircle,
   FileText,
-  SearchCheck,
   Wand2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import BlogImage from "@/components/blog/BlogImage";
+import { AdminTabs } from "@/components/admin/admin-tabs";
 
 export default function AdminBlogListPage() {
   const router = useRouter();
@@ -146,29 +145,7 @@ export default function AdminBlogListPage() {
           </div>
         </div>
 
-        {/* Tab Switcher: Menu vs Blog vs Audit SEO */}
-        <div className="flex items-center gap-2 mb-8 bg-white p-1.5 rounded-2xl border border-[#f3d5e3]/40 w-fit shadow-xs">
-          <Link
-            href="/admin"
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold text-[#665b56] hover:bg-[#faf0f4] transition"
-          >
-            <UtensilsCrossed className="w-4 h-4 text-[#968b85]" />
-            Katalog Menu ({`Menu & Harga`})
-          </Link>
-
-          <div className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold bg-[#a82868] text-white shadow-xs">
-            <BookOpen className="w-4 h-4 text-white" />
-            Artikel Blog ({posts.length})
-          </div>
-
-          <Link
-            href="/admin/seo"
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold text-[#665b56] hover:bg-[#faf0f4] transition"
-          >
-            <SearchCheck className="w-4 h-4 text-[#968b85]" />
-            Audit SEO
-          </Link>
-        </div>
+        <AdminTabs active="blog" counts={{ blog: posts.length }} />
 
         {/* Search Bar */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mb-6">

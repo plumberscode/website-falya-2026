@@ -22,9 +22,8 @@ import {
   ChevronRight,
   Sparkles,
   Edit3,
-  UtensilsCrossed,
-  SearchCheck,
 } from "lucide-react";
+import { AdminTabs } from "@/components/admin/admin-tabs";
 import {
   MenuItem,
   MENU_CATEGORIES,
@@ -200,29 +199,7 @@ export default function AdminPage() {
           </div>
         </div>
 
-        {/* Tab Switcher: Menu vs Blog vs Audit SEO */}
-        <div className="flex items-center gap-2 mb-8 bg-white p-1.5 rounded-2xl border border-[#f3d5e3]/40 w-fit shadow-xs">
-          <div className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold bg-[#a82868] text-white shadow-xs">
-            <UtensilsCrossed className="w-4 h-4 text-white" />
-            Katalog Menu ({menuItems.length})
-          </div>
-
-          <Link
-            href="/admin/blog"
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold text-[#665b56] hover:bg-[#faf0f4] transition"
-          >
-            <BookOpen className="w-4 h-4 text-[#968b85]" />
-            Artikel Blog
-          </Link>
-
-          <Link
-            href="/admin/seo"
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold text-[#665b56] hover:bg-[#faf0f4] transition"
-          >
-            <SearchCheck className="w-4 h-4 text-[#968b85]" />
-            Audit SEO
-          </Link>
-        </div>
+        <AdminTabs active="menu" counts={{ menu: menuItems.length }} />
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
           <div className="bg-white rounded-[18px] p-5 shadow-[0_2px_12px_rgba(168,40,104,0.04)] border border-[#f3d5e3]/30">
             <span className="text-xs text-[#665b56]">Total Menu Terdaftar</span>

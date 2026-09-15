@@ -119,28 +119,90 @@ model ContentJobRequest {
   @@index([status])
 }
 
+// Log eksekusi tiap run agent Python (Karyawan AI: sales_sync, seo_audit,
+// content_writer). Satu run = SATU row, update-in-place: POST pertama
+// (status=running) create row & return run_id; POST kedua (status=success|
+// error) update row yang sama pakai run_id (bukan insert row kedua). Ini
+// bikin query "run terakhir" sederhana (findFirst by agentName order
+// startedAt desc). Tanpa @relation, konsisten dengan model lain di file
+// ini. Lihat app/api/admin/agents/run-log/route.ts.
+model AgentRunLog {
+  id               String    @id @default(cuid())
+  // "sales_sync" | "seo_audit" | "content_writer"
+  agentName        String
+  // "running" | "success" | "error"
+  status           String
+  summary          String?
+  errorMessage     String?
+  inputTokens      Int?
+  outputTokens     Int?
+  estimatedCostUsd Float?
+  startedAt        DateTime
+  finishedAt       DateTime?
+
+  @@index([agentName])
+  @@index([agentName, status])
+  @@index([startedAt])
+}
+
+// Checklist roadmap manual di /admin/agents Section 6 -- CATATAN admin
+// sendiri, BUKAN data otomatis dari agent (tidak ada penulis lain selain
+// UI dashboard ini). Sengaja model paling sederhana di file ini.
+model AgentRoadmapNote {
+  id        String   @id @default(cuid())
+  text      String
+  done      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+// Antrian instruksi ad-hoc dari /admin/agents untuk Sales Sync & SEO
+// Auditor -- generalisasi dari ContentJobRequest (Agent 4), TAPI SENGAJA
+// tabel terpisah, BUKAN merge/rename ContentJobRequest: Agent 4 sudah
+// production (dipoll content_main.py, ditulis next-job/draft route, dipakai
+// UI /admin/blog) dan merge tidak memberi keuntungan fungsional apapun,
+// cuma risiko regresi. content_writer TETAP pakai ContentJobRequest apa
+// adanya -- lihat plan implementasi dashboard /admin/agents.
+//
+// Beda dari ContentJobRequest: sales_sync & seo_audit TIDAK di-gate
+// eksekusinya oleh ada/tidaknya row pending di sini (crew tetap jalan kalau
+// dipicu manual, dengan atau tanpa instruksi) -- instruction cuma
+// diteruskan sebagai extra input kalau ADA yang pending. Tanpa @relation,
+// konsisten dengan model lain di file ini.
+model AgentTaskRequest {
+  id          String    @id @default(cuid())
+  // "sales_sync" | "seo_audit" (BUKAN "content_writer", lihat komentar di atas)
+  agentName   String
+  instruction String?
+  // "pending" | "processed" | "error"
+  status      String    @default("pending")
+  createdAt   DateTime  @default(now())
+  processedAt DateTime?
+
+  @@index([agentName, status])
+}
+
 model MenuItem {
   // Id manual (bukan @default(cuid())) supaya id lama dari seed data
   // (mis. "risol001") tetap terjaga; item baru dari admin memakai cuid().
-  id          String   @id
-  name        String
+  id           String   @id
+  name         String
   // Kategori disimpan sebagai String (bukan enum Prisma) supaya menambah
   // kategori baru dari kode tidak perlu migrasi skema — validasi union
   // type tetap dijaga di sisi TypeScript (lihat lib/data/menuData.ts).
-  category    String
-  price       Int
-  description String   @db.Text
-  image       String
-  unit        String?
-  isPopular   Boolean  @default(false)
-  isAvailable Boolean  @default(true)
+  category     String
+  price        Int
+  description  String   @db.Text
+  image        String
+  unit         String?
+  isPopular    Boolean  @default(false)
+  isAvailable  Boolean  @default(true)
   // Di-set oleh Agent "Website Sync" (crew Python di folder Karyawan AI)
   // berdasarkan ranking revenue 30 hari terakhir dari data penjualan app
   // kasir — BUKAN dikurasi manual seperti isPopular. Lihat
   // app/api/admin/products/bestseller/route.ts.
-  isBestseller Boolean @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  isBestseller Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   @@index([category])
 }

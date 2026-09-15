@@ -32,6 +32,7 @@ interface MetaIssue {
 interface SeoAuditReportBody {
   generated_at: string;
   website_base_url: string;
+  task_id?: string;
   crawl: {
     broken_links: unknown[];
     meta_issues: MetaIssue[];
@@ -149,6 +150,20 @@ export async function POST(request: NextRequest) {
     await generateProposedFixesForMissingMetaDescription(report.id, body.crawl.meta_issues);
   } catch (error) {
     console.error("[seo-audit-report] Gagal generate usulan fix:", error);
+  }
+
+  if (body.task_id) {
+    // Best-effort -- laporan SUDAH tersimpan di titik ini, kegagalan
+    // menandai AgentTaskRequest TIDAK BOLEH menggagalkan response ini,
+    // pola sama persis content/draft/route.ts & bestseller/route.ts.
+    try {
+      await prisma.agentTaskRequest.update({
+        where: { id: body.task_id },
+        data: { status: "processed", processedAt: new Date() },
+      });
+    } catch (error) {
+      console.error(`Gagal menandai AgentTaskRequest ${body.task_id} selesai:`, error);
+    }
   }
 
   return NextResponse.json({

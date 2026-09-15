@@ -1,14 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { getSeoAuditReports, getPendingSeoFixes, approveSeoFix, rejectSeoFix } from "@/app/actions/seo";
 import { logoutAction } from "@/app/actions/auth";
 import {
-  UtensilsCrossed,
-  BookOpen,
-  SearchCheck,
   LogOut,
   Loader2,
   Link2Off,
@@ -23,6 +19,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { AdminTabs } from "@/components/admin/admin-tabs";
 
 // Shape reportJson -- serialisasi apa adanya dari SeoAuditReport (Pydantic,
 // Karyawan AI/src/falya_crew/models.py). Longgar (bukan tipe ketat) karena
@@ -155,29 +152,7 @@ export default function AdminSeoPage() {
           </div>
         </div>
 
-        {/* Tab Switcher: Menu vs Blog vs Audit SEO */}
-        <div className="flex items-center gap-2 mb-8 bg-white p-1.5 rounded-2xl border border-[#f3d5e3]/40 w-fit shadow-xs">
-          <Link
-            href="/admin"
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold text-[#665b56] hover:bg-[#faf0f4] transition"
-          >
-            <UtensilsCrossed className="w-4 h-4 text-[#968b85]" />
-            Katalog Menu
-          </Link>
-
-          <Link
-            href="/admin/blog"
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold text-[#665b56] hover:bg-[#faf0f4] transition"
-          >
-            <BookOpen className="w-4 h-4 text-[#968b85]" />
-            Artikel Blog
-          </Link>
-
-          <div className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold bg-[#a82868] text-white shadow-xs">
-            <SearchCheck className="w-4 h-4 text-white" />
-            Audit SEO ({reports.length})
-          </div>
-        </div>
+        <AdminTabs active="seo" counts={{ seo: reports.length }} />
 
         <p className="text-xs text-[#968b85] mb-6">
           Laporan ini dibuat otomatis tiap minggu oleh Agent &quot;SEO Auditor&quot;
