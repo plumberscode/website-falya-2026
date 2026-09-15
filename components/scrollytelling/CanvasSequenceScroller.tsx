@@ -77,6 +77,19 @@ export default function CanvasSequenceScroller({
   const isTickingRef = useRef<boolean>(false);
   const animationFrameIdRef = useRef<number | null>(null);
 
+  // ─── LCP Guard: jangan gambar ke canvas sebelum user scroll ────────────
+  // Canvas TIDAK PERNAH dianggap elemen LCP oleh browser (beda dari <img>
+  // poster di bawahnya). Kalau frame pertama langsung digambar ke canvas
+  // begitu selesai load (sebelum user scroll), canvas yang z-index-nya di
+  // atas jadi menutupi <img> poster -- satu-satunya kandidat LCP yang sah
+  // hilang, hasilnya NO_LCP (skor Performance PageSpeed jadi kosong total,
+  // bukan cuma LCP-nya). Scroll juga yang membekukan pengukuran LCP di
+  // browser, jadi menahan gambar canvas sampai scroll pertama menjamin
+  // <img> poster sempat tercatat sebagai LCP final sebelum ketutup --
+  // tanpa bedanya secara visual, karena frame pertama canvas = <img>
+  // poster (sama-sama frame_0001).
+  const hasStartedScrollingRef = useRef<boolean>(false);
+
   // ─── Slow-Connection Fallback: masuk mode hero 1-layar ──────────────────
   // Hanya diterapkan kalau user belum mulai scroll (scrollY masih ~0) saat
   // terdeteksi, supaya tidak ada lompatan posisi scroll yang mengganggu.
@@ -152,6 +165,11 @@ export default function CanvasSequenceScroller({
   // (sudah loaded) — dipakai untuk memastikan teks overlay tidak pernah
   // mendahului gambar yang sebenarnya tampil.
   const renderFrame = useCallback((frameIndex: number): boolean => {
+    // Lihat komentar hasStartedScrollingRef di atas -- jangan gambar apapun
+    // ke canvas sebelum scroll pertama, supaya <img> poster tetap satu-
+    // satunya konten yang ter-render (dan bisa jadi kandidat LCP yang sah).
+    if (!hasStartedScrollingRef.current) return false;
+
     const canvas = canvasRef.current;
     if (!canvas) return false;
     const ctx = canvas.getContext("2d");
@@ -449,6 +467,8 @@ export default function CanvasSequenceScroller({
     };
 
     const onScroll = () => {
+      hasStartedScrollingRef.current = true;
+
       const container = containerRef.current;
       if (!container) return;
 
