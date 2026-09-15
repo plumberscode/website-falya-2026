@@ -48,6 +48,32 @@ model Media {
   createdAt DateTime @default(now())
 }
 
+// Laporan audit SEO mingguan dari Agent "SEO Auditor" (Karyawan AI,
+// `python -m falya_crew.seo_audit`). Skema pragmatis untuk iterasi pertama:
+// payload penuh disimpan sebagai JSON (`reportJson`, shape = SeoAuditReport
+// Pydantic model di Karyawan AI/src/falya_crew/models.py, snake_case apa
+// adanya), sementara beberapa kolom ringkasan di-denormalisasi supaya
+// list/filter di /admin/seo cepat tanpa parse JSON per baris. TIDAK
+// dinormalisasi penuh (broken link / meta issue / pagespeed score jadi
+// tabel terpisah) karena: (1) audit-only, belum ada aksi per-row
+// (approve/fix) yang butuh relasi, (2) shape Pydantic masih bisa berubah
+// di iterasi berikutnya (auto-fix, keyword-gap Agent 4) -- JSON blob
+// menghindari migrasi Prisma tiap kali field baru ditambah di sisi Python.
+model SeoAuditReport {
+  id                  String   @id @default(cuid())
+  generatedAt         DateTime
+  websiteBaseUrl      String
+  totalBrokenLinks    Int      @default(0)
+  totalMetaIssues     Int      @default(0)
+  avgPerformanceScore Float?
+  totalClicks28d      Int?
+  totalImpressions28d Int?
+  reportJson          Json
+  createdAt           DateTime @default(now())
+
+  @@index([generatedAt])
+}
+
 model MenuItem {
   // Id manual (bukan @default(cuid())) supaya id lama dari seed data
   // (mis. "risol001") tetap terjaga; item baru dari admin memakai cuid().
