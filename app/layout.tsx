@@ -107,11 +107,20 @@ export default function RootLayout({
   return (
     <html lang="id" className={`${sans.variable} scroll-smooth`}>
       <body className="bg-[#fdfbfc] text-[#241b18] font-sans antialiased selection:bg-[#f3d5e3] selection:text-[#861f53] min-h-screen flex flex-col">
+        {/* strategy="lazyOnload" (bukan default "afterInteractive"): analytics
+            pihak ketiga TIDAK KRITIS untuk render awal, dan ditemukan lewat
+            audit PageSpeed bahwa "afterInteractive" mengganggu pengukuran LCP
+            browser -- begitu CSP mengizinkan script ini benar-benar jalan,
+            NO_LCP langsung muncul lagi (5x berturut-turut gagal, padahal
+            sebelumnya 2x berturut-turut sukses tanpa script ini). Idle-load
+            menghindari itu sepenuhnya, dengan tradeoff wajar: beberapa
+            milidetik keterlambatan mulai tracking, tidak masalah untuk
+            analytics. */}
         <Script
           id="ahrefs-analytics"
           src="https://analytics.ahrefs.com/analytics.js"
           data-key="XQbMYubDj4Ziw2NF/9RANQ"
-          strategy="afterInteractive"
+          strategy="lazyOnload"
         />
         <script
           type="application/ld+json"
