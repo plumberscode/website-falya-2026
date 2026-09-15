@@ -1,0 +1,48 @@
+"use server";
+
+import { prisma } from "@/lib/prisma";
+import { getAdminSession } from "@/lib/auth";
+
+/**
+ * Ajukan permintaan artikel AI baru (Agent 4 -- Content Writer). MUTASI,
+ * wajib session admin. Dedupe: kalau masih ada permintaan "pending",
+ * TIDAK bikin baris baru -- hindari numpuk kalau tombol diklik berkali-kali
+ * sebelum sempat diproses dari laptop.
+ */
+export async function requestContentJob() {
+  try {
+    const session = await getAdminSession();
+    if (!session) {
+      return { success: false, error: "Akses ditolak. Sesi admin diperlukan." };
+    }
+
+    const existingPending = await prisma.contentJobRequest.findFirst({
+      where: { status: "pending" },
+    });
+    if (existingPending) {
+      return { success: false, error: "Masih ada permintaan artikel yang menunggu diproses." };
+    }
+
+    await prisma.contentJobRequest.create({ data: { status: "pending" } });
+    return { success: true };
+  } catch (error) {
+    console.error("Error requesting content job:", error);
+    return { success: false, error: "Gagal mengajukan permintaan artikel." };
+  }
+}
+
+/**
+ * Baca status permintaan pending terbaru untuk ditampilkan di /admin/blog.
+ * Read-only, tanpa session gate (sama seperti getSeoAuditReports).
+ */
+export async function getPendingContentJob() {
+  try {
+    return await prisma.contentJobRequest.findFirst({
+      where: { status: "pending" },
+      orderBy: { createdAt: "asc" },
+    });
+  } catch (error) {
+    console.error("Error fetching pending content job:", error);
+    return null;
+  }
+}

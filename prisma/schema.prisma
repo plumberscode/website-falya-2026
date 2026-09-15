@@ -99,6 +99,26 @@ model SeoProposedFix {
   @@index([postId])
 }
 
+// Antrian permintaan artikel AI dari /admin/blog (Agent 4 -- Content
+// Writer, Karyawan AI). Next.js (Vercel) tidak bisa menyalakan proses
+// Python di laptop langsung, jadi tombol "Minta Artikel Baru (AI)" cuma
+// bikin baris "pending" di sini -- draft artikel BENERAN dibuat saat
+// `python -m falya_crew.content_writer` dijalankan manual dari laptop
+// (kapan saja setelahnya), yang mengecek tabel ini lewat
+// GET /api/admin/content/next-job lalu menandainya "done" lewat
+// POST /api/admin/content/draft. Tanpa @relation, konsisten dengan model
+// lain di file ini.
+model ContentJobRequest {
+  id           String    @id @default(cuid())
+  // "pending" | "done"
+  status       String    @default("pending")
+  createdAt    DateTime  @default(now())
+  completedAt  DateTime?
+  resultPostId String?
+
+  @@index([status])
+}
+
 model MenuItem {
   // Id manual (bukan @default(cuid())) supaya id lama dari seed data
   // (mis. "risol001") tetap terjaga; item baru dari admin memakai cuid().

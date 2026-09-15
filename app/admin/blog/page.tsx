@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { getAllPosts, deletePost } from "@/app/actions/blog";
+import { requestContentJob, getPendingContentJob } from "@/app/actions/content";
 import { logoutAction } from "@/app/actions/auth";
 import {
   Plus,
@@ -21,6 +22,7 @@ import {
   CheckCircle,
   FileText,
   SearchCheck,
+  Wand2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,6 +34,8 @@ export default function AdminBlogListPage() {
   const [posts, setPosts] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [pendingJob, setPendingJob] = useState<{ id: string } | null>(null);
+  const [isRequestingJob, setIsRequestingJob] = useState(false);
 
   const fetchPosts = async () => {
     setIsLoading(true);
@@ -41,9 +45,30 @@ export default function AdminBlogListPage() {
     setIsLoading(false);
   };
 
+  const fetchPendingJob = async () => {
+    const job = await getPendingContentJob();
+    setPendingJob(job);
+  };
+
   useEffect(() => {
+    // Muat artikel & status permintaan AI sekali di mount -- tidak ada cara
+    // lain mengetahui data server tanpa efek ini.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchPosts();
+    fetchPendingJob();
   }, []);
+
+  const handleRequestContentJob = async () => {
+    setIsRequestingJob(true);
+    const result = await requestContentJob();
+    setIsRequestingJob(false);
+    if (!result.success) {
+      toast.error(result.error || "Gagal mengajukan permintaan artikel.");
+      return;
+    }
+    toast.success("Permintaan artikel AI diajukan. Jalankan `python -m falya_crew.content_writer` dari laptop untuk memprosesnya.");
+    fetchPendingJob();
+  };
 
   const handleDelete = async (id: string, title: string) => {
     if (confirm(`Yakin ingin menghapus artikel "${title}" dari database?`)) {
@@ -87,6 +112,24 @@ export default function AdminBlogListPage() {
                 Tulis Artikel Baru
               </Button>
             </Link>
+
+            {pendingJob ? (
+              <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-amber-800 bg-amber-100 px-3 py-2 rounded-full">
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                Menunggu diproses -- jalankan{" "}
+                <code className="bg-amber-200/60 px-1 rounded">python -m falya_crew.content_writer</code>
+              </span>
+            ) : (
+              <Button
+                onClick={handleRequestContentJob}
+                disabled={isRequestingJob}
+                variant="outline"
+                className="border-[#a82868]/30 hover:bg-[#faf0f4] text-[#a82868] font-semibold rounded-full text-xs flex items-center gap-1.5"
+              >
+                <Wand2 className="w-4 h-4" />
+                Minta Artikel Baru (AI)
+              </Button>
+            )}
 
             <Button
               onClick={async () => {
