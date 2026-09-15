@@ -16,7 +16,13 @@ const securityHeaders = [
   {
     key: "Content-Security-Policy",
     value:
-      "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://res.cloudinary.com https://*.cloudinary.com https://images.unsplash.com; font-src 'self' data:; connect-src 'self' https://api.cloudinary.com https://res.cloudinary.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'",
+      // script-src & connect-src memasukkan analytics.ahrefs.com --
+      // Script Ahrefs (app/layout.tsx, id="ahrefs-analytics") butuh
+      // KEDUANYA: script-src untuk load /analytics.js, connect-src untuk
+      // beacon/fetch tracking data-nya sendiri balik ke domain yang sama.
+      // Tanpa connect-src, script-nya kebuka tapi tracking-nya tetap
+      // gagal diam-diam (CSP violation di console, bukan error visual).
+      "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://analytics.ahrefs.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://res.cloudinary.com https://*.cloudinary.com https://images.unsplash.com; font-src 'self' data:; connect-src 'self' https://api.cloudinary.com https://res.cloudinary.com https://analytics.ahrefs.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'",
   },
 ];
 
