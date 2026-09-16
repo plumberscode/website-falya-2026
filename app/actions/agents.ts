@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { getAdminSession } from "@/lib/auth";
+import { triggerAgentWorkflow } from "@/lib/github-dispatch";
 
 /**
  * Server actions untuk dashboard /admin/agents. Semua baca di sini LANGSUNG
@@ -189,6 +190,9 @@ export async function createAgentTaskRequest(agentName: TaskableAgentName, instr
     await prisma.agentTaskRequest.create({
       data: { agentName, instruction: instruction?.trim() || null },
     });
+    await triggerAgentWorkflow(
+      agentName === "sales_sync" ? "sales_sync_dispatch" : "seo_audit_dispatch"
+    );
     return { success: true };
   } catch (error) {
     console.error("Error creating agent task request:", error);

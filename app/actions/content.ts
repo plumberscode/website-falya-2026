@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { getAdminSession } from "@/lib/auth";
+import { triggerAgentWorkflow } from "@/lib/github-dispatch";
 
 /**
  * Ajukan permintaan artikel AI baru (Agent 4 -- Content Writer). MUTASI,
@@ -24,6 +25,7 @@ export async function requestContentJob() {
     }
 
     await prisma.contentJobRequest.create({ data: { status: "pending" } });
+    await triggerAgentWorkflow("content_writer_dispatch");
     return { success: true };
   } catch (error) {
     console.error("Error requesting content job:", error);
