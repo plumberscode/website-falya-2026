@@ -10,7 +10,6 @@ import {
   X,
   MessageCircle,
   ChevronRight,
-  Home,
   UtensilsCrossed,
   Package,
   Soup,
@@ -93,7 +92,6 @@ export default function Navbar() {
   }, [pathname]);
 
   const navLinks = [
-    { label: "Home", href: "/", icon: Home },
     { label: "Menu", href: "/menu", icon: UtensilsCrossed },
     { label: "Snack Box", href: "/snackbox", icon: Package },
     { label: "Nasi Liwet", href: "/nasi-liwet", icon: Soup },
