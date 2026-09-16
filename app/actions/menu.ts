@@ -15,6 +15,7 @@ export async function revalidateMenuPages() {
   revalidatePath("/menu");
   revalidatePath("/snackbox");
   revalidatePath("/nasi-liwet");
+  revalidatePath("/kue-nampan-balikpapan");
   revalidatePath("/admin");
 }
 
