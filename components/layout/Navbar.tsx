@@ -37,6 +37,16 @@ export default function Navbar() {
         return;
       }
 
+      // Selalu di atas hero kalau posisi scroll masih dekat 0 -- mencegah
+      // pastHero ke-stuck `true` akibat pengukuran rect yang salah di race
+      // tertentu (desktop + Lenis) saat mount, sebelum layout/scroll stabil.
+      // Hero selalu elemen pertama di halaman, jadi ini invariant yang aman
+      // terlepas dari race apa pun yang menyebabkan salah ukur di bawah.
+      if (window.scrollY <= 50) {
+        setPastHero(false);
+        return;
+      }
+
       // Query the scrollytelling container to get its real bottom position
       const heroSection = document.querySelector<HTMLElement>(
         "[data-scrollytelling]",
