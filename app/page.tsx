@@ -141,6 +141,19 @@ export default async function HomePage() {
                   </div>
                   <MoveRight className="w-4 h-4 text-neutral-400 group-hover:text-neutral-900 group-hover:translate-x-1.5 transition-all duration-300 shrink-0 ml-2" />
                 </Link>
+
+                <Link
+                  href="/kue-nampan-balikpapan"
+                  className="sm:flex-1 group flex items-center justify-between px-5 py-3.5 rounded-full bg-white/80 backdrop-blur-md border border-neutral-200/80 hover:bg-neutral-100 hover:border-neutral-300 text-[#241b18] hover:text-neutral-900 transition-all duration-300 shadow-[0_2px_10px_rgba(0,0,0,0.03)] hover:shadow-[0_4px_18px_rgba(0,0,0,0.07)]"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <span className="text-base">🎂</span>
+                    <span className="font-semibold text-sm">
+                      Kue Nampan
+                    </span>
+                  </div>
+                  <MoveRight className="w-4 h-4 text-neutral-400 group-hover:text-neutral-900 group-hover:translate-x-1.5 transition-all duration-300 shrink-0 ml-2" />
+                </Link>
               </div>
 
               {/* Primary CTA */}

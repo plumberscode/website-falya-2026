@@ -105,6 +105,14 @@ export default function Footer() {
               </li>
               <li>
                 <Link
+                  href="/kue-nampan-balikpapan"
+                  className="text-white/80 hover:text-white hover:translate-x-0.5 inline-block transition-all"
+                >
+                  Kue Nampan
+                </Link>
+              </li>
+              <li>
+                <Link
                   href="/faq"
                   className="text-white/80 hover:text-white hover:translate-x-0.5 inline-block transition-all"
                 >

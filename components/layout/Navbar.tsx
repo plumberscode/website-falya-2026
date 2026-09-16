@@ -13,6 +13,7 @@ import {
   UtensilsCrossed,
   Package,
   Soup,
+  Cookie,
 } from "lucide-react";
 import { useCartStore } from "@/lib/store/cartStore";
 import { FALYA_CONTACT } from "@/lib/data/menuData";
@@ -95,6 +96,7 @@ export default function Navbar() {
     { label: "Menu", href: "/menu", icon: UtensilsCrossed },
     { label: "Snack Box", href: "/snackbox", icon: Package },
     { label: "Nasi Liwet", href: "/nasi-liwet", icon: Soup },
+    { label: "Kue Nampan", href: "/kue-nampan-balikpapan", icon: Cookie },
   ];
 
   // Desktop menu links, mobile icons, and cart start white over the transparent hero

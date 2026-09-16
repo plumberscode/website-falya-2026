@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { MessageCircle } from "lucide-react";
+import Link from "next/link";
+import { MessageCircle, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   FALYA_CONTACT,
@@ -35,12 +36,21 @@ export default function SnackboxPageClient({ items }: { items: MenuItem[] }) {
             SNACK & CATERING
           </span>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-[#241b18] tracking-tight">
-            Paket Snack Box & Kue Nampan Balikpapan mulai dari Rp. 13.000/box.
+            Paket Snack Box Balikpapan mulai dari Rp. 13.000/box.
           </h1>
           <p className="text-[#665b56] text-sm sm:text-base leading-relaxed">
-            Sempurnakan acaramu dengan snack box dan kue nampan lezat dari Falya
-            di Balikpapan — untuk rapat kantor, pengajian, hingga hajatan. Harga
-            mulai dari Rp. 13.000/box. Praktis dan menggugah selera!
+            Sempurnakan acaramu dengan snack box lezat dari Falya di Balikpapan
+            — untuk rapat kantor, pengajian, hingga hajatan. Harga mulai dari
+            Rp. 13.000/box. Praktis dan menggugah selera!
+          </p>
+          <p className="text-[#665b56] text-xs sm:text-sm leading-relaxed pt-1">
+            Cari kue nampan untuk arisan atau acara keluarga?{" "}
+            <Link
+              href="/kue-nampan-balikpapan"
+              className="inline-flex items-center gap-1 text-[#a82868] font-semibold hover:underline"
+            >
+              Lihat halaman khusus kue nampan <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
           </p>
         </div>
 
@@ -129,8 +139,7 @@ export default function SnackboxPageClient({ items }: { items: MenuItem[] }) {
           </h3>
           <p className="text-[#665b56] text-xs sm:text-sm leading-relaxed max-w-lg mx-auto">
             Bisa dong.. kamu bisa mix snacknya sesuai dengan yang kamu mau.
-            Jumlah kue per nampan sekitar 18 - 20 kue. Langsung chat mimin untuk
-            info lebih lanjut ya.
+            Langsung chat mimin untuk info lebih lanjut ya.
           </p>
           <div className="pt-2">
             <Button
