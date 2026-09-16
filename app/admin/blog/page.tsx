@@ -57,6 +57,24 @@ export default function AdminBlogListPage() {
     fetchPendingJob();
   }, []);
 
+  useEffect(() => {
+    // Selama masih ada job pending, poll berkala -- agent sekarang jalan
+    // otomatis di GitHub Actions (bukan lagi manual dari laptop), jadi
+    // badge "Menunggu diproses" perlu tahu sendiri begitu job selesai,
+    // tanpa reload manual. Berhenti polling begitu tidak ada job pending.
+    if (!pendingJob) return;
+    const interval = setInterval(async () => {
+      const job = await getPendingContentJob();
+      setPendingJob(job);
+      if (!job) {
+        // Job baru saja selesai -- refresh daftar artikel supaya draft
+        // barunya langsung muncul tanpa reload manual.
+        fetchPosts();
+      }
+    }, 10000);
+    return () => clearInterval(interval);
+  }, [pendingJob]);
+
   const handleRequestContentJob = async () => {
     setIsRequestingJob(true);
     const result = await requestContentJob();
@@ -65,7 +83,7 @@ export default function AdminBlogListPage() {
       toast.error(result.error || "Gagal mengajukan permintaan artikel.");
       return;
     }
-    toast.success("Permintaan artikel AI diajukan. Jalankan `python -m falya_crew.content_writer` dari laptop untuk memprosesnya.");
+    toast.success("Permintaan artikel AI diajukan -- agent akan jalan otomatis di GitHub Actions dalam beberapa saat.");
     fetchPendingJob();
   };
 

@@ -301,6 +301,20 @@ export default function AdminAgentsPage() {
     loadRoadmapNotes();
   }, [loadOverview, loadTasks, loadRoadmapNotes]);
 
+  useEffect(() => {
+    // Selama masih ada instruksi/job pending, poll berkala -- agent
+    // sekarang jalan otomatis di GitHub Actions (bukan lagi manual dari
+    // laptop), jadi status di halaman ini perlu tahu sendiri begitu run
+    // selesai, tanpa reload manual. Berhenti polling begitu semua beres.
+    const hasPending = !!(pendingTasks.sales_sync || pendingTasks.seo_audit || pendingContentJob);
+    if (!hasPending) return;
+    const interval = setInterval(() => {
+      loadTasks();
+      loadOverview();
+    }, 10000);
+    return () => clearInterval(interval);
+  }, [pendingTasks, pendingContentJob, loadTasks, loadOverview]);
+
   const handleSubmitTask = async (agentName: TaskableAgentName) => {
     setIsSubmittingTask(agentName);
     const result = await createAgentTaskRequest(agentName, instructionDrafts[agentName]);
@@ -309,9 +323,7 @@ export default function AdminAgentsPage() {
       toast.error(result.error || "Gagal mengajukan permintaan.");
       return;
     }
-    toast.success(
-      `Permintaan diajukan. Jalankan ${AGENT_COMMANDS[agentName]} dari laptop untuk memprosesnya.`
-    );
+    toast.success("Permintaan diajukan -- agent akan jalan otomatis di GitHub Actions dalam beberapa saat.");
     setOpenInstructionFor(null);
     setInstructionDrafts((prev) => ({ ...prev, [agentName]: "" }));
     loadTasks();
@@ -325,9 +337,7 @@ export default function AdminAgentsPage() {
       toast.error(result.error || "Gagal mengajukan permintaan artikel.");
       return;
     }
-    toast.success(
-      `Permintaan diajukan. Jalankan ${AGENT_COMMANDS.content_writer} dari laptop untuk memprosesnya.`
-    );
+    toast.success("Permintaan diajukan -- agent akan jalan otomatis di GitHub Actions dalam beberapa saat.");
     loadTasks();
   };
 
@@ -417,10 +427,11 @@ export default function AdminAgentsPage() {
         <AdminTabs active="agents" />
 
         <p className="text-xs text-[#968b85] mb-6">
-          Ketiga agent (Sales Sync, SEO Auditor, Content Writer) dijalankan
-          manual dari laptop (<code>python -m falya_crew...</code>), bukan
-          proses yang selalu hidup -- status di bawah adalah hasil run
-          terakhir, bukan aktivitas real-time.
+          Ketiga agent (Sales Sync, SEO Auditor, Content Writer) jalan
+          otomatis lewat GitHub Actions (dipicu instruksi di bawah, atau
+          jadwal untuk Sales Sync & SEO Auditor) -- bukan proses yang selalu
+          hidup, status di bawah adalah hasil run terakhir, bukan aktivitas
+          real-time.
         </p>
 
         {/* Section 1: Overview */}
