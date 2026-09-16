@@ -25,7 +25,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const lowestPriceLabel = `Rp${lowestPrice.toLocaleString("id-ID")}`;
 
   const title = "Kue Nampan Balikpapan - Paket Arisan & Acara | Falya Risol";
-  const description = `Pesan kue nampan Balikpapan siap antar untuk arisan, tahlilan, & acara kantor. Varian lengkap, harga mulai ${lowestPriceLabel}. Order via WhatsApp, proses cepat.`;
+  const description = `Pesan kue nampan Balikpapan siap antar untuk arisan, acara keluarga, & acara kantor. Varian lengkap, harga mulai ${lowestPriceLabel}. Order via WhatsApp, proses cepat.`;
 
   return {
     title,

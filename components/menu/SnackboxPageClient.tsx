@@ -44,7 +44,7 @@ export default function SnackboxPageClient({ items }: { items: MenuItem[] }) {
             Rp. 13.000/box. Praktis dan menggugah selera!
           </p>
           <p className="text-[#665b56] text-xs sm:text-sm leading-relaxed pt-1">
-            Cari kue nampan untuk arisan atau tahlilan?{" "}
+            Cari kue nampan untuk arisan atau acara keluarga?{" "}
             <Link
               href="/kue-nampan-balikpapan"
               className="inline-flex items-center gap-1 text-[#a82868] font-semibold hover:underline"

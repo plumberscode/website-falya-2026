@@ -13,7 +13,7 @@ const WHY_POINTS = [
   {
     title: "Selalu Fresh",
     description:
-      "Kue nampan dibuat dan diantar mendekati waktu acara, jadi kue nampan arisan atau tahlilan kamu tetap fresh saat disajikan.",
+      "Kue nampan dibuat dan diantar mendekati waktu acara, jadi kue nampan arisan atau acara keluarga kamu tetap fresh saat disajikan.",
   },
   {
     title: "Minimal Order Ringan",
@@ -27,7 +27,7 @@ const WHY_POINTS = [
   {
     title: "Area Pengiriman Balikpapan",
     description:
-      "Siap antar ke seluruh area Balikpapan, jadi persiapan kue nampan tahlilan atau arisan kamu jadi lebih praktis.",
+      "Siap antar ke seluruh area Balikpapan, jadi persiapan kue nampan acara keluarga atau arisan kamu jadi lebih praktis.",
   },
 ];
 
@@ -81,8 +81,8 @@ export default function KueNampanPageClient({ items }: { items: MenuItem[] }) {
             </h1>
             <p className="text-[#665b56] text-sm sm:text-base leading-relaxed max-w-lg mx-auto md:mx-0">
               Kue nampan Balikpapan dari Falya, siap antar untuk arisan,
-              tahlilan, dan berbagai acara kamu. Isi lengkap, rasa creamy dan
-              gurih khas Falya, tinggal disajikan.
+              acara keluarga, dan berbagai kebutuhan acara kamu. Isi lengkap,
+              rasa creamy dan gurih khas Falya, tinggal disajikan.
             </p>
           </div>
           <div className="relative w-full aspect-[4/3] rounded-[24px] overflow-hidden shadow-[0_16px_40px_rgba(36,27,24,0.12)]">
