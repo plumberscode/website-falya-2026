@@ -112,6 +112,10 @@ model ContentJobRequest {
   id           String    @id @default(cuid())
   // "pending" | "done"
   status       String    @default("pending")
+  // Arahan tema opsional dari admin (mis. "tulis soal snack box untuk
+  // acara kantor") -- kalau kosong, agent pilih topik sendiri dari data
+  // produk laris + keyword gap, sama seperti perilaku sebelumnya.
+  instruction  String?
   createdAt    DateTime  @default(now())
   completedAt  DateTime?
   resultPostId String?

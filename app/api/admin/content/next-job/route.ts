@@ -32,5 +32,5 @@ export async function GET(request: NextRequest) {
     orderBy: { createdAt: "asc" },
   });
 
-  return NextResponse.json({ job_id: job?.id ?? null });
+  return NextResponse.json({ job_id: job?.id ?? null, instruction: job?.instruction ?? null });
 }

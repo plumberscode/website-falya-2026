@@ -233,17 +233,21 @@ export default function AdminAgentsPage() {
   // Section 3: Instruksi -- sales_sync & seo_audit pakai AgentTaskRequest
   // (baru), content_writer tetap pakai ContentJobRequest yang sudah ada
   // (requestContentJob/getPendingContentJob), tidak digabung.
-  const [pendingTasks, setPendingTasks] = useState<Record<TaskableAgentName, { id: string } | null>>({
+  const [pendingTasks, setPendingTasks] = useState<
+    Record<TaskableAgentName, { id: string; instruction?: string | null } | null>
+  >({
     sales_sync: null,
     seo_audit: null,
   });
-  const [pendingContentJob, setPendingContentJob] = useState<{ id: string } | null>(null);
+  const [pendingContentJob, setPendingContentJob] = useState<{ id: string; instruction?: string | null } | null>(null);
   const [isLoadingTasks, setIsLoadingTasks] = useState(true);
   const [openInstructionFor, setOpenInstructionFor] = useState<TaskableAgentName | null>(null);
   const [instructionDrafts, setInstructionDrafts] = useState<Record<TaskableAgentName, string>>({
     sales_sync: "",
     seo_audit: "",
   });
+  const [isContentInstructionOpen, setIsContentInstructionOpen] = useState(false);
+  const [contentInstructionDraft, setContentInstructionDraft] = useState("");
   const [isSubmittingTask, setIsSubmittingTask] = useState<AgentName | null>(null);
 
   // Section 6: Planning/roadmap -- catatan manual admin, bukan hasil agent.
@@ -331,13 +335,15 @@ export default function AdminAgentsPage() {
 
   const handleRequestContentJob = async () => {
     setIsSubmittingTask("content_writer");
-    const result = await requestContentJob();
+    const result = await requestContentJob(contentInstructionDraft);
     setIsSubmittingTask(null);
     if (!result.success) {
       toast.error(result.error || "Gagal mengajukan permintaan artikel.");
       return;
     }
     toast.success("Permintaan diajukan -- agent akan jalan otomatis di GitHub Actions dalam beberapa saat.");
+    setIsContentInstructionOpen(false);
+    setContentInstructionDraft("");
     loadTasks();
   };
 
@@ -727,8 +733,7 @@ export default function AdminAgentsPage() {
                         {pending ? (
                           <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-amber-800 bg-amber-100 px-3 py-2 rounded-full">
                             <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                            Menunggu diproses -- jalankan{" "}
-                            <code className="bg-amber-200/60 px-1 rounded">{AGENT_COMMANDS[agentName]}</code>
+                            Menunggu diproses{pending.instruction ? `: "${pending.instruction}"` : ""}
                           </span>
                         ) : (
                           <Button
@@ -776,26 +781,60 @@ export default function AdminAgentsPage() {
                 })}
 
                 {/* Content Writer -- reuse requestContentJob/getPendingContentJob
-                    yang sudah ada (ContentJobRequest, tidak punya field
-                    instruksi bebas), tombol identik dengan /admin/blog. */}
-                <div className="p-4 sm:p-5 flex items-center justify-between gap-3 flex-wrap">
-                  <span className="font-bold text-sm text-[#241b18]">{AGENT_LABELS.content_writer}</span>
-                  {pendingContentJob ? (
-                    <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-amber-800 bg-amber-100 px-3 py-2 rounded-full">
-                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                      Menunggu diproses -- jalankan{" "}
-                      <code className="bg-amber-200/60 px-1 rounded">{AGENT_COMMANDS.content_writer}</code>
-                    </span>
-                  ) : (
-                    <Button
-                      onClick={handleRequestContentJob}
-                      disabled={isSubmittingTask === "content_writer"}
-                      variant="outline"
-                      className="border-[#a82868]/30 hover:bg-[#faf0f4] text-[#a82868] font-semibold rounded-full text-xs flex items-center gap-1.5"
-                    >
-                      <Wand2 className="w-4 h-4" />
-                      Minta Artikel Baru (AI)
-                    </Button>
+                    yang sudah ada (ContentJobRequest sekarang punya field
+                    instruction opsional, sama pola dengan AgentTaskRequest
+                    di atas), tombol identik dengan /admin/blog. */}
+                <div className="p-4 sm:p-5">
+                  <div className="flex items-center justify-between gap-3 flex-wrap">
+                    <span className="font-bold text-sm text-[#241b18]">{AGENT_LABELS.content_writer}</span>
+
+                    {pendingContentJob ? (
+                      <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-amber-800 bg-amber-100 px-3 py-2 rounded-full">
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        Menunggu diproses
+                        {pendingContentJob.instruction ? `: "${pendingContentJob.instruction}"` : ""}
+                      </span>
+                    ) : (
+                      <Button
+                        onClick={() => setIsContentInstructionOpen((prev) => !prev)}
+                        variant="outline"
+                        className="border-[#a82868]/30 hover:bg-[#faf0f4] text-[#a82868] font-semibold rounded-full text-xs flex items-center gap-1.5"
+                      >
+                        <Wand2 className="w-4 h-4" />
+                        Minta Artikel Baru (AI)
+                      </Button>
+                    )}
+                  </div>
+
+                  {isContentInstructionOpen && !pendingContentJob && (
+                    <div className="mt-3 space-y-2">
+                      <Textarea
+                        placeholder='Arahan tema opsional, mis. "tulis soal snack box untuk acara kantor" -- kosongkan supaya AI pilih topik sendiri'
+                        value={contentInstructionDraft}
+                        onChange={(e) => setContentInstructionDraft(e.target.value)}
+                        className="bg-[#faf0f4] border-0 rounded-xl text-xs resize-none h-20"
+                      />
+                      <div className="flex items-center justify-end gap-2">
+                        <Button
+                          onClick={() => {
+                            setIsContentInstructionOpen(false);
+                            setContentInstructionDraft("");
+                          }}
+                          variant="ghost"
+                          className="text-[#665b56] text-xs rounded-full"
+                        >
+                          Batal
+                        </Button>
+                        <Button
+                          onClick={handleRequestContentJob}
+                          disabled={isSubmittingTask === "content_writer"}
+                          className="bg-[#a82868] hover:bg-[#861f53] text-white font-semibold rounded-full text-xs flex items-center gap-1.5"
+                        >
+                          <Send className="w-3.5 h-3.5" />
+                          Kirim
+                        </Button>
+                      </div>
+                    </div>
                   )}
                 </div>
               </div>

@@ -21,9 +21,11 @@ import {
   CheckCircle,
   FileText,
   Wand2,
+  Send,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import BlogImage from "@/components/blog/BlogImage";
 import { AdminTabs } from "@/components/admin/admin-tabs";
@@ -33,8 +35,10 @@ export default function AdminBlogListPage() {
   const [posts, setPosts] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [pendingJob, setPendingJob] = useState<{ id: string } | null>(null);
+  const [pendingJob, setPendingJob] = useState<{ id: string; instruction?: string | null } | null>(null);
   const [isRequestingJob, setIsRequestingJob] = useState(false);
+  const [isInstructionOpen, setIsInstructionOpen] = useState(false);
+  const [instructionDraft, setInstructionDraft] = useState("");
 
   const fetchPosts = async () => {
     setIsLoading(true);
@@ -77,13 +81,15 @@ export default function AdminBlogListPage() {
 
   const handleRequestContentJob = async () => {
     setIsRequestingJob(true);
-    const result = await requestContentJob();
+    const result = await requestContentJob(instructionDraft);
     setIsRequestingJob(false);
     if (!result.success) {
       toast.error(result.error || "Gagal mengajukan permintaan artikel.");
       return;
     }
     toast.success("Permintaan artikel AI diajukan -- agent akan jalan otomatis di GitHub Actions dalam beberapa saat.");
+    setIsInstructionOpen(false);
+    setInstructionDraft("");
     fetchPendingJob();
   };
 
@@ -133,13 +139,11 @@ export default function AdminBlogListPage() {
             {pendingJob ? (
               <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-amber-800 bg-amber-100 px-3 py-2 rounded-full">
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                Menunggu diproses -- jalankan{" "}
-                <code className="bg-amber-200/60 px-1 rounded">python -m falya_crew.content_writer</code>
+                Menunggu diproses{pendingJob.instruction ? `: "${pendingJob.instruction}"` : ""}
               </span>
             ) : (
               <Button
-                onClick={handleRequestContentJob}
-                disabled={isRequestingJob}
+                onClick={() => setIsInstructionOpen((prev) => !prev)}
                 variant="outline"
                 className="border-[#a82868]/30 hover:bg-[#faf0f4] text-[#a82868] font-semibold rounded-full text-xs flex items-center gap-1.5"
               >
@@ -162,6 +166,38 @@ export default function AdminBlogListPage() {
             </Button>
           </div>
         </div>
+
+        {isInstructionOpen && !pendingJob && (
+          <div className="mb-8 -mt-4 bg-white rounded-[20px] border border-[#f3d5e3]/40 p-4 sm:p-5 shadow-[0_4px_24px_rgba(168,40,104,0.05)]">
+            <p className="text-xs font-bold text-[#241b18] mb-2">Arahan tema (opsional)</p>
+            <Textarea
+              placeholder='Kosongkan supaya AI pilih topik sendiri dari data produk laris & keyword pencarian, atau isi arahan mis. "tulis soal snack box untuk acara kantor"'
+              value={instructionDraft}
+              onChange={(e) => setInstructionDraft(e.target.value)}
+              className="bg-[#faf0f4] border-0 rounded-xl text-xs resize-none h-20"
+            />
+            <div className="flex items-center justify-end gap-2 mt-2">
+              <Button
+                onClick={() => {
+                  setIsInstructionOpen(false);
+                  setInstructionDraft("");
+                }}
+                variant="ghost"
+                className="text-[#665b56] text-xs rounded-full"
+              >
+                Batal
+              </Button>
+              <Button
+                onClick={handleRequestContentJob}
+                disabled={isRequestingJob}
+                className="bg-[#a82868] hover:bg-[#861f53] text-white font-semibold rounded-full text-xs flex items-center gap-1.5"
+              >
+                <Send className="w-3.5 h-3.5" />
+                {isRequestingJob ? "Mengajukan..." : "Ajukan Permintaan"}
+              </Button>
+            </div>
+          </div>
+        )}
 
         <AdminTabs active="blog" counts={{ blog: posts.length }} />
 

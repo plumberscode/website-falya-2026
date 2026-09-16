@@ -8,9 +8,11 @@ import { triggerAgentWorkflow } from "@/lib/github-dispatch";
  * Ajukan permintaan artikel AI baru (Agent 4 -- Content Writer). MUTASI,
  * wajib session admin. Dedupe: kalau masih ada permintaan "pending",
  * TIDAK bikin baris baru -- hindari numpuk kalau tombol diklik berkali-kali
- * sebelum sempat diproses dari laptop.
+ * sebelum sempat diproses. `instruction` opsional -- kosongkan supaya agent
+ * pilih topik sendiri dari data produk laris + keyword gap, atau isi untuk
+ * mengarahkan tema tertentu (mis. "tulis soal snack box untuk kantor").
  */
-export async function requestContentJob() {
+export async function requestContentJob(instruction?: string) {
   try {
     const session = await getAdminSession();
     if (!session) {
@@ -24,7 +26,9 @@ export async function requestContentJob() {
       return { success: false, error: "Masih ada permintaan artikel yang menunggu diproses." };
     }
 
-    await prisma.contentJobRequest.create({ data: { status: "pending" } });
+    await prisma.contentJobRequest.create({
+      data: { status: "pending", instruction: instruction?.trim() || null },
+    });
     await triggerAgentWorkflow("content_writer_dispatch");
     return { success: true };
   } catch (error) {
