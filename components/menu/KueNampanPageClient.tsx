@@ -1,12 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
 import { ChevronDown, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FALYA_CONTACT, MenuItem } from "@/lib/data/menuData";
 import { KUE_NAMPAN_FAQ } from "@/lib/data/kueNampanFaq";
-import { withImageVersion } from "@/lib/utils/cacheBustImage";
 import MenuCard from "@/components/menu/MenuCard";
 
 const WHY_POINTS = [
@@ -65,36 +63,22 @@ function FaqItem({ question, answer }: { question: string; answer: string }) {
 }
 
 export default function KueNampanPageClient({ items }: { items: MenuItem[] }) {
-  const heroImage = items[0]?.image ?? "/images/snackbox/kue-nampan-01.webp";
-
   return (
     <div className="w-full bg-[#fdfbfc] text-[#241b18] min-h-screen pt-28 pb-20">
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6">
         {/* Hero */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center mb-16">
-          <div className="space-y-4 text-center md:text-left">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#a82868]">
-              KUE NAMPAN
-            </span>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#241b18] tracking-tight">
-              Kue Nampan Balikpapan
-            </h1>
-            <p className="text-[#665b56] text-sm sm:text-base leading-relaxed max-w-lg mx-auto md:mx-0">
-              Kue nampan Balikpapan dari Falya, siap antar untuk arisan,
-              acara keluarga, dan berbagai kebutuhan acara kamu. Isi lengkap,
-              rasa creamy dan gurih khas Falya, tinggal disajikan.
-            </p>
-          </div>
-          <div className="relative w-full aspect-[4/3] rounded-[24px] overflow-hidden shadow-[0_16px_40px_rgba(36,27,24,0.12)]">
-            <Image
-              src={withImageVersion(heroImage)}
-              alt="Kue Nampan Balikpapan Falya Risol Mayo"
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 50vw"
-              priority
-            />
-          </div>
+        <div className="text-center max-w-2xl mx-auto mb-10 space-y-2">
+          <span className="text-xs font-bold uppercase tracking-widest text-[#a82868]">
+            KUE NAMPAN
+          </span>
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#241b18] tracking-tight">
+            Kue Nampan Balikpapan
+          </h1>
+          <p className="text-[#665b56] text-sm sm:text-base leading-relaxed">
+            Kue nampan Balikpapan dari Falya, siap antar untuk arisan,
+            acara keluarga, dan berbagai kebutuhan acara kamu. Isi lengkap,
+            rasa creamy dan gurih khas Falya, tinggal disajikan.
+          </p>
         </div>
 
         {/* Product Grid */}
