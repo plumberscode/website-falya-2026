@@ -4,7 +4,9 @@ import React, { useState, useMemo } from "react";
 import { MessageCircle, Info, UtensilsCrossed } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FALYA_CONTACT, LIWET_CATEGORIES, MenuItem } from "@/lib/data/menuData";
+import { NASI_LIWET_FAQ } from "@/lib/data/nasiLiwetFaq";
 import MenuCard from "@/components/menu/MenuCard";
+import FaqAccordionItem from "@/components/menu/FaqAccordionItem";
 
 const LIWET_ITEM_CATEGORIES = ["liwet-ayam", "liwet-nila", "liwet-tampah"];
 
@@ -100,6 +102,23 @@ export default function NasiLiwetPageClient({ items }: { items: MenuItem[] }) {
             <p className="text-xs text-[#a82868] font-medium">
               * Disarankan melakukan reservasi / pemesanan minimal H-1 acara.
             </p>
+          </div>
+        </div>
+
+        {/* FAQ */}
+        <div className="max-w-2xl mx-auto mb-16">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#241b18] tracking-tight text-center mb-8">
+            Pertanyaan Seputar Nasi Liwet
+          </h2>
+          <div className="space-y-3">
+            {NASI_LIWET_FAQ.map((faq) => (
+              <FaqAccordionItem
+                key={faq.question}
+                question={faq.question}
+                answer={faq.answer}
+                link={faq.link}
+              />
+            ))}
           </div>
         </div>
 

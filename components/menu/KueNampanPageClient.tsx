@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
-import { ChevronDown, MessageCircle } from "lucide-react";
+import React from "react";
+import { MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FALYA_CONTACT, MenuItem } from "@/lib/data/menuData";
 import { KUE_NAMPAN_FAQ } from "@/lib/data/kueNampanFaq";
 import MenuCard from "@/components/menu/MenuCard";
+import FaqAccordionItem from "@/components/menu/FaqAccordionItem";
 
 const WHY_POINTS = [
   {
@@ -28,39 +29,6 @@ const WHY_POINTS = [
       "Siap antar ke seluruh area Balikpapan, jadi persiapan kue nampan acara keluarga atau arisan kamu jadi lebih praktis.",
   },
 ];
-
-function FaqItem({ question, answer }: { question: string; answer: string }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(36,27,24,0.06)]">
-      <button
-        onClick={() => setOpen(!open)}
-        aria-expanded={open}
-        className="w-full flex items-center justify-between gap-4 text-left px-5 py-4 cursor-pointer"
-      >
-        <span className="text-sm sm:text-base font-semibold text-[#241b18]">
-          {question}
-        </span>
-        <ChevronDown
-          className={`w-4 h-4 shrink-0 text-[#a82868] transition-transform duration-300 ${
-            open ? "rotate-180" : ""
-          }`}
-        />
-      </button>
-      <div
-        className={`grid transition-[grid-template-rows] duration-300 ease-out ${
-          open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
-        }`}
-      >
-        <div className="overflow-hidden">
-          <p className="px-5 pb-5 text-sm text-[#665b56] leading-relaxed">
-            {answer}
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 export default function KueNampanPageClient({ items }: { items: MenuItem[] }) {
   return (
@@ -119,7 +87,11 @@ export default function KueNampanPageClient({ items }: { items: MenuItem[] }) {
           </h2>
           <div className="space-y-3">
             {KUE_NAMPAN_FAQ.map((faq) => (
-              <FaqItem key={faq.question} question={faq.question} answer={faq.answer} />
+              <FaqAccordionItem
+                key={faq.question}
+                question={faq.question}
+                answer={faq.answer}
+              />
             ))}
           </div>
         </div>
