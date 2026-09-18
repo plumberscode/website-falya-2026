@@ -74,6 +74,14 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        // 301 Permanent Redirect: non-www → www (samakan dengan canonical
+        // yang selalu pakai www.falyarisol.com, cegah split signal di Google)
+        source: "/:path*",
+        has: [{ type: "host", value: "falyarisol.com" }],
+        destination: "https://www.falyarisol.com/:path*",
+        permanent: true,
+      },
+      {
         // 301 Permanent Redirect: /index (versi lama) → /
         source: "/index",
         destination: "/",

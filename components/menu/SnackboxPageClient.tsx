@@ -92,9 +92,16 @@ export default function SnackboxPageClient({ items }: { items: MenuItem[] }) {
             praktis, rapi, dan tinggal antar.
           </p>
           <p className="text-[#665b56] text-xs sm:text-sm leading-relaxed max-w-2xl mb-5">
-            Cocok jadi snack meeting kantor untuk rapat internal, coffee break
-            seminar atau workshop, sampai konsumsi rapat rutin bulanan — dikemas
-            rapi per box dan diantar tepat waktu ke lokasi kamu di Balikpapan.
+            Cocok jadi{" "}
+            <Link
+              href="/blog/snack-box-untuk-rapat-cara-memilih-isi-yang-tepat-untuk-meeting"
+              className="text-[#a82868] font-semibold hover:underline"
+            >
+              snack meeting kantor
+            </Link>{" "}
+            untuk rapat internal, coffee break seminar atau workshop, sampai
+            konsumsi rapat rutin bulanan — dikemas rapi per box dan diantar
+            tepat waktu ke lokasi kamu di Balikpapan.
           </p>
           <div className="flex flex-wrap gap-2 mb-6">
             {["Rapat & Meeting Kantor", "Pengajian", "Hajatan", "Arisan"].map(
