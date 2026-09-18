@@ -1,6 +1,9 @@
 import { getAllMenuItems } from "@/app/actions/menu";
 import SnackboxPageClient from "@/components/menu/SnackboxPageClient";
-import { buildSnackboxJsonLd } from "@/lib/seo/snackboxJsonLd";
+import {
+  buildSnackboxJsonLd,
+  buildSnackboxFaqJsonLd,
+} from "@/lib/seo/snackboxJsonLd";
 
 // Statis per-deployment (revalidate: false) — lihat catatan lengkap
 // di app/menu/page.tsx. revalidatePath("/snackbox") di
@@ -10,6 +13,7 @@ export const revalidate = false;
 export default async function SnackboxPage() {
   const items = await getAllMenuItems();
   const snackboxJsonLd = buildSnackboxJsonLd(items);
+  const faqJsonLd = buildSnackboxFaqJsonLd();
 
   return (
     <>
@@ -20,6 +24,12 @@ export default async function SnackboxPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(snackboxJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c"),
         }}
       />
       <SnackboxPageClient items={items} />

@@ -2,6 +2,7 @@ import {
   MenuItem,
   SNACKBOX_ITEM_CATEGORIES,
 } from "@/lib/data/menuData";
+import { SNACKBOX_FAQ } from "@/lib/data/snackboxFaq";
 
 const SITE_URL = "https://www.falyarisol.com";
 const SNACKBOX_URL = `${SITE_URL}/snackbox`;
@@ -70,5 +71,25 @@ export function buildSnackboxJsonLd(items: MenuItem[]) {
   return {
     "@context": "https://schema.org",
     "@graph": products,
+  };
+}
+
+/**
+ * Generate JSON-LD (schema.org FAQPage) dari SNACKBOX_FAQ — single source
+ * of truth yang sama dipakai untuk render FAQ di UI (SnackboxPageClient),
+ * supaya schema tidak pernah mismatch dengan konten yang tampil.
+ */
+export function buildSnackboxFaqJsonLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: SNACKBOX_FAQ.map((faq) => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.answer,
+      },
+    })),
   };
 }

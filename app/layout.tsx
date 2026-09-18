@@ -9,6 +9,7 @@ import SmoothScrollProvider from "@/components/providers/SmoothScrollProvider";
 import { Toaster } from "@/components/ui/sonner";
 import WhatsAppFAB from "@/components/layout/WhatsAppFAB";
 import { FALYA_CONTACT } from "@/lib/data/menuData";
+import { buildReviewJsonLd } from "@/lib/seo/reviewJsonLd";
 
 const sans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -97,6 +98,10 @@ const restaurantSchema = {
   sameAs: [
     `https://www.instagram.com/${FALYA_CONTACT.instagram.replace("@", "")}`,
   ],
+  // Review individual dari testimoni Google Maps yang tampil di
+  // TestimonialSlider (homepage) — lihat catatan di lib/seo/reviewJsonLd.ts
+  // soal kenapa aggregateRating belum disertakan.
+  review: buildReviewJsonLd(),
 };
 
 export default function RootLayout({

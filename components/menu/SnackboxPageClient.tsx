@@ -10,6 +10,7 @@ import {
   SNACKBOX_ITEM_CATEGORIES,
   MenuItem,
 } from "@/lib/data/menuData";
+import { SNACKBOX_FAQ } from "@/lib/data/snackboxFaq";
 import MenuCard from "@/components/menu/MenuCard";
 
 export default function SnackboxPageClient({ items }: { items: MenuItem[] }) {
@@ -116,26 +117,16 @@ export default function SnackboxPageClient({ items }: { items: MenuItem[] }) {
             )}
           </div>
           <div className="pt-6 border-t border-[#ebd7c0]/60 space-y-4 max-w-2xl">
-            <div>
-              <h3 className="text-sm sm:text-base font-bold text-[#241b18] mb-1">
-                Bisa custom isi snack box buat rapat kantor?
-              </h3>
-              <p className="text-[#665b56] text-xs sm:text-sm leading-relaxed">
-                Bisa banget. Kamu bisa mix isi snack sesuai budget dan jumlah
-                peserta rapat — tinggal chat mimin buat konsultasi paket. Harga
-                mengikuti paket yang tersedia di katalog (Mini, Reguler,
-                Komplit).
-              </p>
-            </div>
-            <div>
-              <h3 className="text-sm sm:text-base font-bold text-[#241b18] mb-1">
-                Berapa lama sebelum acara harus pesan?
-              </h3>
-              <p className="text-[#665b56] text-xs sm:text-sm leading-relaxed">
-                Disarankan pesan H-1 untuk memastikan ketersediaan, terutama
-                untuk jumlah besar atau acara mendadak bisa tanya dulu ke mimin.
-              </p>
-            </div>
+            {SNACKBOX_FAQ.map((faq) => (
+              <div key={faq.question}>
+                <h3 className="text-sm sm:text-base font-bold text-[#241b18] mb-1">
+                  {faq.question}
+                </h3>
+                <p className="text-[#665b56] text-xs sm:text-sm leading-relaxed">
+                  {faq.answer}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
 
