@@ -98,9 +98,17 @@ const restaurantSchema = {
   sameAs: [
     `https://www.instagram.com/${FALYA_CONTACT.instagram.replace("@", "")}`,
   ],
+  // Angka asli dari Google Business Profile Falya (dikonfirmasi manual,
+  // bukan hasil hitung dari 5 testimoni pilihan di bawah) — update manual
+  // kalau rating/jumlah ulasan di Google Maps berubah.
+  aggregateRating: {
+    "@type": "AggregateRating",
+    ratingValue: "4.9",
+    reviewCount: "59",
+    bestRating: "5",
+  },
   // Review individual dari testimoni Google Maps yang tampil di
-  // TestimonialSlider (homepage) — lihat catatan di lib/seo/reviewJsonLd.ts
-  // soal kenapa aggregateRating belum disertakan.
+  // TestimonialSlider (homepage) — lihat catatan di lib/seo/reviewJsonLd.ts.
   review: buildReviewJsonLd(),
 };
 

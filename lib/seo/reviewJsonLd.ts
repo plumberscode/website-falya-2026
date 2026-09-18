@@ -7,10 +7,10 @@ import { TESTIMONIALS } from "@/lib/data/testimonials";
  * yang benar-benar tampil.
  *
  * Dipasang sebagai `review` di FoodEstablishment schema (app/layout.tsx).
- * Catatan: `aggregateRating` SENGAJA belum ditambahkan di sini karena harus
- * mencerminkan rating & jumlah review asli dari Google Business Profile
- * Falya, bukan hasil hitung dari 5 testimoni pilihan ini — pakai angka
- * asli dari Google Maps saat menambahkannya, jangan menebak.
+ * `aggregateRating` didefinisikan terpisah langsung di app/layout.tsx
+ * dengan angka asli dari Google Business Profile Falya (bukan dihitung
+ * dari 5 testimoni pilihan ini) — update manual di sana kalau rating atau
+ * jumlah ulasan di Google Maps berubah.
  */
 export function buildReviewJsonLd() {
   return TESTIMONIALS.map((testimonial) => ({
