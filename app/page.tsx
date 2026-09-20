@@ -21,12 +21,21 @@ import { getAllMenuItems } from "@/app/actions/menu";
 // Data menu (termasuk Best Seller) dibaca dari database supaya
 // perubahan dari admin panel langsung terlihat di homepage tanpa
 // perlu deploy ulang. revalidatePath() di app/actions/menu.ts sudah
-// menghapus cache instan saat ada perubahan, jadi halaman ini statis
-// per-deployment (revalidate: false) — tanpa time-based ISR yang
-// membuat edge node Vercel meregenerasi halaman secara independen
-// tiap 60 detik dan sempat menyajikan snapshot navbar yang berbeda-beda
-// antar node setelah deploy (lihat riwayat bug warna navbar).
-export const revalidate = false;
+// menghapus cache instan saat ada perubahan.
+//
+// revalidate diberi batas 1 jam (bukan false / bukan time-based pendek)
+// sebagai jalan tengah dari dua bug yang pernah terjadi:
+// - revalidate pendek (mis. 60 detik) membuat edge node Vercel
+//   meregenerasi halaman secara independen dan sempat menyajikan
+//   snapshot navbar yang berbeda-beda antar node tepat setelah deploy.
+// - revalidate: false membuat snapshot statis tidak pernah pulih
+//   sendiri kalau suatu saat ke-generate salah (mis. race saat
+//   revalidatePath() jalan) — sekali nyangkut gelap, navbar tetap
+//   gelap selamanya sampai ada yang sadar dan trigger deploy/
+//   revalidate manual (lihat riwayat bug warna navbar).
+// 1 jam cukup panjang untuk menghindari kasus pertama, cukup pendek
+// untuk auto-heal dari kasus kedua tanpa perlu campur tangan manual.
+export const revalidate = 3600;
 
 export default async function HomePage() {
   // Produk Best Seller ditandai otomatis lewat isBestseller -- di-set oleh
