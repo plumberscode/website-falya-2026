@@ -28,68 +28,44 @@ export default function Navbar() {
   const { getTotalItems, toggleCart } = useCartStore();
   const totalItems = getTotalItems();
 
+  // Browser-default scroll restoration ('auto') restores the previous scroll
+  // offset on a same-tab reload before React mounts, which made the hero's
+  // pastHero detection read a non-zero position on what the visitor
+  // perceives as a fresh page open. Opt out so reloads always start at top.
+  useEffect(() => {
+    if (typeof window !== "undefined" && "scrollRestoration" in history) {
+      history.scrollRestoration = "manual";
+    }
+  }, []);
+
   useEffect(() => {
     setMounted(true);
 
-    const handleScroll = () => {
-      if (pathname !== "/") {
-        setPastHero(true);
-        return;
-      }
-
-      // Selalu di atas hero kalau posisi scroll masih dekat 0 -- mencegah
-      // pastHero ke-stuck `true` akibat pengukuran rect yang salah di race
-      // tertentu (desktop + Lenis) saat mount, sebelum layout/scroll stabil.
-      // Hero selalu elemen pertama di halaman, jadi ini invariant yang aman
-      // terlepas dari race apa pun yang menyebabkan salah ukur di bawah.
-      if (window.scrollY <= 50) {
-        setPastHero(false);
-        return;
-      }
-
-      // Query the scrollytelling container to get its real bottom position
-      const heroSection = document.querySelector<HTMLElement>(
-        "[data-scrollytelling]",
-      );
-      if (heroSection) {
-        // rect.bottom < 0  →  container completely scrolled past viewport top
-        const rect = heroSection.getBoundingClientRect();
-        setPastHero(rect.bottom <= 0);
-      } else {
-        // Fallback: treat 450vh as default scrollytelling height
-        setPastHero(window.scrollY > window.innerHeight * 4.5);
-      }
-    };
-
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("resize", handleScroll, { passive: true });
-
-    // The scrollytelling hero can change height after this effect's first
-    // run — e.g. it starts at h-[450vh] then collapses to h-screen once
-    // slow-connection mode kicks in (see CanvasSequenceScroller). If that
-    // resize happens while we're still at the top of the page, no scroll
-    // event fires to trigger a recheck, so handleScroll() stays stuck on
-    // whatever (possibly stale/incorrect) measurement it took on mount —
-    // which is exactly what made the icons render dark until the user
-    // scrolled. Watch the hero element directly so a height change alone
-    // re-evaluates pastHero.
-    let resizeObserver: ResizeObserver | undefined;
-    if (pathname === "/" && typeof ResizeObserver !== "undefined") {
-      const heroSection = document.querySelector<HTMLElement>(
-        "[data-scrollytelling]",
-      );
-      if (heroSection) {
-        resizeObserver = new ResizeObserver(handleScroll);
-        resizeObserver.observe(heroSection);
-      }
+    if (pathname !== "/") {
+      setPastHero(true);
+      return;
     }
 
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("resize", handleScroll);
-      resizeObserver?.disconnect();
-    };
+    const heroSection = document.querySelector<HTMLElement>(
+      "[data-scrollytelling]",
+    );
+    if (!heroSection) {
+      setPastHero(false);
+      return;
+    }
+
+    // Derive "scrolled past hero" straight from actual layout geometry
+    // instead of reconstructing it from window.scrollY — immune to browser
+    // scroll-restoration on reload, Lenis timing, and hero height changes
+    // (e.g. slow-connection mode collapsing it from h-[450vh] to h-screen),
+    // all of which previously raced the scrollY-based heuristic.
+    const observer = new IntersectionObserver(
+      ([entry]) => setPastHero(!entry.isIntersecting),
+      { threshold: 0 },
+    );
+    observer.observe(heroSection);
+
+    return () => observer.disconnect();
   }, [pathname]);
 
   const navLinks = [

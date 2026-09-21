@@ -118,7 +118,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id" className={`${sans.variable} scroll-smooth`}>
+    <html lang="id" className={sans.variable}>
       <body className="bg-[#fdfbfc] text-[#241b18] font-sans antialiased selection:bg-[#f3d5e3] selection:text-[#861f53] min-h-screen flex flex-col">
         {/* strategy="lazyOnload" (bukan default "afterInteractive"): analytics
             pihak ketiga TIDAK KRITIS untuk render awal, jadi ditunda sampai
