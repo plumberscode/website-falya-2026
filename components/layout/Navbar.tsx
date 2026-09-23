@@ -24,6 +24,10 @@ export default function Navbar() {
   // true  = user has scrolled past the scrollytelling zone (or is on a non-home page)
   const [pastHero, setPastHero] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  // ISR regeneration of "/" renders with pathname "/index" (Next 16), so
+  // treat both as the homepage — otherwise the revalidated HTML snapshot
+  // ships dark navbar text over the hero.
+  const isHome = pathname === "/" || pathname === "/index";
 
   const { getTotalItems, toggleCart } = useCartStore();
   const totalItems = getTotalItems();
@@ -41,7 +45,7 @@ export default function Navbar() {
   useEffect(() => {
     setMounted(true);
 
-    if (pathname !== "/") {
+    if (!isHome) {
       setPastHero(true);
       return;
     }
@@ -66,7 +70,7 @@ export default function Navbar() {
     observer.observe(heroSection);
 
     return () => observer.disconnect();
-  }, [pathname]);
+  }, [isHome]);
 
   const navLinks = [
     { label: "Menu", href: "/menu", icon: UtensilsCrossed },
@@ -78,7 +82,7 @@ export default function Navbar() {
   // Desktop menu links, mobile icons, and cart start white over the transparent hero
   // and switch to dark once the solid navbar background appears after scroll.
   const isLightNav =
-    !mobileMenuOpen && !pastHero && pathname === "/";
+    !mobileMenuOpen && !pastHero && isHome;
 
   // On homepage: fully transparent (no background) while the scrollytelling
   // hero is still playing, solid white only once it's scrolled past.
