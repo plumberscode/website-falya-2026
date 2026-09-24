@@ -74,6 +74,25 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  if (body.job_id) {
+    // Idempoten per job: LLM kadang memanggil tool submit dua kali untuk job
+    // yang sama -- jangan bikin draft kembar, kembalikan draft yang sudah ada.
+    const job = await prisma.contentJobRequest.findUnique({ where: { id: body.job_id } });
+    if (job?.status === "done" && job.resultPostId) {
+      const existing = await prisma.post.findUnique({ where: { id: job.resultPostId } });
+      if (existing) {
+        return NextResponse.json({
+          success: true,
+          duplicate: true,
+          id: existing.id,
+          slug: existing.slug,
+          title: existing.title,
+          timestamp: new Date().toISOString(),
+        });
+      }
+    }
+  }
+
   const baseSlug = slugify(body.title);
   if (!baseSlug) {
     return NextResponse.json({ error: "Title tidak menghasilkan slug yang valid." }, { status: 400 });
