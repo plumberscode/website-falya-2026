@@ -78,7 +78,12 @@ export async function POST(request: NextRequest) {
     // Idempoten per job: LLM kadang memanggil tool submit dua kali untuk job
     // yang sama -- jangan bikin draft kembar, kembalikan draft yang sudah ada.
     const job = await prisma.contentJobRequest.findUnique({ where: { id: body.job_id } });
-    if (job?.status === "done" && job.resultPostId) {
+    if (!job) {
+      // job_id karangan LLM (mis. "placeholder-job-id") -- tolak, jangan
+      // bikin draft yatim yang nanti dobel dengan submit yang benar.
+      return NextResponse.json({ error: `job_id "${body.job_id}" tidak dikenal.` }, { status: 400 });
+    }
+    if (job.status === "done" && job.resultPostId) {
       const existing = await prisma.post.findUnique({ where: { id: job.resultPostId } });
       if (existing) {
         return NextResponse.json({
