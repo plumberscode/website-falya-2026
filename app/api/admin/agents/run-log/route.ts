@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 
 /**
  * Endpoint machine-to-machine untuk 3 agent Python (Karyawan AI:
- * sales_sync, seo_audit, content_writer) mencatat siklus hidup tiap run.
+ * sales_sync, seo_audit, content_writer, keyword_strategist) mencatat siklus hidup tiap run.
  * Dipanggil 2x per run: POST awal (status=running) create row & balikin
  * run_id, POST akhir (status=success|error) update row yang sama pakai
  * run_id -- bukan 2 row terpisah, lihat AgentRunLog di schema.prisma.
@@ -18,7 +18,7 @@ import { prisma } from "@/lib/prisma";
  * sendiri.
  */
 
-const VALID_AGENT_NAMES = ["sales_sync", "seo_audit", "content_writer"] as const;
+const VALID_AGENT_NAMES = ["sales_sync", "seo_audit", "content_writer", "keyword_strategist"] as const;
 type AgentName = (typeof VALID_AGENT_NAMES)[number];
 
 function isValidAgentName(value: unknown): value is AgentName {
