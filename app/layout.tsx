@@ -61,6 +61,12 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/",
   },
+  // Verifikasi kepemilikan Google Search Console (metode HTML tag). JANGAN
+  // dihapus -- kalau hilang, verifikasi gugur dan service account agent SEO
+  // (Karyawan AI) kehilangan akses data Search Console (403).
+  verification: {
+    google: "drldupYqNuj_0TwNcpfVT3SBZabLk7wxbpsasUW0rX8",
+  },
 };
 
 const restaurantSchema = {
