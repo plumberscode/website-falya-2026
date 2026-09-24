@@ -19,8 +19,10 @@ export async function requestContentJob(instruction?: string) {
       return { success: false, error: "Akses ditolak. Sesi admin diperlukan." };
     }
 
+    // Hanya permintaan manual yang di-dedupe -- job otomatis dari rencana
+    // konten (planItemId terisi) tidak boleh memblokir permintaan admin.
     const existingPending = await prisma.contentJobRequest.findFirst({
-      where: { status: "pending" },
+      where: { status: "pending", planItemId: null },
     });
     if (existingPending) {
       return { success: false, error: "Masih ada permintaan artikel yang menunggu diproses." };
@@ -38,13 +40,15 @@ export async function requestContentJob(instruction?: string) {
 }
 
 /**
- * Baca status permintaan pending terbaru untuk ditampilkan di /admin/blog.
- * Read-only, tanpa session gate (sama seperti getSeoAuditReports).
+ * Baca status permintaan MANUAL pending terbaru untuk ditampilkan di
+ * /admin/blog & /admin/agents (job otomatis dari rencana konten tampil di
+ * section "Rencana Konten" /admin/seo). Read-only, tanpa session gate
+ * (sama seperti getSeoAuditReports).
  */
 export async function getPendingContentJob() {
   try {
     return await prisma.contentJobRequest.findFirst({
-      where: { status: "pending" },
+      where: { status: "pending", planItemId: null },
       orderBy: { createdAt: "asc" },
     });
   } catch (error) {

@@ -148,15 +148,17 @@ const AGENT_LABELS: Record<AgentName, string> = {
   sales_sync: "Sales Sync",
   seo_audit: "SEO Auditor",
   content_writer: "Content Writer",
+  keyword_strategist: "Keyword Strategist",
 };
 
 const AGENT_COMMANDS: Record<AgentName, string> = {
   sales_sync: "python -m falya_crew",
   seo_audit: "python -m falya_crew.seo_audit",
   content_writer: "python -m falya_crew.content_writer",
+  keyword_strategist: "python -m falya_crew.keyword_strategist",
 };
 
-const AGENT_ORDER: AgentName[] = ["sales_sync", "seo_audit", "content_writer"];
+const AGENT_ORDER: AgentName[] = ["sales_sync", "seo_audit", "keyword_strategist", "content_writer"];
 
 function formatDateTime(date: Date | string) {
   const d = new Date(date);

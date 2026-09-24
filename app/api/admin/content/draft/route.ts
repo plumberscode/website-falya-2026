@@ -125,10 +125,17 @@ export async function POST(request: NextRequest) {
     // response ini error (agent bisa salah kira submit gagal & retry,
     // berpotensi bikin post duplikat).
     try {
-      await prisma.contentJobRequest.update({
+      const job = await prisma.contentJobRequest.update({
         where: { id: body.job_id },
         data: { status: "done", completedAt: new Date(), resultPostId: post.id },
       });
+      if (job.planItemId) {
+        // Job dari rencana Agent 5 -- tandai item rencananya sudah jadi draft.
+        await prisma.contentPlanItem.update({
+          where: { id: job.planItemId },
+          data: { status: "drafted", postId: post.id },
+        });
+      }
     } catch (error) {
       console.error(`Gagal menandai ContentJobRequest ${body.job_id} selesai:`, error);
     }

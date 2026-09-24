@@ -18,7 +18,8 @@ const GITHUB_REPO = "falya-crew";
 export type AgentEventType =
   | "sales_sync_dispatch"
   | "seo_audit_dispatch"
-  | "content_writer_dispatch";
+  | "content_writer_dispatch"
+  | "keyword_strategist_dispatch";
 
 export async function triggerAgentWorkflow(eventType: AgentEventType): Promise<void> {
   const token = process.env.GITHUB_DISPATCH_TOKEN;

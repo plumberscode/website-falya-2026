@@ -116,11 +116,71 @@ model ContentJobRequest {
   // acara kantor") -- kalau kosong, agent pilih topik sendiri dari data
   // produk laris + keyword gap, sama seperti perilaku sebelumnya.
   instruction  String?
+  // Diisi kalau job dibuat otomatis oleh Agent 5 (Keyword Strategist) dari
+  // ContentPlanItem -- dipakai content/draft route untuk menandai item
+  // rencana "drafted". Null = permintaan manual dari admin.
+  planItemId   String?
   createdAt    DateTime  @default(now())
   completedAt  DateTime?
   resultPostId String?
 
   @@index([status])
+}
+
+// Snapshot performa Search Console per halaman per minggu, ditulis SEO
+// Auditor (Agent 3) tiap run -- dasar loop pembelajaran (bandingkan posisi
+// sebelum/sesudah artikel tayang atau di-refresh). Upsert by
+// (weekOf, pageUrl): run ulang di minggu yang sama menimpa, bukan dobel.
+model PagePerformanceSnapshot {
+  id          String   @id @default(cuid())
+  // Senin (UTC) minggu snapshot diambil.
+  weekOf      DateTime
+  pageUrl     String
+  clicks      Int
+  impressions Int
+  ctr         Float
+  position    Float
+  // [{ query, clicks, impressions, position }] -- 10 query teratas halaman ini.
+  topQueries  Json
+  createdAt   DateTime @default(now())
+
+  @@unique([weekOf, pageUrl])
+  @@index([pageUrl])
+}
+
+// Rencana konten dari Agent 5 (Keyword Strategist): satu baris = satu
+// cluster keyword (query yang maksudnya sama digabung supaya satu cluster =
+// satu halaman target, cegah kanibalisasi). clusterKey unik lintas minggu
+// supaya topik yang sama tidak diusulkan/ditulis dua kali.
+model ContentPlanItem {
+  id                  String   @id @default(cuid())
+  clusterKey          String   @unique
+  primaryKeyword      String
+  // string[] -- variasi query lain dalam cluster.
+  secondaryKeywords   Json
+  // "informational" | "commercial" | "transactional"
+  intent              String
+  // "NEW_ARTICLE" | "REFRESH" | "ADD_FAQ_TO_LANDING"
+  action              String
+  // Halaman yang di-refresh / landing page yang perlu ditambah FAQ.
+  targetUrl           String?
+  // "search_console" | "autocomplete"
+  source              String
+  score               Float
+  impressions         Int      @default(0)
+  clicks              Int      @default(0)
+  position            Float?
+  // Nilai saat item pertama kali dibuat -- pembanding untuk mengukur hasil.
+  baselineImpressions Int      @default(0)
+  baselinePosition    Float?
+  // "proposed" | "queued" | "drafted" | "skipped"
+  status              String   @default("proposed")
+  postId              String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([status])
+  @@index([score])
 }
 
 // Log eksekusi tiap run agent Python (Karyawan AI: sales_sync, seo_audit,

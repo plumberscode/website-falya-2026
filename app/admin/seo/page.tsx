@@ -20,6 +20,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { AdminTabs } from "@/components/admin/admin-tabs";
+import { ContentPlanSection } from "@/components/admin/ContentPlanSection";
 
 // Shape reportJson -- serialisasi apa adanya dari SeoAuditReport (Pydantic,
 // Karyawan AI/src/falya_crew/models.py). Longgar (bukan tipe ketat) karena
@@ -159,6 +160,8 @@ export default function AdminSeoPage() {
           (crew Python, <code>python -m falya_crew.seo_audit</code>) -- audit-only,
           belum ada perubahan otomatis ke website.
         </p>
+
+        <ContentPlanSection />
 
         {/* Fix Diusulkan -- HANYA untuk meta description artikel blog yang
             kosong, satu-satunya isu yang punya nilai fallback aman

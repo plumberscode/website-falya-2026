@@ -11,7 +11,7 @@ import { triggerAgentWorkflow } from "@/lib/github-dispatch";
  * eksklusif untuk agent Python, UI admin manusia tidak pernah menyentuhnya.
  */
 
-const AGENT_NAMES = ["sales_sync", "seo_audit", "content_writer"] as const;
+const AGENT_NAMES = ["sales_sync", "seo_audit", "content_writer", "keyword_strategist"] as const;
 export type AgentName = (typeof AGENT_NAMES)[number];
 
 // AgentTaskRequest cuma untuk sales_sync & seo_audit -- content_writer
