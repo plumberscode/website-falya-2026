@@ -5,9 +5,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function cleanExcerpt(content?: string | null): string {
-  if (!content) return "Pilihan menu lezat, snack box, nasi liwet, dan aneka kuliner berkualitas dari Falya Risol Balikpapan.";
-  const clean = content
+// HTML (konten TipTap) -> teks polos satu baris. Dipakai cleanExcerpt dan
+// ekstraksi FAQ artikel blog (lib/seo/blogFaqJsonLd.ts).
+export function htmlToText(html: string): string {
+  return html
     .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
     .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
     .replace(/<[^>]+>/g, " ")
@@ -19,6 +20,11 @@ export function cleanExcerpt(content?: string | null): string {
     .replace(/&gt;/gi, ">")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+export function cleanExcerpt(content?: string | null): string {
+  if (!content) return "Pilihan menu lezat, snack box, nasi liwet, dan aneka kuliner berkualitas dari Falya Risol Balikpapan.";
+  const clean = htmlToText(content);
 
   if (clean.length === 0) {
     return "Pilihan menu lezat, snack box, nasi liwet, dan aneka kuliner berkualitas dari Falya Risol Balikpapan.";

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getPostBySlug } from "@/app/actions/blog";
 import { cleanExcerpt } from "@/lib/utils";
+import { buildBlogFaqJsonLd } from "@/lib/seo/blogFaqJsonLd";
 import { getAdminSession } from "@/lib/auth";
 import BlogImage from "@/components/blog/BlogImage";
 import { Calendar, ArrowLeft, Share2, Tag, AlertTriangle, Clock, Edit3 } from "lucide-react";
@@ -127,6 +128,8 @@ export default async function BlogPostDetailPage({ params }: Props) {
     },
   };
 
+  const faqJsonLd = buildBlogFaqJsonLd(post.content);
+
   return (
     <>
       {/* Google Structured Data Script */}
@@ -134,6 +137,12 @@ export default async function BlogPostDetailPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      {faqJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        />
+      )}
 
       <article className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 pt-28 sm:pt-32 pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto">

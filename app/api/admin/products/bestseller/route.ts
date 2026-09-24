@@ -87,7 +87,10 @@ export async function POST(request: NextRequest) {
     ...(matchedIds.length
       ? [
           prisma.menuItem.updateMany({
-            where: { id: { in: matchedIds } },
+            // Hanya baris yang benar-benar berubah -- supaya updatedAt
+            // (dipakai lastModified di app/sitemap.ts) tidak ter-bump tiap
+            // hari untuk produk yang sudah bestseller dari kemarin.
+            where: { id: { in: matchedIds }, isBestseller: false },
             data: { isBestseller: true },
           }),
         ]

@@ -16,6 +16,8 @@ export async function revalidateMenuPages() {
   revalidatePath("/snackbox");
   revalidatePath("/nasi-liwet");
   revalidatePath("/kue-nampan-balikpapan");
+  // lastModified per halaman di sitemap diturunkan dari MenuItem.updatedAt.
+  revalidatePath("/sitemap.xml");
   revalidatePath("/admin");
 }
 
