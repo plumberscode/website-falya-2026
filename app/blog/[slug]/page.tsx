@@ -1,11 +1,13 @@
 import type { Metadata, ResolvingMetadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getPostBySlug } from "@/app/actions/blog";
+import { getPostBySlug, getPublishedPostSlugs, getRelatedPosts } from "@/app/actions/blog";
 import { cleanExcerpt } from "@/lib/utils";
 import { buildBlogFaqJsonLd } from "@/lib/seo/blogFaqJsonLd";
 import { getAdminSession } from "@/lib/auth";
 import BlogImage from "@/components/blog/BlogImage";
+import BlogPostCard from "@/components/blog/BlogPostCard";
+import { unlinkUnpublishedPosts } from "@/lib/seo/internalLinks";
 import { Calendar, ArrowLeft, Share2, Tag, AlertTriangle, Clock, Edit3 } from "lucide-react";
 
 interface Props {
@@ -129,6 +131,14 @@ export default async function BlogPostDetailPage({ params }: Props) {
   };
 
   const faqJsonLd = buildBlogFaqJsonLd(post.content);
+
+  const [publishedSlugs, relatedPosts] = await Promise.all([
+    getPublishedPostSlugs(),
+    getRelatedPosts(post),
+  ]);
+  // Link ke artikel yang belum tayang dijadikan teks biasa (hindari 404);
+  // kalau daftar slug gagal dimuat, konten dirender apa adanya.
+  const contentHtml = publishedSlugs ? unlinkUnpublishedPosts(post.content, new Set(publishedSlugs)) : post.content;
 
   return (
     <>
@@ -259,8 +269,23 @@ export default async function BlogPostDetailPage({ params }: Props) {
           {/* Article Body Content */}
           <div
             className="prose prose-zinc dark:prose-invert max-w-none prose-headings:font-bold prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4 prose-h3:text-xl prose-p:leading-relaxed prose-p:text-zinc-700 dark:prose-p:text-zinc-300 prose-img:rounded-2xl prose-img:my-6 prose-img:shadow-md prose-img:mx-auto prose-a:text-emerald-600 dark:prose-a:text-emerald-400 prose-a:underline hover:prose-a:text-emerald-500 transition-colors"
-            dangerouslySetInnerHTML={{ __html: post.content }}
+            dangerouslySetInnerHTML={{ __html: contentHtml }}
           />
+
+          {/* Artikel Terkait -- internal link dua arah otomatis: artikel lama
+              ikut menampilkan artikel baru yang topiknya sejenis. */}
+          {relatedPosts.length > 0 && (
+            <section aria-labelledby="related-heading" className="mt-16">
+              <h2 id="related-heading" className="text-2xl font-bold tracking-tight mb-6">
+                Artikel Terkait
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {relatedPosts.map((related) => (
+                  <BlogPostCard key={related.id} post={related} headingLevel="h3" />
+                ))}
+              </div>
+            </section>
+          )}
 
           {/* Footer of Article */}
           <footer className="mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800 flex items-center justify-between">

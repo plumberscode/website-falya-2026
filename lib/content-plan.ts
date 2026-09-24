@@ -32,7 +32,7 @@ function asStringArray(value: unknown): string[] {
 export async function buildPlanInstruction(item: ContentPlanItem): Promise<string> {
   const [existingPosts, menuItems] = await Promise.all([
     prisma.post.findMany({
-      select: { title: true, slug: true },
+      select: { title: true, slug: true, isPublished: true, publishedAt: true },
       orderBy: { publishedAt: "desc" },
       take: 30,
     }),
@@ -43,6 +43,10 @@ export async function buildPlanInstruction(item: ContentPlanItem): Promise<strin
     }),
   ]);
   const secondary = asStringArray(item.secondaryKeywords).slice(0, 8);
+  // Draft/terjadwal tetap dihitung "sudah ada" (jangan ditulis ulang), tapi
+  // TIDAK boleh ditautkan -- link ke artikel yang belum tayang = 404.
+  const now = new Date();
+  const livePosts = existingPosts.filter((p) => p.isPublished && p.publishedAt <= now);
 
   const lines = [
     `Keyword utama: "${item.primaryKeyword}".`,
@@ -52,8 +56,13 @@ export async function buildPlanInstruction(item: ContentPlanItem): Promise<strin
       "masuk halaman 1 Google: keyword utama wajib muncul natural di title, paragraf pertama, dan minimal satu <h2>; " +
       "variasi dipakai sebagai sub-pertanyaan/heading, bukan ditumpuk.",
     existingPosts.length
-      ? "Artikel yang SUDAH ada di blog (JANGAN ulang topik/sudut yang sama; tautkan dengan <a href> kalau relevan):\n" +
-        existingPosts.map((p) => `- ${p.title} (${BASE_URL}/blog/${p.slug})`).join("\n")
+      ? "Topik yang SUDAH ada di blog (JANGAN ulang topik/sudut yang sama):\n" +
+        existingPosts.map((p) => `- ${p.title}`).join("\n")
+      : null,
+    livePosts.length
+      ? "Artikel yang boleh ditautkan dengan <a href> kalau relevan (tautkan 2-4 yang paling nyambung; JANGAN " +
+        "menautkan URL /blog/ lain di luar daftar ini):\n" +
+        livePosts.map((p) => `- ${p.title} (${BASE_URL}/blog/${p.slug})`).join("\n")
       : null,
     `Halaman produk yang bisa ditautkan kalau relevan: ${PRODUCT_PAGES.map((p) => BASE_URL + p).join(", ")}.`,
     // Sumber fakta produk -- AGENTS.md: jangan pernah mengarang produk.

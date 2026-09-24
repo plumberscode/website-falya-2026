@@ -225,6 +225,78 @@ export async function getPostBySlug(slug: string, allowScheduled: boolean = fals
   }
 }
 
+// Kata yang tidak membedakan topik -- termasuk pola judul template artikel AI
+// ("Harga, Isi, dan Cara Pesan di Falya Risol") supaya semua artikel AI
+// tidak dianggap saling terkait hanya karena format judulnya sama.
+const RELATED_IGNORED_WORDS = new Set([
+  "di", "dan", "untuk", "yang", "dari", "ke", "ini", "itu", "dia", "dengan", "atau", "cara", "isi", "harga",
+  "pesan", "pesannya", "mulai", "balikpapan", "falya", "risolnya", "panduan", "pilihan", "tips", "menu",
+]);
+
+function topicWords(text: string): Set<string> {
+  return new Set(
+    text
+      .toLowerCase()
+      .split(/[^a-z0-9]+/)
+      .filter((w) => w.length > 2 && !RELATED_IGNORED_WORDS.has(w))
+  );
+}
+
+/**
+ * Artikel terkait untuk section "Artikel Terkait" di akhir artikel -- skor
+ * deterministik: kategori sama (+2) + jumlah kata topik yang sama di
+ * judul/slug. Hanya artikel yang sudah tayang. Kalau tidak ada yang
+ * nyambung sama sekali, fallback ke artikel terbaru supaya pembaca tetap
+ * punya jalan ke artikel lain.
+ */
+export async function getRelatedPosts(
+  post: { id: string; slug: string; title: string; category: string | null },
+  limit = 3
+) {
+  try {
+    const nowWithBuffer = new Date(Date.now() + 60 * 1000);
+    const candidates = await prisma.post.findMany({
+      where: { isPublished: true, publishedAt: { lte: nowWithBuffer }, id: { not: post.id } },
+      orderBy: { publishedAt: "desc" },
+    });
+
+    const words = topicWords(`${post.title} ${post.slug.replace(/-/g, " ")}`);
+    const scored = candidates.map((candidate, index) => {
+      const candidateWords = topicWords(`${candidate.title} ${candidate.slug.replace(/-/g, " ")}`);
+      let score = [...candidateWords].filter((w) => words.has(w)).length;
+      if (post.category && candidate.category === post.category) score += 2;
+      return { candidate, score, index };
+    });
+
+    return scored
+      .sort((a, b) => b.score - a.score || a.index - b.index)
+      .slice(0, limit)
+      .map((s) => s.candidate);
+  } catch (error) {
+    console.error("Error fetching related posts:", error);
+    return [];
+  }
+}
+
+/**
+ * Slug semua artikel yang sudah tayang -- dipakai unlinkUnpublishedPosts.
+ * null kalau query gagal (BUKAN array kosong -- array kosong akan membuat
+ * semua link blog dilepas).
+ */
+export async function getPublishedPostSlugs(): Promise<string[] | null> {
+  try {
+    const nowWithBuffer = new Date(Date.now() + 60 * 1000);
+    const posts = await prisma.post.findMany({
+      where: { isPublished: true, publishedAt: { lte: nowWithBuffer } },
+      select: { slug: true },
+    });
+    return posts.map((p) => p.slug);
+  } catch (error) {
+    console.error("Error fetching published post slugs:", error);
+    return null;
+  }
+}
+
 export async function getPostById(id: string) {
   try {
     return await prisma.post.findUnique({
