@@ -176,6 +176,16 @@ function parseUnmatchedCount(summary: string | null): number | null {
   return match ? parseInt(match[1], 10) : null;
 }
 
+/** Nama produk yang tidak match, dari bagian " | tidak match: ..." di
+ * AgentRunLog.summary (UNMATCHED_NAMES_MARKER di website_sync_tool.py).
+ * Run lama belum punya bagian ini -> null. */
+function parseUnmatchedNames(summary: string | null): string | null {
+  if (!summary) return null;
+  const marker = " | tidak match: ";
+  const index = summary.indexOf(marker);
+  return index === -1 ? null : summary.slice(index + marker.length) || null;
+}
+
 function StatusPill({ status }: { status: string }) {
   if (status === "success") {
     return (
@@ -398,6 +408,7 @@ export default function AdminAgentsPage() {
 
   const salesSyncRun = latestRuns?.sales_sync ?? null;
   const unmatchedCount = parseUnmatchedCount(salesSyncRun?.summary ?? null);
+  const unmatchedNames = parseUnmatchedNames(salesSyncRun?.summary ?? null);
 
   return (
     <div className="w-full bg-[#fdfbfc] text-[#241b18] min-h-screen pt-28 pb-20">
@@ -498,6 +509,11 @@ export default function AdminAgentsPage() {
                     <AlertTriangle className="w-3 h-3" />
                     {unmatchedCount} produk tidak match dengan katalog website
                   </div>
+                )}
+                {!!unmatchedCount && unmatchedCount > 0 && unmatchedNames && (
+                  <p className="text-[10px] text-[#968b85] line-clamp-2" title={unmatchedNames}>
+                    {unmatchedNames}
+                  </p>
                 )}
               </div>
             )}
