@@ -58,7 +58,8 @@ export async function renderMemberCard(
           height: "100%",
           display: "flex",
           flexDirection: "column",
-          background: "#2B1B12",
+          // Sama dengan sisi belakang kartu di dashboard (dashboard-poin-member.html): gradien maroon/pink
+          background: "linear-gradient(135deg, #B5306F 0%, #8E2058 45%, #4A0F2E 100%)",
           color: "#F6EEDC",
           padding: 5.3 * u,
         }}
@@ -66,18 +67,18 @@ export async function renderMemberCard(
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={logo} width={22 * u} height={(22 * u * 378) / 771} alt="" />
-          <div style={{ display: "flex", fontSize: 1.75 * u, fontWeight: 600, letterSpacing: "0.32em", color: "#E07AA8", marginTop: 0.6 * u }}>
+          <div style={{ display: "flex", fontSize: 1.75 * u, fontWeight: 600, letterSpacing: "0.32em", color: "#F7D3E3", marginTop: 0.6 * u }}>
             MEMBER CARD
           </div>
         </div>
         <div style={{ display: "flex", flex: 1, alignItems: "center", gap: 4 * u }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 2.6 * u, flex: 1, minWidth: 0 }}>
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <div style={{ display: "flex", fontSize: 1.9 * u, fontWeight: 500, color: "#BFA98F", marginBottom: 0.5 * u }}>Nama</div>
+              <div style={{ display: "flex", fontSize: 1.9 * u, fontWeight: 500, color: "#E9BCD1", marginBottom: 0.5 * u }}>Nama</div>
               <div style={{ display: "flex", fontSize: (longName ? 3.1 : 4.2) * u, fontWeight: 600, lineHeight: 1.15 }}>{member.name}</div>
             </div>
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <div style={{ display: "flex", fontSize: 1.9 * u, fontWeight: 500, color: "#BFA98F", marginBottom: 0.5 * u }}>No. Member</div>
+              <div style={{ display: "flex", fontSize: 1.9 * u, fontWeight: 500, color: "#E9BCD1", marginBottom: 0.5 * u }}>No. Member</div>
               <div style={{ display: "flex", fontSize: 4.6 * u, fontWeight: 700, letterSpacing: "0.14em" }}>{member.memberNumber}</div>
             </div>
           </div>
@@ -89,11 +90,11 @@ export async function renderMemberCard(
                 height: 18.3 * u,
                 background: "#FFFFFF",
                 borderRadius: 1.4 * u,
-                padding: 1.3 * u,
+                padding: 2 * u,
               }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={qr} width={15.7 * u} height={15.7 * u} alt="" />
+              <img src={qr} width={14.3 * u} height={14.3 * u} alt="" />
             </div>
             <div style={{ display: "flex", fontSize: 1.75 * u }}>Scan untuk cek poin &amp; hadiah</div>
           </div>
@@ -103,7 +104,7 @@ export async function renderMemberCard(
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            borderTop: "1px solid rgba(191,169,143,.45)",
+            borderTop: "1px solid rgba(246,238,220,.35)",
             paddingTop: 1.6 * u,
             fontSize: 1.8 * u,
           }}
