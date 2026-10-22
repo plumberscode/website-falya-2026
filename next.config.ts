@@ -55,6 +55,22 @@ const nextConfig: NextConfig = {
         headers: securityHeaders,
       },
       {
+        // Dashboard member pribadi (/m/{token}) + API-nya: jangan di-cache
+        // dan jangan diindeks (spesifikasi poin member bagian 10).
+        source: "/m/:path*",
+        headers: [
+          { key: "Cache-Control", value: "no-store, max-age=0" },
+          { key: "X-Robots-Tag", value: "noindex, nofollow" },
+        ],
+      },
+      {
+        source: "/api/m/:path*",
+        headers: [
+          { key: "Cache-Control", value: "no-store, max-age=0" },
+          { key: "X-Robots-Tag", value: "noindex, nofollow" },
+        ],
+      },
+      {
         // Foto menu di-serve dengan query-string cache-buster (?v=hash
         // konten, lihat lib/utils/cacheBustImage.ts + scripts/generate-
         // image-manifest.mjs) — begitu isi file berubah, URL-nya ikut

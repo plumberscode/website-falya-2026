@@ -8,6 +8,7 @@ import CartSheet from "@/components/cart/CartSheet";
 import SmoothScrollProvider from "@/components/providers/SmoothScrollProvider";
 import { Toaster } from "@/components/ui/sonner";
 import WhatsAppFAB from "@/components/layout/WhatsAppFAB";
+import HideOnMemberPage from "@/components/layout/HideOnMemberPage";
 import { FALYA_CONTACT } from "@/lib/data/menuData";
 import { buildReviewJsonLd } from "@/lib/seo/reviewJsonLd";
 
@@ -146,11 +147,15 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(restaurantSchema) }}
         />
         <SmoothScrollProvider>
-          <Navbar />
+          <HideOnMemberPage>
+            <Navbar />
+          </HideOnMemberPage>
           <div className="flex-1">{children}</div>
-          <Footer />
-          <CartSheet />
-          <WhatsAppFAB />
+          <HideOnMemberPage>
+            <Footer />
+            <CartSheet />
+            <WhatsAppFAB />
+          </HideOnMemberPage>
           <Toaster richColors position="top-center" offset={{ top: 76 }} />
         </SmoothScrollProvider>
       </body>
