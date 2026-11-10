@@ -124,6 +124,11 @@ export default function KebijakanPrivasiPage() {
           <p>
             Falya Risol Mayo — {FALYA_CONTACT.address}.
             <br />
+            Email:{" "}
+            <a className="text-[#a82868] underline" href="mailto:falya@falyarisol.com">
+              falya@falyarisol.com
+            </a>
+            <br />
             WhatsApp:{" "}
             <a
               className="text-[#a82868] underline"
