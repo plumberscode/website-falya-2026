@@ -154,11 +154,11 @@ export default async function BlogPostDetailPage({ params }: Props) {
         />
       )}
 
-      <article className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 pt-28 sm:pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+      <article className="min-h-screen bg-[#fdfbfc] text-[#241b18] pt-28 sm:pt-32 pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto">
           {/* Admin Draft / Scheduled Preview Banner */}
           {(isDraft || isScheduled) && (
-            <div className="mb-8 p-4 bg-amber-500/10 border border-amber-500/30 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-amber-900 dark:text-amber-200 shadow-sm">
+            <div className="mb-8 p-4 bg-amber-500/10 border border-amber-500/30 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-amber-900 shadow-sm">
               <div className="flex items-center gap-3">
                 {isDraft ? (
                   <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0" />
@@ -169,7 +169,7 @@ export default async function BlogPostDetailPage({ params }: Props) {
                   <p className="text-xs font-bold uppercase tracking-wider">
                     {isDraft ? "Pratinjau Mode Draf (Draft)" : "Pratinjau Artikel Terjadwal"}
                   </p>
-                  <p className="text-xs text-amber-800 dark:text-amber-300">
+                  <p className="text-xs text-amber-800">
                     {isDraft
                       ? "Artikel ini belum dipublikasikan ke publik dan hanya bisa dilihat oleh Anda sebagai Admin."
                       : `Artikel ini dijadwalkan terbit pada ${new Date(post.publishedAt).toLocaleString("id-ID")}.`}
@@ -180,7 +180,7 @@ export default async function BlogPostDetailPage({ params }: Props) {
               <div className="flex items-center gap-2 shrink-0">
                 <Link
                   href="/admin/blog"
-                  className="px-3.5 py-1.5 bg-white dark:bg-zinc-900 border border-amber-300 dark:border-amber-700 text-amber-900 dark:text-amber-200 text-xs font-semibold rounded-xl hover:bg-amber-50 dark:hover:bg-amber-950/50 transition flex items-center gap-1.5"
+                  className="px-3.5 py-1.5 bg-white border border-amber-300 text-amber-900 text-xs font-semibold rounded-xl hover:bg-amber-50 transition flex items-center gap-1.5"
                 >
                   <ArrowLeft className="w-3.5 h-3.5" />
                   Daftar Admin
@@ -202,7 +202,7 @@ export default async function BlogPostDetailPage({ params }: Props) {
             {session && (
               <Link
                 href="/admin/blog"
-                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-zinc-200/80 dark:bg-zinc-800 text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-700 transition"
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#faf0f4] text-xs font-semibold text-[#665b56] hover:bg-[#f3e2ec] transition"
               >
                 <ArrowLeft className="w-3.5 h-3.5" />
                 Kembali ke Manajemen Blog (Admin)
@@ -211,7 +211,7 @@ export default async function BlogPostDetailPage({ params }: Props) {
 
             <Link
               href="/blog"
-              className="inline-flex items-center gap-2 text-sm font-medium text-zinc-500 hover:text-emerald-600 dark:hover:text-emerald-400 transition"
+              className="inline-flex items-center gap-2 text-sm font-medium text-[#968b85] hover:text-[#a82868] transition"
             >
               <ArrowLeft className="w-4 h-4" />
               Kembali ke Semua Artikel
@@ -220,11 +220,11 @@ export default async function BlogPostDetailPage({ params }: Props) {
 
           {/* Article Header */}
           <header className="mb-10">
-            <div className="flex flex-wrap items-center gap-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-4">
+            <div className="flex flex-wrap items-center gap-3 text-xs font-semibold text-[#968b85] uppercase tracking-wider mb-4">
               {post.category && (
                 <Link
                   href={`/blog?category=${encodeURIComponent(post.category)}`}
-                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-300 hover:bg-emerald-200 transition"
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#faf0f4] text-[#a82868] hover:bg-[#f3e2ec] transition"
                 >
                   <Tag className="w-3.5 h-3.5" />
                   {post.category}
@@ -242,12 +242,12 @@ export default async function BlogPostDetailPage({ params }: Props) {
               </div>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-zinc-900 dark:text-zinc-50 leading-tight mb-6">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-[#241b18] leading-tight mb-6">
               {headline}
             </h1>
 
             {excerpt && (
-              <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed italic border-l-4 border-emerald-500 pl-4">
+              <p className="text-lg text-[#665b56] leading-relaxed italic border-l-4 border-[#a82868] pl-4">
                 {excerpt}
               </p>
             )}
@@ -255,7 +255,7 @@ export default async function BlogPostDetailPage({ params }: Props) {
 
           {/* Featured Image (Cloudinary) */}
           {post.imageUrl && (
-            <div className="relative aspect-video w-full rounded-3xl overflow-hidden mb-12 shadow-md bg-zinc-100 dark:bg-zinc-800">
+            <div className="relative aspect-video w-full rounded-3xl overflow-hidden mb-12 shadow-md bg-[#f7ebdd]">
               <BlogImage
                 src={post.imageUrl}
                 alt={post.title}
@@ -268,7 +268,7 @@ export default async function BlogPostDetailPage({ params }: Props) {
 
           {/* Article Body Content */}
           <div
-            className="prose prose-zinc dark:prose-invert max-w-none prose-headings:font-bold prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4 prose-h3:text-xl prose-p:leading-relaxed prose-p:text-zinc-700 dark:prose-p:text-zinc-300 prose-img:rounded-2xl prose-img:my-6 prose-img:shadow-md prose-img:mx-auto prose-a:text-emerald-600 dark:prose-a:text-emerald-400 prose-a:underline hover:prose-a:text-emerald-500 transition-colors"
+            className="prose blog-article-body max-w-none"
             dangerouslySetInnerHTML={{ __html: contentHtml }}
           />
 
@@ -276,7 +276,7 @@ export default async function BlogPostDetailPage({ params }: Props) {
               ikut menampilkan artikel baru yang topiknya sejenis. */}
           {relatedPosts.length > 0 && (
             <section aria-labelledby="related-heading" className="mt-16">
-              <h2 id="related-heading" className="text-2xl font-bold tracking-tight mb-6">
+              <h2 id="related-heading" className="text-2xl font-bold tracking-tight text-[#241b18] mb-6">
                 Artikel Terkait
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -288,15 +288,15 @@ export default async function BlogPostDetailPage({ params }: Props) {
           )}
 
           {/* Footer of Article */}
-          <footer className="mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
+          <footer className="mt-16 pt-8 border-t border-[#f3d5e3] flex items-center justify-between">
             <Link
               href="/blog"
-              className="text-sm font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
+              className="text-sm font-semibold text-[#a82868] hover:underline"
             >
               ← Lihat artikel lainnya
             </Link>
 
-            <div className="flex items-center gap-2 text-xs text-zinc-500">
+            <div className="flex items-center gap-2 text-xs text-[#968b85]">
               <Share2 className="w-4 h-4" />
               <span>Bagikan artikel ini untuk teman Anda</span>
             </div>

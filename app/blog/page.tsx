@@ -48,18 +48,18 @@ export default async function BlogIndexPage(props: { searchParams: Promise<{ cat
   const categories = await getAllCategories();
 
   return (
-    <main className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 pt-28 sm:pt-32 pb-20 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-6xl mx-auto">
+    <main className="min-h-screen bg-[#fdfbfc] text-[#241b18] pt-28 sm:pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1200px] mx-auto">
         {/* Header Section */}
         <div className="text-center max-w-2xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-semibold uppercase tracking-wider mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#faf0f4] text-[#a82868] text-xs font-semibold uppercase tracking-wider mb-4">
             <BookOpen className="w-4 h-4" />
             Artikel & Informasi
           </div>
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight mb-4">
-            Blog <span className="text-emerald-600 dark:text-emerald-400">Falya</span>
+            Blog <span className="text-[#a82868]">Falya</span>
           </h1>
-          <p className="text-zinc-600 dark:text-zinc-400 text-base sm:text-lg">
+          <p className="text-[#665b56] text-base sm:text-lg">
             Temukan inspirasi sajian kuliner, tips memilih paket snack box, dan cerita menarik di balik kelezatan menu kami.
           </p>
         </div>
@@ -71,8 +71,8 @@ export default async function BlogIndexPage(props: { searchParams: Promise<{ cat
               href="/blog"
               className={`px-4 py-2 rounded-full text-sm font-semibold transition ${
                 !currentCategory
-                  ? "bg-emerald-600 text-white shadow-md"
-                  : "bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800"
+                  ? "bg-[#a82868] text-white shadow-sm"
+                  : "bg-[#faf0f4] text-[#665b56] hover:text-[#241b18] hover:bg-[#f3e2ec]"
               }`}
             >
               Semua Topik
@@ -83,8 +83,8 @@ export default async function BlogIndexPage(props: { searchParams: Promise<{ cat
                 href={`/blog?category=${encodeURIComponent(cat)}`}
                 className={`px-4 py-2 rounded-full text-sm font-semibold transition ${
                   currentCategory === cat
-                    ? "bg-emerald-600 text-white shadow-md"
-                    : "bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800"
+                    ? "bg-[#a82868] text-white shadow-sm"
+                    : "bg-[#faf0f4] text-[#665b56] hover:text-[#241b18] hover:bg-[#f3e2ec]"
                 }`}
               >
                 {cat}
@@ -95,14 +95,14 @@ export default async function BlogIndexPage(props: { searchParams: Promise<{ cat
 
         {/* Blog Post Grid */}
         {posts.length === 0 ? (
-          <div className="text-center py-20 bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200 dark:border-zinc-800 p-8">
-            <p className="text-zinc-500 text-lg mb-4">
+          <div className="text-center py-20 bg-white rounded-3xl border border-[#f3d5e3] p-8">
+            <p className="text-[#665b56] text-lg mb-4">
               {currentCategory ? `Belum ada artikel di kategori "${currentCategory}".` : "Belum ada artikel yang dipublikasikan."}
             </p>
             {!currentCategory && (
               <Link
                 href="/admin/blog/new"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-medium transition shadow-sm"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#a82868] hover:bg-[#861f53] text-white font-semibold transition shadow-sm"
               >
                 Tulis Artikel Pertama
               </Link>
@@ -110,7 +110,7 @@ export default async function BlogIndexPage(props: { searchParams: Promise<{ cat
             {currentCategory && (
               <Link
                 href="/blog"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-medium transition shadow-sm"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#a82868] hover:bg-[#861f53] text-white font-semibold transition shadow-sm"
               >
                 Lihat Semua Artikel
               </Link>

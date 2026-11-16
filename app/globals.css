@@ -102,7 +102,7 @@
   font-size: 1.65rem !important;
   line-height: 1.3 !important;
   font-weight: 800 !important;
-  color: #18181b !important;
+  color: #241b18 !important;
   margin-top: 1.75rem !important;
   margin-bottom: 0.75rem !important;
   letter-spacing: -0.02em !important;
@@ -113,7 +113,7 @@
   font-size: 1.3rem !important;
   line-height: 1.4 !important;
   font-weight: 700 !important;
-  color: #27272a !important;
+  color: #241b18 !important;
   margin-top: 1.25rem !important;
   margin-bottom: 0.5rem !important;
   letter-spacing: -0.01em !important;
@@ -124,7 +124,7 @@
   line-height: 1.8;
   margin-top: 0.75rem;
   margin-bottom: 0.75rem;
-  color: #3f3f46;
+  color: #241b18;
 }
 
 .tiptap ul, article.blog-article ul, .prose ul {
@@ -148,19 +148,19 @@
 }
 
 .tiptap blockquote, article.blog-article blockquote, .prose blockquote {
-  border-left: 4px solid #10b981 !important;
+  border-left: 4px solid #a82868 !important;
   padding-left: 1rem !important;
   font-style: italic !important;
-  color: #52525b !important;
+  color: #665b56 !important;
   margin-top: 1.25rem !important;
   margin-bottom: 1.25rem !important;
-  background-color: rgba(16, 185, 129, 0.05);
+  background-color: #faf0f4;
   padding: 0.75rem 1rem;
   border-radius: 0 0.75rem 0.75rem 0;
 }
 
 .tiptap a, article.blog-article a, .prose a {
-  color: #059669 !important;
+  color: #a82868 !important;
   text-decoration: underline !important;
   font-weight: 600 !important;
 }
@@ -182,70 +182,71 @@
   margin: 1.5rem 0 !important;
   overflow: hidden;
   border-radius: 0.75rem;
-  border: 1px solid #e4e4e7;
+  border: 1px solid #ebd7c0;
   font-size: 0.875rem;
 }
 
 .tiptap th, article.blog-article th, .prose th {
-  background-color: #f4f4f5 !important;
+  background-color: #fff8ef !important;
   font-weight: 700 !important;
   text-align: left;
   padding: 0.75rem 1rem !important;
-  border: 1px solid #e4e4e7 !important;
-  color: #18181b;
+  border: 1px solid #ebd7c0 !important;
+  color: #241b18;
   position: relative;
 }
 
 .tiptap td, article.blog-article td, .prose td {
   padding: 0.75rem 1rem !important;
-  border: 1px solid #e4e4e7 !important;
+  border: 1px solid #ebd7c0 !important;
   vertical-align: top;
   box-sizing: border-box;
   position: relative;
-  color: #3f3f46;
+  color: #241b18;
 }
 
-/* Dark mode: halaman artikel & editor ikut gelap (dark:bg-zinc-950, varian
-   `dark:` Tailwind = prefers-color-scheme), jadi warna teks terang di atas
-   harus dibalik di sini -- `!important` di atas mengalahkan prose-invert. */
+/* Dark mode: hanya editor admin (RichTextEditor ikut gelap via
+   dark:bg-zinc-950). Blog publik selalu terang dengan warna Falya, jadi
+   .prose / article.blog-article sengaja TIDAK ikut di sini. */
 @media (prefers-color-scheme: dark) {
-  .tiptap h2, article.blog-article h2, .prose h2 {
+  .tiptap h2 {
     color: #fafafa !important;
   }
 
-  .tiptap h3, article.blog-article h3, .prose h3 {
+  .tiptap h3 {
     color: #f4f4f5 !important;
   }
 
-  .tiptap p, article.blog-article p, .prose p,
-  .tiptap li, article.blog-article li, .prose li {
+  .tiptap p,
+  .tiptap li {
     color: #d4d4d8;
   }
 
-  .tiptap strong, article.blog-article strong, .prose strong {
+  .tiptap strong {
     color: #fafafa;
   }
 
-  .tiptap blockquote, article.blog-article blockquote, .prose blockquote {
+  .tiptap blockquote {
     color: #a1a1aa !important;
+    background-color: rgba(168, 40, 104, 0.12);
   }
 
-  .tiptap a, article.blog-article a, .prose a,
-  .tiptap a strong, article.blog-article a strong, .prose a strong {
-    color: #34d399 !important;
+  .tiptap a,
+  .tiptap a strong {
+    color: #f3d5e3 !important;
   }
 
-  .tiptap table, article.blog-article table, .prose table {
+  .tiptap table {
     border-color: #3f3f46;
   }
 
-  .tiptap th, article.blog-article th, .prose th {
+  .tiptap th {
     background-color: #27272a !important;
     border-color: #3f3f46 !important;
     color: #fafafa;
   }
 
-  .tiptap td, article.blog-article td, .prose td {
+  .tiptap td {
     border-color: #3f3f46 !important;
     color: #d4d4d8;
   }
