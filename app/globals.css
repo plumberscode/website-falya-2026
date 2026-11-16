@@ -205,6 +205,52 @@
   color: #3f3f46;
 }
 
+/* Dark mode: halaman artikel & editor ikut gelap (dark:bg-zinc-950, varian
+   `dark:` Tailwind = prefers-color-scheme), jadi warna teks terang di atas
+   harus dibalik di sini -- `!important` di atas mengalahkan prose-invert. */
+@media (prefers-color-scheme: dark) {
+  .tiptap h2, article.blog-article h2, .prose h2 {
+    color: #fafafa !important;
+  }
+
+  .tiptap h3, article.blog-article h3, .prose h3 {
+    color: #f4f4f5 !important;
+  }
+
+  .tiptap p, article.blog-article p, .prose p,
+  .tiptap li, article.blog-article li, .prose li {
+    color: #d4d4d8;
+  }
+
+  .tiptap strong, article.blog-article strong, .prose strong {
+    color: #fafafa;
+  }
+
+  .tiptap blockquote, article.blog-article blockquote, .prose blockquote {
+    color: #a1a1aa !important;
+  }
+
+  .tiptap a, article.blog-article a, .prose a,
+  .tiptap a strong, article.blog-article a strong, .prose a strong {
+    color: #34d399 !important;
+  }
+
+  .tiptap table, article.blog-article table, .prose table {
+    border-color: #3f3f46;
+  }
+
+  .tiptap th, article.blog-article th, .prose th {
+    background-color: #27272a !important;
+    border-color: #3f3f46 !important;
+    color: #fafafa;
+  }
+
+  .tiptap td, article.blog-article td, .prose td {
+    border-color: #3f3f46 !important;
+    color: #d4d4d8;
+  }
+}
+
 .tiptap .selectedCell:after {
   z-index: 2;
   position: absolute;
